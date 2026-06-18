@@ -38,19 +38,19 @@ func ParseForCompletion(args []string) *CompletionContext {
 					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedStreamSpecifier)
 				}
 
-				switch {
-				case optDef != nil && optDef.Scope == ScopeGlobalOpt:
-					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedGlobalOption)
-					ctx.Scope = ScopeGlobal
-				case baseName == "i":
-					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputURL)
-				default:
-					addScopeOption(ctx, optDef, baseName)
-				}
-				if optDef != nil && optDef.Type == TypeValue {
-					if spec != "" || !optDef.AcceptsSpec {
-						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
-						ctx.PartialValue = ""
+				optionComplete := optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec)
+				if optionComplete {
+					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
+					ctx.PartialValue = ""
+				} else {
+					switch {
+					case optDef != nil && optDef.Scope == ScopeGlobalOpt:
+						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedGlobalOption)
+						ctx.Scope = ScopeGlobal
+					case baseName == "i":
+						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputURL)
+					default:
+						addScopeOption(ctx, optDef, baseName)
 					}
 				}
 				return ctx
