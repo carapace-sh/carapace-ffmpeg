@@ -177,3 +177,25 @@ func ActionDispositions() carapace.Action {
 func ActionBoolean() carapace.Action {
 	return carapace.ActionValues("true", "false", "1", "0")
 }
+
+// ActionBitrates completes common bitrate values.
+func ActionBitrates() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"96k", "96 kbit/s",
+		"128k", "128 kbit/s",
+		"160k", "160 kbit/s",
+		"192k", "192 kbit/s",
+		"256k", "256 kbit/s",
+		"320k", "320 kbit/s",
+		"500k", "500 kbit/s",
+		"1M", "1 Mbit/s",
+		"2M", "2 Mbit/s",
+		"5M", "5 Mbit/s",
+		"8M", "8 Mbit/s",
+		"10M", "10 Mbit/s",
+		"15M", "15 Mbit/s",
+		"20M", "20 Mbit/s",
+		"25M", "25 Mbit/s",
+		"50M", "50 Mbit/s",
+	)
+}

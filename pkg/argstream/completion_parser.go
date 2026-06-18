@@ -47,10 +47,11 @@ func ParseForCompletion(args []string) *CompletionContext {
 				default:
 					addScopeOption(ctx, optDef, baseName)
 				}
-				if optDef != nil && optDef.Type == TypeValue && spec != "" {
-					// Option with specifier complete, now expecting value
-					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
-					ctx.PartialValue = ""
+				if optDef != nil && optDef.Type == TypeValue {
+					if spec != "" || !optDef.AcceptsSpec {
+						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
+						ctx.PartialValue = ""
+					}
 				}
 				return ctx
 			}
@@ -70,8 +71,17 @@ func ParseForCompletion(args []string) *CompletionContext {
 
 			// Consume option value if it takes one
 			if optDef != nil && optDef.Type == TypeValue {
-				if i < len(args) && !isOption(args[i]) {
-					i++ // consume the value
+				if i < len(args) {
+					if i == len(args)-1 && !isOption(args[i]) {
+						// The value position is the cursor — complete it
+						ctx.CurrentOption = buildOptionContext(baseName, spec, optDef)
+						ctx.PartialValue = args[i]
+						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
+						return ctx
+					}
+					if !isOption(args[i]) {
+						i++ // consume the value
+					}
 				}
 			}
 

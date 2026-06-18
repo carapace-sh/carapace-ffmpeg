@@ -48,18 +48,38 @@ func TestCompletionPartialOption(t *testing.T) {
 	}
 }
 
-func TestCompletionAfterOptionValue(t *testing.T) {
-	ctx := ParseForCompletion([]string{"-c:v", "libx264", "-i", "input.mp4"})
-	if ctx.InputCount != 1 {
-		t.Errorf("expected InputCount=1, got %d", ctx.InputCount)
+func TestCompletionOptionValue(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "input.mp4", "-c:v", "libx26"})
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.CanonicalName != "codec" {
+		t.Errorf("expected canonical name 'codec', got %q", ctx.CurrentOption.CanonicalName)
+	}
+	if ctx.PartialValue != "libx26" {
+		t.Errorf("expected partial value 'libx26', got %q", ctx.PartialValue)
+	}
+}
+
+func TestCompletionOptionValueEmpty(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "input.mp4", "-ab", ""})
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.CanonicalName != "b" {
+		t.Errorf("expected canonical name 'b', got %q", ctx.CurrentOption.CanonicalName)
 	}
 }
 
 func TestCompletionInOutputContext(t *testing.T) {
 	ctx := ParseForCompletion([]string{"-i", "input.mp4", "-c:v", "libx264"})
-	if ctx.Scope != ScopeInputFile {
-		t.Errorf("expected ScopeInputFile, got %v", ctx.Scope)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
 	}
-	assertHasExpected(t, ctx, ExpectedOutputOption)
-	assertHasExpected(t, ctx, ExpectedOutputURL)
+	if ctx.CurrentOption.CanonicalName != "codec" {
+		t.Errorf("expected canonical name 'codec', got %q", ctx.CurrentOption.CanonicalName)
+	}
 }

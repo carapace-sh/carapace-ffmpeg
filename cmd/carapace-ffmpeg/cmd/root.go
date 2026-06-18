@@ -114,6 +114,8 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 		return ffmpeg.ActionBoolean()
 	case argstream.ValueDisposition:
 		return ffmpeg.ActionDispositions()
+	case argstream.ValueBitrate:
+		return ffmpeg.ActionBitrates()
 	case argstream.ValueMapSpec:
 		return actionMapValue(ctx)
 	case argstream.ValueMetadata:

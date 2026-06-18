@@ -62,6 +62,7 @@ const (
 	ValueFilter     ValueType = "filter"
 	ValueMetadata   ValueType = "metadata"
 	ValueDisposition ValueType = "disposition"
+	ValueBitrate    ValueType = "bitrate"
 )
 
 // OptionDef defines a single ffmpeg option.
@@ -125,7 +126,7 @@ func buildOptionIndex() map[string]*OptionDef {
 
 		// Per-stream options
 		{CanonicalName: "codec", ShortName: "c", Aliases: []string{"vcodec", "acodec", "scodec", "dcodec"}, Description: "codec name", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueCodec, AcceptsSpec: true},
-		{CanonicalName: "b", ShortName: "b", Aliases: []string{"ab"}, Description: "bitrate (bits/s)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt64, AcceptsSpec: true},
+		{CanonicalName: "b", ShortName: "b", Aliases: []string{"ab"}, Description: "bitrate (bits/s)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBitrate, AcceptsSpec: true},
 		{CanonicalName: "r", ShortName: "r", Description: "frame rate (Hz)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueVideoRate, AcceptsSpec: true},
 		{CanonicalName: "pix_fmt", ShortName: "pix_fmt", Description: "pixel format", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValuePixelFormat, AcceptsSpec: true},
 		{CanonicalName: "ar", ShortName: "ar", Description: "audio sampling rate (Hz)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
@@ -154,9 +155,9 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "profile", ShortName: "profile", Description: "set codec profile", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "level", ShortName: "level", Description: "set codec level", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFloat, AcceptsSpec: true},
 		{CanonicalName: "g", ShortName: "g", Description: "GOP size (keyframe interval)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
-		{CanonicalName: "maxrate", ShortName: "maxrate", Description: "maximum bitrate (bits/s)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt64, AcceptsSpec: true},
-		{CanonicalName: "minrate", ShortName: "minrate", Description: "minimum bitrate (bits/s)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt64, AcceptsSpec: true},
-		{CanonicalName: "bufsize", ShortName: "bufsize", Description: "set ratecontrol buffer size", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt64, AcceptsSpec: true},
+		{CanonicalName: "maxrate", ShortName: "maxrate", Description: "maximum bitrate (bits/s)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBitrate, AcceptsSpec: true},
+		{CanonicalName: "minrate", ShortName: "minrate", Description: "minimum bitrate (bits/s)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBitrate, AcceptsSpec: true},
+		{CanonicalName: "bufsize", ShortName: "bufsize", Description: "set ratecontrol buffer size", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBitrate, AcceptsSpec: true},
 		{CanonicalName: "pass", ShortName: "pass", Description: "select encoding pass number", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
 		{CanonicalName: "passlogfile", ShortName: "passlogfile", Description: "two-pass log file name prefix", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "deinterlace", ShortName: "deinterlace", Description: "deinterlace pictures", Scope: ScopePerStreamOpt, Type: TypeBoolean},
