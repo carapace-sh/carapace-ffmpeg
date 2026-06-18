@@ -150,7 +150,7 @@ func TestOptionStyleValue(t *testing.T) {
 }
 
 func TestCompletionContextOptionStyle(t *testing.T) {
-	ctx := ParseForCompletion([]string{"-c:v"})
+	ctx := ParseForCompletion([]string{"-c:v"}, false)
 	if ctx.CurrentOption == nil {
 		t.Fatal("expected CurrentOption")
 	}
@@ -158,7 +158,7 @@ func TestCompletionContextOptionStyle(t *testing.T) {
 		t.Errorf("expected FlagArg style in OptionContext, got %q", ctx.CurrentOption.Style)
 	}
 
-	ctx2 := ParseForCompletion([]string{"-y"})
+	ctx2 := ParseForCompletion([]string{"-y"}, false)
 	if ctx2.CurrentOption == nil {
 		t.Fatal("expected CurrentOption")
 	}
@@ -178,5 +178,66 @@ func TestParseFilterComplex(t *testing.T) {
 	}
 	if filterToken.OptionName != "filter_complex" {
 		t.Errorf("expected option 'filter_complex', got %q", filterToken.OptionName)
+	}
+}
+
+func TestParseVcodecAlias(t *testing.T) {
+	prog, err := Parse([]string{"-i", "input.mp4", "-vcodec", "libx264", "output.mp4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(prog.Tokens) < 2 {
+		t.Fatalf("expected at least 2 tokens, got %d", len(prog.Tokens))
+	}
+	codecToken := prog.Tokens[1]
+	if codecToken.OptionName != "vcodec" {
+		t.Errorf("expected option name 'vcodec', got %q", codecToken.OptionName)
+	}
+	if codecToken.StreamSpecifier != "v" {
+		t.Errorf("expected implicit stream specifier 'v', got %q", codecToken.StreamSpecifier)
+	}
+	if codecToken.Value != "libx264" {
+		t.Errorf("expected value 'libx264', got %q", codecToken.Value)
+	}
+}
+
+func TestParseAcodecAlias(t *testing.T) {
+	prog, err := Parse([]string{"-i", "input.mp4", "-acodec", "aac", "output.mp4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	codecToken := prog.Tokens[1]
+	if codecToken.StreamSpecifier != "a" {
+		t.Errorf("expected implicit stream specifier 'a', got %q", codecToken.StreamSpecifier)
+	}
+}
+
+func TestVcodecAliasInOptionIndex(t *testing.T) {
+	opt := LookupOption("vcodec")
+	if opt == nil {
+		t.Fatal("expected option 'vcodec' to exist")
+	}
+	if opt.ImplicitSpec != "v" {
+		t.Errorf("expected ImplicitSpec 'v', got %q", opt.ImplicitSpec)
+	}
+}
+
+func TestAcodecAliasInOptionIndex(t *testing.T) {
+	opt := LookupOption("acodec")
+	if opt == nil {
+		t.Fatal("expected option 'acodec' to exist")
+	}
+	if opt.ImplicitSpec != "a" {
+		t.Errorf("expected ImplicitSpec 'a', got %q", opt.ImplicitSpec)
+	}
+}
+
+func TestCodecBaseNoImplicitSpec(t *testing.T) {
+	opt := LookupOption("c")
+	if opt == nil {
+		t.Fatal("expected option 'c' to exist")
+	}
+	if opt.ImplicitSpec != "" {
+		t.Errorf("expected no ImplicitSpec for base 'c', got %q", opt.ImplicitSpec)
 	}
 }

@@ -33,7 +33,8 @@ var argstreamCompleteCmd = &cobra.Command{
 	Short: "Get completion context for ffmpeg argument stream",
 	Args:  cobra.MinimumNArgs(0),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ctx := argstream.ParseForCompletion(args)
+		trailing, _ := cmd.Flags().GetBool("trailing-space")
+		ctx := argstream.ParseForCompletion(args, trailing)
 		m, err := json.Marshal(ctx)
 		if err != nil {
 			return err
@@ -47,6 +48,8 @@ var argstreamCompleteCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(argstreamCmd)
 	rootCmd.AddCommand(argstreamCompleteCmd)
+
+	argstreamCompleteCmd.Flags().Bool("trailing-space", false, "cursor is at a new position after the last arg")
 
 	carapace.Gen(argstreamCmd)
 	carapace.Gen(argstreamCompleteCmd)

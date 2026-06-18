@@ -5,7 +5,9 @@ import "strings"
 // ParseForCompletion parses a partial ffmpeg command argument list and returns
 // a CompletionContext describing what is expected at the end.
 // The args should be the raw arguments (e.g. from os.Args[1:]) up to the cursor.
-func ParseForCompletion(args []string) *CompletionContext {
+// trailingSpace indicates whether the cursor is at a new position after the
+// last argument (true) or mid-token within the last argument (false).
+func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 	ctx := &CompletionContext{
 		Scope:       ScopeGlobal,
 		InputCount:  0,
@@ -13,8 +15,30 @@ func ParseForCompletion(args []string) *CompletionContext {
 	}
 
 	i := 0
+	var pendingOption *OptionContext
+
 	for i < len(args) {
 		arg := args[i]
+
+		// If we have a pending option value and the current arg is not an option,
+		// consume it as the value
+		if pendingOption != nil {
+			if !isOption(arg) {
+				if i == len(args)-1 && !trailingSpace {
+					// Completing the option value (mid-token)
+					ctx.CurrentOption = pendingOption
+					ctx.PartialValue = arg
+					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
+					return ctx
+				}
+				// Consume the value
+				pendingOption = nil
+				i++
+				continue
+			}
+			// The pending value was skipped (next arg is an option) — clear pending
+			pendingOption = nil
+		}
 
 		// Check if this is an option
 		if isOption(arg) {
@@ -24,21 +48,17 @@ func ParseForCompletion(args []string) *CompletionContext {
 			baseName, spec := ParseOptionName(optName)
 			optDef := LookupOption(baseName)
 
-			// Check if we're at the last argument (the one being completed)
-			if i == len(args)-1 {
-				// We're completing the option name or its specifier
+			// Check if we're at the last argument and it's the one being completed
+			if i == len(args)-1 && !trailingSpace {
 				ctx.PartialOption = baseName
 				ctx.PartialSpec = spec
 				ctx.CurrentOption = buildOptionContext(baseName, spec, optDef)
 
-				// If the option is complete (has a space after it), the cursor
-				// is at a new position — but in our model, the last arg IS the option,
-				// so we're completing the option name itself.
-				if optDef != nil && optDef.AcceptsSpec && spec == "" {
+				if optDef != nil && optDef.AcceptsSpec && spec == "" && optDef.ImplicitSpec == "" {
 					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedStreamSpecifier)
 				}
 
-				optionComplete := optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec)
+				optionComplete := optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec || optDef.ImplicitSpec != "")
 				if optionComplete {
 					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
 					ctx.PartialValue = ""
@@ -56,12 +76,12 @@ func ParseForCompletion(args []string) *CompletionContext {
 				return ctx
 			}
 
-			// Not the last arg — consume it and possibly its value
+			// Not completing the last arg — consume it
 			i++
 
 			// Handle -i (input file marker)
 			if baseName == "i" {
-				if i < len(args) {
+				if i < len(args) && !isOption(args[i]) {
 					ctx.InputCount++
 					ctx.Scope = ScopeInputFile
 					i++ // consume the URL
@@ -69,20 +89,9 @@ func ParseForCompletion(args []string) *CompletionContext {
 				continue
 			}
 
-			// Consume option value if it takes one
-			if optDef != nil && optDef.Type == TypeValue {
-				if i < len(args) {
-					if i == len(args)-1 && !isOption(args[i]) {
-						// The value position is the cursor — complete it
-						ctx.CurrentOption = buildOptionContext(baseName, spec, optDef)
-						ctx.PartialValue = args[i]
-						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
-						return ctx
-					}
-					if !isOption(args[i]) {
-						i++ // consume the value
-					}
-				}
+			// If the option takes a value, mark it as pending
+			if optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec || optDef.ImplicitSpec != "") {
+				pendingOption = buildOptionContext(baseName, spec, optDef)
 			}
 
 			// Update scope based on option
@@ -93,6 +102,13 @@ func ParseForCompletion(args []string) *CompletionContext {
 			ctx.Scope = ScopeOutputFile
 			i++
 		}
+	}
+
+	// If we have a pending option value, that's what's expected next
+	if pendingOption != nil {
+		ctx.CurrentOption = pendingOption
+		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
+		return ctx
 	}
 
 	// If we've consumed all args, we're at a new completion position
@@ -143,12 +159,16 @@ func buildOptionContext(baseName, spec string, optDef *OptionDef) *OptionContext
 			IsBoolean:  false,
 		}
 	}
+	effectiveSpec := spec
+	if spec == "" && optDef.ImplicitSpec != "" {
+		effectiveSpec = optDef.ImplicitSpec
+	}
 	return &OptionContext{
 		Name:            baseName,
 		CanonicalName:   optDef.CanonicalName,
-		StreamSpecifier: spec,
+		StreamSpecifier: effectiveSpec,
 		ValueType:       optDef.ValueType,
-		AcceptsSpec:     optDef.AcceptsSpec,
+		AcceptsSpec:     optDef.AcceptsSpec && optDef.ImplicitSpec == "",
 		IsBoolean:       optDef.Type == TypeBoolean,
 		Style:           optDef.Style(),
 	}

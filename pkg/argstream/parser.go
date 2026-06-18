@@ -158,10 +158,14 @@ func (p *parser) parseProgram() (*Program, error) {
 				} else {
 					kind = KindInputOption
 				}
+				effectiveSpec := spec
+				if spec == "" && optDef.ImplicitSpec != "" {
+					effectiveSpec = optDef.ImplicitSpec
+				}
 				tok := Token{
 					Kind:            kind,
 					OptionName:      baseName,
-					StreamSpecifier: spec,
+					StreamSpecifier: effectiveSpec,
 					Span:            Span{Start: p.pos - 1, End: p.pos},
 				}
 				if optDef.Type == TypeValue {

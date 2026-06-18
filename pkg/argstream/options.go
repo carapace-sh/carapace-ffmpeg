@@ -75,6 +75,7 @@ type OptionDef struct {
 	Type          OptionType  // boolean or value-taking
 	ValueType     ValueType   // type of value
 	AcceptsSpec   bool        // whether stream specifier suffix is valid
+	ImplicitSpec  string      // implied stream specifier for aliases (e.g. "v" for vcodec)
 }
 
 // OptionIndex maps option names (including aliases) to their definitions.
@@ -173,9 +174,26 @@ func buildOptionIndex() map[string]*OptionDef {
 		if opt.ShortName != opt.CanonicalName {
 			index[opt.ShortName] = opt
 		}
-		// Register aliases
+		// Register aliases with implicit spec where applicable
 		for _, alias := range opt.Aliases {
-			index[alias] = opt
+			aliasOpt := *opt
+			switch alias {
+			case "vcodec":
+				aliasOpt.ImplicitSpec = "v"
+			case "acodec":
+				aliasOpt.ImplicitSpec = "a"
+			case "scodec":
+				aliasOpt.ImplicitSpec = "s"
+			case "dcodec":
+				aliasOpt.ImplicitSpec = "d"
+			case "vf":
+				aliasOpt.ImplicitSpec = "v"
+			case "af":
+				aliasOpt.ImplicitSpec = "a"
+			case "ab":
+				aliasOpt.ImplicitSpec = "a"
+			}
+			index[alias] = &aliasOpt
 		}
 	}
 
