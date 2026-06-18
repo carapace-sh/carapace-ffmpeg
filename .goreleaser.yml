@@ -1,0 +1,21 @@
+version: 2
+
+builds:
+  - id: carapace-ffmpeg
+    main: ./cmd/carapace-ffmpeg
+    binary: carapace-ffmpeg
+    ldflags:
+      - -s -w
+
+archives:
+  - id: carapace-ffmpeg
+    builds:
+      - carapace-ffmpeg
+    format_overrides:
+      - goos: windows
+        format: zip
+
+release:
+  github:
+    owner: carapace-sh
+    name: carapace-ffmpeg
