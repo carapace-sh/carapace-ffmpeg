@@ -30,7 +30,7 @@ func init() {
 
 	carapace.Gen(rootCmd).PositionalAnyCompletion(
 		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-			trailingSpace := c.Value == ""
+			trailingSpace := c.Value == "" || (len(c.Value) > 0 && c.Value[0] == '-')
 			ctx := argstream.ParseForCompletion(c.Args, trailingSpace)
 
 			var actions []carapace.Action
