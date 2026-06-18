@@ -61,8 +61,9 @@ const (
 	ValueMapSpec    ValueType = "map_spec"
 	ValueFilter     ValueType = "filter"
 	ValueMetadata   ValueType = "metadata"
-	ValueDisposition ValueType = "disposition"
-	ValueBitrate    ValueType = "bitrate"
+	ValueDisposition  ValueType = "disposition"
+	ValueBitrate     ValueType = "bitrate"
+	ValueFileURL     ValueType = "file_url"
 )
 
 // OptionDef defines a single ffmpeg option.
@@ -114,7 +115,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "readrate", ShortName: "readrate", Description: "read input at specified rate", Scope: ScopeInputOnlyOpt, Type: TypeValue, ValueType: ValueFloat},
 		{CanonicalName: "isync", ShortName: "isync", Description: "sync input to reference stream", Scope: ScopeInputOnlyOpt, Type: TypeValue, ValueType: ValueString},
 		{CanonicalName: "stream_loop", ShortName: "stream_loop", Description: "set number of stream loop iterations", Scope: ScopeInputOnlyOpt, Type: TypeValue, ValueType: ValueInt},
-		{CanonicalName: "i", ShortName: "i", Description: "input file", Scope: ScopeInputOnlyOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "i", ShortName: "i", Description: "input file", Scope: ScopeInputOnlyOpt, Type: TypeValue, ValueType: ValueFileURL},
 
 		// Output-only options
 		{CanonicalName: "to", ShortName: "to", Description: "record or transcode stop time", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueDuration},

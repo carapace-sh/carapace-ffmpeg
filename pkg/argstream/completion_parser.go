@@ -85,6 +85,9 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 					ctx.InputCount++
 					ctx.Scope = ScopeInputFile
 					i++ // consume the URL
+				} else {
+					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputURL)
+					return ctx
 				}
 				continue
 			}

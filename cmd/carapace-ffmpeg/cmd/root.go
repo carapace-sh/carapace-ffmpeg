@@ -121,6 +121,8 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 		return actionMapValue(ctx)
 	case argstream.ValueMetadata:
 		return carapace.ActionValues()
+	case argstream.ValueFileURL:
+		return carapace.ActionFiles()
 	default:
 		return carapace.ActionValues()
 	}

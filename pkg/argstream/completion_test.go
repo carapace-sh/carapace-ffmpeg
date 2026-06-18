@@ -42,6 +42,19 @@ func TestCompletionAfterInput(t *testing.T) {
 	assertHasExpected(t, ctx, ExpectedOutputURL)
 }
 
+func TestCompletionAfterIFlag(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i"}, true)
+	assertHasExpected(t, ctx, ExpectedInputURL)
+	assertNotHasExpected(t, ctx, ExpectedInputOption)
+	assertNotHasExpected(t, ctx, ExpectedGlobalOption)
+}
+
+func TestCompletionAfterPreOptionAndIFlag(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-f", "mp4", "-i"}, true)
+	assertHasExpected(t, ctx, ExpectedInputURL)
+	assertNotHasExpected(t, ctx, ExpectedInputOption)
+}
+
 func TestCompletionPartialOption(t *testing.T) {
 	ctx := ParseForCompletion([]string{"-c:v"}, false)
 	if ctx.CurrentOption == nil {
