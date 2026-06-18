@@ -10,7 +10,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "carapace-ffmpeg",
+	Use:   "carapace-ffmpeg-debug",
 	Short: "Parse ffmpeg stream specifiers, filtergraphs, and argument streams",
 }
 
