@@ -6,11 +6,17 @@ builds:
     binary: carapace-ffmpeg
     ldflags:
       - -s -w
+  - id: carapace-ffmpeg-debug
+    main: ./cmd/carapace-ffmpeg-debug
+    binary: carapace-ffmpeg-debug
+    ldflags:
+      - -s -w
 
 archives:
   - id: carapace-ffmpeg
     builds:
       - carapace-ffmpeg
+      - carapace-ffmpeg-debug
     format_overrides:
       - goos: windows
         format: zip

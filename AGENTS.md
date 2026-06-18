@@ -13,31 +13,51 @@ go test ./pkg/filtergraph/                  # run filtergraph tests only
 go test ./pkg/mapvalue/                     # run mapvalue tests only
 go test ./pkg/argstream/                    # run argstream tests only
 go build ./...                              # build all packages
-go run . streamspec "a:1"                  # parse stream specifier, output AST as JSON
-go run . streamspec-complete "a:"           # stream specifier completion context as JSON
-go run . filtergraph "scale=1280:720"       # parse filtergraph, output AST as JSON
-go run . filtergraph-complete "sca"         # filtergraph completion context as JSON
-go run . mapvalue "0:v"                     # parse -map value, output AST as JSON
-go run . mapvalue-complete "0:"             # -map value completion context as JSON
-go run . argstream -- -i input.mp4 -c:v libx264 output.mp4  # parse ffmepg arg stream, output AST as JSON
-go run . argstream-complete -- -i input.mp4 -c:v            # argstream completion context as JSON
+```
+
+### Debug CLI (`cmd/carapace-ffmpeg-debug/`)
+
+```sh
+go run ./cmd/carapace-ffmpeg-debug streamspec "a:1"                  # parse stream specifier, output AST as JSON
+go run ./cmd/carapace-ffmpeg-debug streamspec-complete "a:"           # stream specifier completion context as JSON
+go run ./cmd/carapace-ffmpeg-debug filtergraph "scale=1280:720"       # parse filtergraph, output AST as JSON
+go run ./cmd/carapace-ffmpeg-debug filtergraph-complete "sca"         # filtergraph completion context as JSON
+go run ./cmd/carapace-ffmpeg-debug mapvalue "0:v"                     # parse -map value, output AST as JSON
+go run ./cmd/carapace-ffmpeg-debug mapvalue-complete "0:"             # -map value completion context as JSON
+go run ./cmd/carapace-ffmpeg-debug argstream -- -i input.mp4 -c:v libx264 output.mp4  # parse ffmpeg arg stream, output AST as JSON
+go run ./cmd/carapace-ffmpeg-debug argstream-complete -- -i input.mp4 -c:v            # argstream completion context as JSON
+```
+
+### Completer CLI (`cmd/carapace-ffmpeg/`)
+
+```sh
+go run ./cmd/carapace-ffmpeg _carapace spec                    # generate carapace spec
+go run ./cmd/carapace-ffmpeg _carapace bash '' ''              # complete at empty position
+go run ./cmd/carapace-ffmpeg _carapace bash '-c:v' '' '-c:v' 'libx'  # complete codec value
 ```
 
 No Makefile, no linter config.
 
 ## Architecture
 
-Cobra-based CLI (`cmd/`) wrapping four independent parsers with completion context support that wire to carapace (`pkg/actions/tools/ffmpeg/`).
+Two CLIs and four independent parser packages with carapace completion actions.
 
-### CLI (`cmd/`)
+### Completer CLI (`cmd/carapace-ffmpeg/`)
+
+Standalone carapace completer for the `ffmpeg` command. Uses `DisableFlagParsing` + `PositionalAnyCompletion` with `argstream.ParseForCompletion()` to dispatch context-aware completions.
+
+- **`root.go`** — Root cobra command (`Use: "ffmpeg"`) with `carapace.Gen(rootCmd).Standalone()`. `PositionalAnyCompletion` callback parses args with `argstream.ParseForCompletion()` and dispatches to `actionOptions()`, `actionOptionValue()`, `actionStreamSpecifiers()`, `actionFilterValue()`, `actionMapValue()`.
+- **`main.go`** — Entry point calling `cmd.Execute()`.
+
+### Debug CLI (`cmd/carapace-ffmpeg-debug/`)
+
+Testing/debug CLI exposing raw parser output as JSON.
 
 - **`root.go`** — Root cobra command with `carapace.Gen(rootCmd).Standalone()` + spec registration
 - **`streamspec.go`** — `streamspec` and `streamspec-complete` subcommands
 - **`filtergraph.go`** — `filtergraph` and `filtergraph-complete` subcommands
 - **`mapvalue.go`** — `mapvalue` and `mapvalue-complete` subcommands
 - **`argstream.go`** — `argstream` and `argstream-complete` subcommands
-
-Entry point is `main.go` at `cmd/carapace-ffmpeg/` which calls `cmd.Execute()`.
 
 ### Stream Specifier (`pkg/streamspec/`)
 
