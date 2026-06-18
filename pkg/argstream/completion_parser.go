@@ -19,10 +19,7 @@ func ParseForCompletion(args []string) *CompletionContext {
 		// Check if this is an option
 		if isOption(arg) {
 			optName := arg[1:] // strip '-'
-			// Handle '--' prefix
-			if strings.HasPrefix(optName, "-") {
-				optName = optName[1:] // strip second '-'
-			}
+			optName = strings.TrimPrefix(optName, "-")
 
 			baseName, spec := ParseOptionName(optName)
 			optDef := LookupOption(baseName)
@@ -79,7 +76,7 @@ func ParseForCompletion(args []string) *CompletionContext {
 			}
 
 			// Update scope based on option
-			updateScope(ctx, optDef, baseName)
+			updateScope(ctx, optDef)
 		} else {
 			// Non-option: output URL
 			ctx.OutputCount++
@@ -101,7 +98,7 @@ func ParseForCompletion(args []string) *CompletionContext {
 	return ctx
 }
 
-func updateScope(ctx *CompletionContext, optDef *OptionDef, baseName string) {
+func updateScope(ctx *CompletionContext, optDef *OptionDef) {
 	if optDef == nil {
 		return
 	}

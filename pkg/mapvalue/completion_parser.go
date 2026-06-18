@@ -44,15 +44,6 @@ func (p *compParser) peekRaw() byte {
 	return p.input[p.pos]
 }
 
-func (p *compParser) advance() byte {
-	if p.pos >= len(p.input) || p.pos >= p.cursor {
-		return 0
-	}
-	ch := p.input[p.pos]
-	p.pos++
-	return ch
-}
-
 func (p *compParser) addExpected(t ExpectedToken) {
 	p.ctx.ExpectedTokens = append(p.ctx.ExpectedTokens, t)
 }

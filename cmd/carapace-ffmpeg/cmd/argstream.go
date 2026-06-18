@@ -25,6 +25,7 @@ var argstreamCmd = &cobra.Command{
 		fmt.Println(string(m))
 		return nil
 	},
+	DisableFlagParsing: true,
 }
 
 var argstreamCompleteCmd = &cobra.Command{
@@ -40,6 +41,7 @@ var argstreamCompleteCmd = &cobra.Command{
 		fmt.Println(string(m))
 		return nil
 	},
+	DisableFlagParsing: true,
 }
 
 func init() {

@@ -16,7 +16,7 @@ func Format(fg *Filtergraph) string {
 func formatChain(c *Chain) string {
 	var sb strings.Builder
 	for _, label := range c.InputLabels {
-		sb.WriteString(fmt.Sprintf("[%s]", label))
+		fmt.Fprintf(&sb, "[%s]", label)
 	}
 	filterStrs := make([]string, len(c.Filters))
 	for i, f := range c.Filters {
@@ -24,7 +24,7 @@ func formatChain(c *Chain) string {
 	}
 	sb.WriteString(strings.Join(filterStrs, ","))
 	for _, label := range c.OutputLabels {
-		sb.WriteString(fmt.Sprintf("[%s]", label))
+		fmt.Fprintf(&sb, "[%s]", label)
 	}
 	return sb.String()
 }

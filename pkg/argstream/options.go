@@ -125,9 +125,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "pix_fmt", ShortName: "pix_fmt", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValuePixelFormat, AcceptsSpec: true},
 		{CanonicalName: "ar", ShortName: "ar", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
 		{CanonicalName: "ac", ShortName: "ac", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
-		{CanonicalName: "filter", ShortName: "filter", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFilter, AcceptsSpec: true},
-		{CanonicalName: "vf", ShortName: "vf", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFilter},
-		{CanonicalName: "af", ShortName: "af", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFilter},
+		{CanonicalName: "filter", ShortName: "filter", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFilter, AcceptsSpec: true, Aliases: []string{"vf", "af"}},
 		{CanonicalName: "frames", ShortName: "frames", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt64, AcceptsSpec: true},
 		{CanonicalName: "bsf", ShortName: "bsf", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "disposition", ShortName: "disposition", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueDisposition, AcceptsSpec: true},
@@ -174,10 +172,6 @@ func buildOptionIndex() map[string]*OptionDef {
 			index[alias] = opt
 		}
 	}
-
-	// Special derived aliases
-	index["vf"] = &OptionDef{CanonicalName: "filter", ShortName: "vf", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFilter, AcceptsSpec: false}
-	index["af"] = &OptionDef{CanonicalName: "filter", ShortName: "af", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFilter, AcceptsSpec: false}
 
 	return index
 }
