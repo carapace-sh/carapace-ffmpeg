@@ -140,5 +140,6 @@ func buildOptionContext(baseName, spec string, optDef *OptionDef) *OptionContext
 		ValueType:       optDef.ValueType,
 		AcceptsSpec:     optDef.AcceptsSpec,
 		IsBoolean:       optDef.Type == TypeBoolean,
+		Style:           optDef.Style(),
 	}
 }

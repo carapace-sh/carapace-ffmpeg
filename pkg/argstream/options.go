@@ -1,5 +1,9 @@
 package argstream
 
+import (
+	"github.com/carapace-sh/carapace/pkg/style"
+)
+
 // OptionScope defines where an option applies.
 type OptionScope int
 
@@ -175,6 +179,19 @@ func buildOptionIndex() map[string]*OptionDef {
 	}
 
 	return index
+}
+
+// Style returns the carapace style string for this option, matching the
+// flag styling conventions used by carapace:
+//   - FlagArg (blue): option takes a required value argument
+//   - FlagNoArg (default): boolean option, no argument
+func (o *OptionDef) Style() string {
+	switch o.Type {
+	case TypeValue:
+		return style.Carapace.FlagArg
+	default:
+		return style.Carapace.FlagNoArg
+	}
 }
 
 // LookupOption looks up an option by name (without leading dash).

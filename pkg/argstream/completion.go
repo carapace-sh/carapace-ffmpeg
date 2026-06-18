@@ -50,6 +50,7 @@ type OptionContext struct {
 	ValueType      ValueType `json:"valueType"`
 	AcceptsSpec    bool      `json:"acceptsSpec"`
 	IsBoolean      bool      `json:"isBoolean"`
+	Style          string    `json:"style"`
 }
 
 // CompletionContext describes what is expected at the completion position.

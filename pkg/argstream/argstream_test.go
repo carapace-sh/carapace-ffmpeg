@@ -2,6 +2,8 @@ package argstream
 
 import (
 	"testing"
+
+	"github.com/carapace-sh/carapace/pkg/style"
 )
 
 func TestParseGlobalOption(t *testing.T) {
@@ -124,6 +126,44 @@ func TestParseMultipleInputs(t *testing.T) {
 	}
 	if prog.InputFiles[1].URL != "input2.aac" {
 		t.Errorf("expected 'input2.aac', got %q", prog.InputFiles[1].URL)
+	}
+}
+
+func TestOptionStyleBoolean(t *testing.T) {
+	opt := LookupOption("y")
+	if opt == nil {
+		t.Fatal("expected option 'y' to exist")
+	}
+	if opt.Style() != style.Carapace.FlagNoArg {
+		t.Errorf("expected FlagNoArg style for boolean option, got %q", opt.Style())
+	}
+}
+
+func TestOptionStyleValue(t *testing.T) {
+	opt := LookupOption("c")
+	if opt == nil {
+		t.Fatal("expected option 'c' to exist")
+	}
+	if opt.Style() != style.Carapace.FlagArg {
+		t.Errorf("expected FlagArg style for value option, got %q", opt.Style())
+	}
+}
+
+func TestCompletionContextOptionStyle(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c:v"})
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.Style != style.Carapace.FlagArg {
+		t.Errorf("expected FlagArg style in OptionContext, got %q", ctx.CurrentOption.Style)
+	}
+
+	ctx2 := ParseForCompletion([]string{"-y"})
+	if ctx2.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx2.CurrentOption.Style != style.Carapace.FlagNoArg {
+		t.Errorf("expected FlagNoArg style in OptionContext for boolean, got %q", ctx2.CurrentOption.Style)
 	}
 }
 
