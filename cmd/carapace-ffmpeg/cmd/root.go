@@ -84,7 +84,7 @@ func actionOptionNames(ctx *argstream.CompletionContext) carapace.Action {
 		case def.Scope == argstream.ScopeOutputOnlyOpt && !containsToken(ctx.ExpectedTokens, argstream.ExpectedOutputOption):
 			continue
 		}
-		vals = append(vals, "-"+name, def.CanonicalName)
+		vals = append(vals, "-"+name, def.Description)
 	}
 	return carapace.ActionValuesDescribed(vals...)
 }
