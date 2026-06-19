@@ -575,6 +575,37 @@ func ActionSwsFlags() carapace.Action {
 	).Tag("sws flags").Uid("ffmpeg", "sws-flags")
 }
 
+// ActionDevices completes device names for -sinks/-sources
+//
+//	alsa (ALSA audio output)
+//	pulse (Pulse audio output)
+func ActionDevices() carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-devices")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " ---")
+		if !ok {
+			return carapace.ActionMessage("failed to parse devices")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^ (?P<demuxing>.)(?P<muxing>.) (?P<name>[^ ]+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
+		for _, line := range lines {
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				switch {
+				case matches[1] == "D" && matches[2] == "E":
+					vals = append(vals, matches[3], matches[4], style.Magenta)
+				case matches[1] == "D":
+					vals = append(vals, matches[3], matches[4], style.Blue)
+				case matches[2] == "E":
+					vals = append(vals, matches[3], matches[4], style.Yellow)
+				}
+			}
+		}
+		return carapace.ActionStyledValuesDescribed(vals...)
+	}).Tag("devices").UidF(Uid("device"))
+}
+
 // ActionHelpTopics completes help topic values for -h
 //
 //	long (print more options)

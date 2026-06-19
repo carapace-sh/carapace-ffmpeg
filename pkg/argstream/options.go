@@ -74,6 +74,7 @@ const (
 	ValuePrintGraphFmt ValueType = "print_graphs_format"
 	ValueTarget        ValueType = "target"
 	ValueSwsFlags       ValueType = "sws_flags"
+	ValueDevice        ValueType = "device"
 )
 
 // OptionDef defines a single ffmpeg option.
@@ -171,8 +172,8 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "devices", ShortName: "devices", Description: "show available devices", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "muxers", ShortName: "muxers", Description: "show available muxers", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "demuxers", ShortName: "demuxers", Description: "show available demuxers", Scope: ScopeGlobalOpt, Type: TypeBoolean},
-		{CanonicalName: "sources", ShortName: "sources", Description: "list sources of the input device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
-		{CanonicalName: "sinks", ShortName: "sinks", Description: "list sinks of the output device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "sources", ShortName: "sources", Description: "list sources of the input device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueDevice},
+		{CanonicalName: "sinks", ShortName: "sinks", Description: "list sinks of the output device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueDevice},
 
 		// Per-file options (input + output)
 		{CanonicalName: "f", ShortName: "f", Description: "force container format", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueFormat},

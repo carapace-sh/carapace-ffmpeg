@@ -228,6 +228,8 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 		return carapace.ActionValues("now")
 	case argstream.ValueSwsFlags:
 		return ffmpeg.ActionSwsFlags()
+	case argstream.ValueDevice:
+		return ffmpeg.ActionDevices()
 	case argstream.ValueString:
 		if ctx.CurrentOption.CanonicalName == "h" {
 			return ffmpeg.ActionHelpTopics()
