@@ -327,3 +327,86 @@ func TestCompletionPartialDoubleDashAfterValue(t *testing.T) {
 		t.Errorf("expected ScopeInputFile, got %v", ctx.Scope)
 	}
 }
+
+func TestCompletionPartialUnknownOptionAtGlobalScope(t *testing.T) {
+	// "-l" at global scope should include both GlobalOption and InputOption
+	// so that global options like -lavfi and -loglevel are shown alongside
+	// per-stream options like -level
+	ctx := ParseForCompletion([]string{"-l"}, false)
+	assertHasExpected(t, ctx, ExpectedGlobalOption)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	if ctx.Scope != ScopeGlobal {
+		t.Errorf("expected ScopeGlobal, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionPartialKnownGlobalOptionAtGlobalScope(t *testing.T) {
+	// "-loglev" is a partial match for -loglevel, LookupOption returns nil
+	ctx := ParseForCompletion([]string{"-loglev"}, false)
+	assertHasExpected(t, ctx, ExpectedGlobalOption)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	if ctx.Scope != ScopeGlobal {
+		t.Errorf("expected ScopeGlobal, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionPartialKnownPerStreamOptionAtGlobalScope(t *testing.T) {
+	// "-leve" matches no exact option; per-stream option -level should
+	// be reachable via InputOption, and global options via GlobalOption
+	ctx := ParseForCompletion([]string{"-leve"}, false)
+	assertHasExpected(t, ctx, ExpectedGlobalOption)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	if ctx.Scope != ScopeGlobal {
+		t.Errorf("expected ScopeGlobal, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionPartialUnknownOptionAtInputScope(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "test", "-l"}, false)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	assertNotHasExpected(t, ctx, ExpectedGlobalOption)
+	if ctx.Scope != ScopeInputFile {
+		t.Errorf("expected ScopeInputFile, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionPartialUnknownOptionAtOutputScope(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "test", "out.mp4", "-l"}, false)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	assertNotHasExpected(t, ctx, ExpectedGlobalOption)
+	assertNotHasExpected(t, ctx, ExpectedInputOption)
+	if ctx.Scope != ScopeOutputFile {
+		t.Errorf("expected ScopeOutputFile, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionKnownPerStreamOptionMidTokenAtGlobalScope(t *testing.T) {
+	// Typing "-level" mid-token: LookupOption("level") succeeds,
+	// but option is per-stream so the default branch adds scope-appropriate tokens
+	ctx := ParseForCompletion([]string{"-level"}, false)
+	assertHasExpected(t, ctx, ExpectedGlobalOption)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	if ctx.Scope != ScopeGlobal {
+		t.Errorf("expected ScopeGlobal, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionKnownPerStreamOptionMidTokenAtInputScope(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "test", "-level"}, false)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	if ctx.Scope != ScopeInputFile {
+		t.Errorf("expected ScopeInputFile, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionPartialDashAtGlobalScope(t *testing.T) {
+	// bare "-" at global scope: the non-option partial path
+	ctx := ParseForCompletion([]string{"-"}, false)
+	assertHasExpected(t, ctx, ExpectedGlobalOption)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	if ctx.Scope != ScopeGlobal {
+		t.Errorf("expected ScopeGlobal, got %v", ctx.Scope)
+	}
+}

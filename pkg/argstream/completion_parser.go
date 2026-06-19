@@ -121,7 +121,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 					case baseName == "i":
 						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputURL)
 					default:
-						addScopeOption(ctx, optDef, baseName)
+						addScopeOptions(ctx, ctx.Scope)
 					}
 				}
 				return ctx
@@ -167,14 +167,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 				// Partial option being typed — don't change scope,
 				// return option completions based on current scope.
 				ctx.PartialOption = strings.TrimLeft(arg, "-")
-				switch ctx.Scope {
-				case ScopeGlobal:
-					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedGlobalOption, ExpectedInputOption)
-				case ScopeInputFile:
-					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputOption, ExpectedOutputOption)
-				case ScopeOutputFile:
-					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOutputOption)
-				}
+				addScopeOptions(ctx, ctx.Scope)
 				return ctx
 			}
 			ctx.OutputCount++
@@ -228,10 +221,12 @@ func updateScope(ctx *CompletionContext, optDef *OptionDef) {
 	}
 }
 
-func addScopeOption(ctx *CompletionContext, _ *OptionDef, _ string) {
-	switch ctx.Scope {
-	case ScopeGlobal, ScopeInputFile:
-		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputOption)
+func addScopeOptions(ctx *CompletionContext, scope Scope) {
+	switch scope {
+	case ScopeGlobal:
+		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedGlobalOption, ExpectedInputOption)
+	case ScopeInputFile:
+		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputOption, ExpectedOutputOption)
 	case ScopeOutputFile:
 		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOutputOption)
 	}
