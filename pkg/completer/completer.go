@@ -41,6 +41,16 @@ func LookupOption(profile *argstream.ToolProfile, name string) *argstream.Option
 	return profile.LookupOption(name)
 }
 
+// ActionPartialOption handles completion when the cursor is mid-token within a
+// partial option name (e.g. typing `-v` which might match `-vcodec`, `-vframes`,
+// `-vn`, etc.). It returns option name completions so the shell can filter them
+// against the partial prefix. For value options that have been recognized, it also
+// includes the recognized option's value completions.
+func ActionPartialOption(ctx *argstream.CompletionContext, profile *argstream.ToolProfile) carapace.Action {
+	actions := []carapace.Action{ActionOptionNamesWithSpecSuffix(ctx, profile)}
+	return carapace.Batch(actions...).ToA()
+}
+
 // ActionOptionNamesWithSpecSuffix returns option name completions for the given profile.
 // Options that accept stream specifiers get Suffix(":") so the user
 // can continue typing the specifier within the same token.
