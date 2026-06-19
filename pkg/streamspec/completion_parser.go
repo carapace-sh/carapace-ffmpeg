@@ -340,14 +340,26 @@ func (p *compParser) parseMetadataSpecifier() {
 		return
 	}
 
+	// Consume colon after key
 	p.advance()
 	p.ctx.InMetadataValue = true
 	start = p.pos
 	for !p.atCursorOrEnd() {
+		ch := p.peek()
+		if ch == ':' {
+			break
+		}
 		p.advance()
 	}
 	p.ctx.PartialIdent = p.input[start:p.pos]
 	p.addExpected(ExpectedMetadataValue)
+
+	// If cursor is at a colon after the value, transition to additional specifier
+	if !p.atCursorOrEnd() && p.peek() == ':' {
+		p.ctx.InMetadataValue = false
+		p.advance()
+		p.parseSpecifier()
+	}
 }
 
 func (p *compParser) parseDispositionSpecifier() {
@@ -367,6 +379,9 @@ func (p *compParser) parseDispositionSpecifier() {
 			start = p.pos
 			continue
 		}
+		if ch == ':' {
+			break
+		}
 		p.advance()
 	}
 	if p.pos > start {
@@ -377,6 +392,12 @@ func (p *compParser) parseDispositionSpecifier() {
 		p.ctx.PartialIdent = dispositions[len(dispositions)-1]
 	}
 	p.addExpected(ExpectedDispositionName)
+
+	// If cursor is at a colon after dispositions, transition to additional specifier
+	if !p.atCursorOrEnd() && p.peek() == ':' {
+		p.advance()
+		p.parseSpecifier()
+	}
 }
 
 func (p *compParser) scanIntegerForCompletion() {

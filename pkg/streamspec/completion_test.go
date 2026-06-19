@@ -79,6 +79,35 @@ func TestCompletionStreamID(t *testing.T) {
 	}
 }
 
+func TestCompletionMetadataValueWithAdditionalSpecifier(t *testing.T) {
+	ctx := ParseForCompletion("m:language:eng:")
+	assertHasExpected(t, ctx, ExpectedSpecifierType)
+	assertHasExpected(t, ctx, ExpectedStreamIndex)
+	if ctx.InMetadataValue {
+		t.Error("expected InMetadataValue to be false after additional specifier colon")
+	}
+}
+
+func TestCompletionMetadataValueWithPartialAdditional(t *testing.T) {
+	ctx := ParseForCompletion("m:language:eng:a")
+	if ctx.CurrentKind != KindStreamType {
+		t.Errorf("expected KindStreamType after m:language:eng:a, got %v", ctx.CurrentKind)
+	}
+}
+
+func TestCompletionDispositionWithAdditionalSpecifier(t *testing.T) {
+	ctx := ParseForCompletion("disp:default:")
+	assertHasExpected(t, ctx, ExpectedSpecifierType)
+	assertHasExpected(t, ctx, ExpectedStreamIndex)
+}
+
+func TestCompletionDispositionWithPartialAdditional(t *testing.T) {
+	ctx := ParseForCompletion("disp:default:a")
+	if ctx.CurrentKind != KindStreamType {
+		t.Errorf("expected KindStreamType after disp:default:a, got %v", ctx.CurrentKind)
+	}
+}
+
 func TestCompletionValidForms(t *testing.T) {
 	ctx := ParseForCompletion("")
 	if len(ctx.ValidForms) == 0 {
