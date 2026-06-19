@@ -8,6 +8,11 @@ import "strings"
 // trailingSpace indicates whether the cursor is at a new position after the
 // last argument (true) or mid-token within the last argument (false).
 func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
+	return ParseForCompletionWithProfile(args, trailingSpace, DefaultFFmpegProfile)
+}
+
+// ParseForCompletionWithProfile parses a partial ff* tool argument list using the given profile.
+func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *ToolProfile) *CompletionContext {
 	ctx := &CompletionContext{
 		Scope:       ScopeGlobal,
 		InputCount:  0,
@@ -33,8 +38,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 					return ctx
 				}
 				// Consume the stream specifier and mark value as pending
-				effectiveSpec := arg
-				pendingSpecOption.StreamSpecifier = effectiveSpec
+				pendingSpecOption.StreamSpecifier = arg
 				pendingOption = pendingSpecOption
 				pendingSpecOption = nil
 				i++
@@ -97,7 +101,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 			optName = strings.TrimPrefix(optName, "-")
 
 			baseName, spec, hasColon := ParseOptionName(optName)
-			optDef := LookupOption(baseName)
+			optDef := profile.lookupOption(baseName)
 
 			// Check if we're at the last argument and it's the one being completed
 			if i == len(args)-1 && !trailingSpace {
@@ -121,7 +125,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 					case baseName == "i":
 						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputURL)
 					default:
-						addScopeOptions(ctx, ctx.Scope)
+						addScopeOptionsForProfile(ctx, ctx.Scope, profile)
 					}
 				}
 				return ctx
@@ -149,7 +153,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 			// Without a colon (e.g. "-c" "libx264"), the value comes directly.
 			if optDef != nil && optDef.AcceptsSpec && hasColon && spec == "" && optDef.ImplicitSpec == "" && optDef.Type == TypeValue {
 				pendingSpecOption = buildOptionContext(baseName, spec, optDef)
-				updateScope(ctx, optDef)
+				updateScope(ctx, optDef, profile)
 				continue
 			}
 
@@ -159,19 +163,24 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 			}
 
 			// Update scope based on option
-			updateScope(ctx, optDef)
+			updateScope(ctx, optDef, profile)
 		} else {
-			// Non-option: could be an output URL, or a partial option
-			// being typed (e.g. bare "-" at cursor position).
+			// Non-option: could be an output URL (ffmpeg) or input URL (ffplay/ffprobe),
+			// or a partial option being typed (e.g. bare "-" at cursor position).
 			if i == len(args)-1 && !trailingSpace && strings.HasPrefix(arg, "-") {
 				// Partial option being typed — don't change scope,
 				// return option completions based on current scope.
 				ctx.PartialOption = strings.TrimLeft(arg, "-")
-				addScopeOptions(ctx, ctx.Scope)
+				addScopeOptionsForProfile(ctx, ctx.Scope, profile)
 				return ctx
 			}
-			ctx.OutputCount++
-			ctx.Scope = ScopeOutputFile
+			if profile.HasOutputSection {
+				ctx.OutputCount++
+				ctx.Scope = ScopeOutputFile
+			} else {
+				ctx.InputCount++
+				ctx.Scope = ScopeInputFile
+			}
 			i++
 		}
 	}
@@ -195,7 +204,11 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 	case ScopeGlobal:
 		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedGlobalOption, ExpectedInputOption, ExpectedInputURL)
 	case ScopeInputFile:
-		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputOption, ExpectedInputURL, ExpectedOutputOption, ExpectedOutputURL)
+		tokens := []ExpectedToken{ExpectedInputOption, ExpectedInputURL}
+		if profile.HasOutputSection {
+			tokens = append(tokens, ExpectedOutputOption, ExpectedOutputURL)
+		}
+		ctx.ExpectedTokens = append(ctx.ExpectedTokens, tokens...)
 	case ScopeOutputFile:
 		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOutputOption, ExpectedOutputURL)
 	}
@@ -203,7 +216,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 	return ctx
 }
 
-func updateScope(ctx *CompletionContext, optDef *OptionDef) {
+func updateScope(ctx *CompletionContext, optDef *OptionDef, profile *ToolProfile) {
 	if optDef == nil {
 		return
 	}
@@ -215,18 +228,24 @@ func updateScope(ctx *CompletionContext, optDef *OptionDef) {
 	case ScopeInputOnlyOpt:
 		ctx.Scope = ScopeInputFile
 	case ScopeOutputOnlyOpt:
-		ctx.Scope = ScopeOutputFile
+		if profile.HasOutputSection {
+			ctx.Scope = ScopeOutputFile
+		}
 	case ScopePerStreamOpt:
 		// Per-stream stays in current scope
 	}
 }
 
-func addScopeOptions(ctx *CompletionContext, scope Scope) {
+func addScopeOptionsForProfile(ctx *CompletionContext, scope Scope, profile *ToolProfile) {
 	switch scope {
 	case ScopeGlobal:
 		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedGlobalOption, ExpectedInputOption)
 	case ScopeInputFile:
-		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputOption, ExpectedOutputOption)
+		tokens := []ExpectedToken{ExpectedInputOption}
+		if profile.HasOutputSection {
+			tokens = append(tokens, ExpectedOutputOption)
+		}
+		ctx.ExpectedTokens = append(ctx.ExpectedTokens, tokens...)
 	case ScopeOutputFile:
 		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOutputOption)
 	}

@@ -75,6 +75,13 @@ const (
 	ValueTarget        ValueType = "target"
 	ValueSwsFlags       ValueType = "sws_flags"
 	ValueDevice        ValueType = "device"
+	ValueShowMode      ValueType = "show_mode"
+	ValueSyncType      ValueType = "sync_type"
+	ValueStreamSpec    ValueType = "stream_spec"
+	ValueProbeOutputFmt ValueType = "probe_output_format"
+	ValueDataDumpFmt   ValueType = "data_dump_format"
+	ValueShowOptFields ValueType = "show_optional_fields"
+	ValueVulkanParams  ValueType = "vulkan_params"
 )
 
 // OptionDef defines a single ffmpeg option.
@@ -315,6 +322,14 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "dn", ShortName: "dn", Description: "disable data", Scope: ScopePerStreamOpt, Type: TypeBoolean},
 	}
 
+	index := buildIndexFromOptions(options)
+	return index
+}
+
+// buildIndexFromOptions builds an option index from a slice of OptionDef.
+// It registers each option by canonical name, short name, and aliases.
+// For aliases named vcodec/acodec/scodec/dcodec/vf/af/ab, it sets ImplicitSpec.
+func buildIndexFromOptions(options []*OptionDef) map[string]*OptionDef {
 	index := make(map[string]*OptionDef)
 	for _, opt := range options {
 		// Register by canonical name
@@ -345,7 +360,6 @@ func buildOptionIndex() map[string]*OptionDef {
 			index[alias] = &aliasOpt
 		}
 	}
-
 	return index
 }
 

@@ -746,3 +746,72 @@ func ActionHelpTopics() carapace.Action {
 		}
 	})
 }
+
+// ActionShowModes completes show_mode values for ffplay -showmode
+//
+//	0 (Display video (default))
+//	1 (Show audio waveform)
+func ActionShowModes() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"0", "Display video (default)",
+		"1", "Show audio waveform",
+		"2", "Show audio frequency data (RDFT)",
+		"video", "Display video",
+		"waves", "Show audio waveform",
+		"rdft", "Show audio frequency data (RDFT)",
+	).Tag("show modes").Uid("ffmpeg", "show-mode")
+}
+
+// ActionSyncTypes completes sync_type values for ffplay -sync
+//
+//	audio (Audio clock is master (default))
+//	video (Video clock is master)
+func ActionSyncTypes() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"audio", "Audio clock is master (default)",
+		"video", "Video clock is master",
+		"ext", "External clock is master",
+	).Tag("sync types").Uid("ffmpeg", "sync-type")
+}
+
+// ActionProbeOutputFormats completes output format values for ffprobe -of/-print_format
+//
+//	default (Human-readable key=value format (default))
+//	compact (Compact one-line format)
+func ActionProbeOutputFormats() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"default", "Human-readable key=value format (default)",
+		"compact", "Compact one-line format",
+		"csv", "CSV format",
+		"flat", "Flat key=value with dot-separated paths",
+		"ini", "INI-style sections",
+		"json", "JSON format",
+		"xml", "XML format",
+	).Tag("probe output formats").Uid("ffmpeg", "probe-output-format")
+}
+
+// ActionDataDumpFormats completes data_dump_format values for ffprobe
+//
+//	xxd (Hex+ASCII dump)
+//	base64 (Base64-encoded)
+func ActionDataDumpFormats() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"xxd", "Hex+ASCII dump (default)",
+		"base64", "Base64-encoded",
+	).Tag("data dump formats").Uid("ffmpeg", "data-dump-format")
+}
+
+// ActionShowOptionalFields completes show_optional_fields values for ffprobe
+//
+//	always (Always print, even if invalid)
+//	never (Never print invalid fields)
+func ActionShowOptionalFields() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"always", "Always print, even if invalid",
+		"1", "Always print, even if invalid",
+		"never", "Never print invalid fields",
+		"0", "Never print invalid fields",
+		"auto", "Print only if valid (default)",
+		"-1", "Print only if valid (default)",
+	).Tag("show optional fields").Uid("ffmpeg", "show-optional-fields")
+}
