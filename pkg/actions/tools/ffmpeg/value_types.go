@@ -162,7 +162,105 @@ func ActionFrameRates() carapace.Action {
 
 // ActionLogLevels completes log level values.
 func ActionLogLevels() carapace.Action {
-	return carapace.ActionValues("quiet", "error", "warning", "info", "verbose", "debug", "trace")
+	return carapace.ActionValuesDescribed(
+		"quiet", "show nothing",
+		"error", "show only errors",
+		"warning", "show warnings and errors",
+		"info", "show informational messages (default)",
+		"verbose", "show verbose messages",
+		"debug", "show debug messages",
+		"trace", "show all internal messages",
+	)
+}
+
+// ActionFPSModes completes fps_mode/vsync values.
+func ActionFPSModes() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"passthrough", "each frame with its timestamp from demuxer to muxer",
+		"cfr", "constant frame rate (duplicate/drop frames)",
+		"vfr", "variable frame rate (prevent duplicate timestamps)",
+		"auto", "automatically choose between cfr and vfr (default)",
+		"drop", "same as passthrough but drop all frames (deprecated)",
+	)
+}
+
+// ActionCopyTB completes copytb values.
+func ActionCopyTB() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"-1", "choose automatically (default)",
+		"0", "use decoder timebase",
+		"1", "use demuxer timebase",
+	)
+}
+
+// ActionAbortOn completes abort_on flag values.
+func ActionAbortOn() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"empty_output", "abort when no packets were passed to the muxer",
+		"empty_output_stream", "abort when some output streams are empty",
+	)
+}
+
+// ActionDiscard completes discard values.
+func ActionDiscard() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"none", "discard nothing",
+		"default", "discard useless packets (default)",
+		"noref", "discard all non-reference frames",
+		"bidir", "discard all bidirectional frames",
+		"nointra", "discard all non-intra frames",
+		"nokey", "discard all frames except keyframes",
+		"all", "discard all frames",
+	)
+}
+
+// ActionBitstreamFilters completes bitstream filter names.
+func ActionBitstreamFilters() carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-bsfs")(func(output []byte) carapace.Action {
+		lines := splitLines(output)
+		var values []string
+		for _, line := range lines {
+			fields := splitFields(line)
+			if len(fields) >= 1 && !strings.Contains(fields[0], "Bitstream") {
+				values = append(values, fields[0])
+			}
+		}
+		return carapace.ActionValues(values...)
+	})
+}
+
+// ActionPrintGraphsFormats completes print_graphs_format values.
+func ActionPrintGraphsFormats() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"default", "human-readable default format",
+		"compact", "compact format",
+		"csv", "CSV format",
+		"flat", "flat key=value format",
+		"ini", "INI format",
+		"json", "JSON format",
+		"xml", "XML format",
+		"mermaid", "Mermaid flowchart format",
+		"mermaidhtml", "Mermaid flowchart as HTML",
+	)
+}
+
+// ActionTargets completes target file type values.
+func ActionTargets() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"vcd", "Video CD (PAL or NTSC)",
+		"svcd", "Super Video CD",
+		"dvd", "DVD (PAL or NTSC)",
+		"dv", "DV (PAL or NTSC)",
+		"dv50", "DV50 (PAL or NTSC)",
+		"pal-vcd", "PAL Video CD",
+		"pal-svcd", "PAL Super Video CD",
+		"pal-dvd", "PAL DVD",
+		"ntsc-vcd", "NTSC Video CD",
+		"ntsc-svcd", "NTSC Super Video CD",
+		"ntsc-dvd", "NTSC DVD",
+		"film-vcd", "FILM Video CD",
+		"film-dvd", "FILM DVD",
+	)
 }
 
 // ActionDispositions completes stream disposition names.

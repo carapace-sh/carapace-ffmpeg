@@ -65,6 +65,14 @@ const (
 	ValueBitrate       ValueType = "bitrate"
 	ValueFileURL       ValueType = "file_url"
 	ValueHWAccel       ValueType = "hwaccel"
+	ValueLogLevel      ValueType = "loglevel"
+	ValueFPSMode       ValueType = "fps_mode"
+	ValueCopyTB        ValueType = "copytb"
+	ValueAbortOn       ValueType = "abort_on"
+	ValueDiscard       ValueType = "discard"
+	ValueBSF           ValueType = "bsf"
+	ValuePrintGraphFmt ValueType = "print_graphs_format"
+	ValueTarget        ValueType = "target"
 )
 
 // OptionDef defines a single ffmpeg option.
@@ -93,7 +101,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		// Global options
 		{CanonicalName: "y", ShortName: "y", Description: "overwrite output files without asking", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "n", ShortName: "n", Description: "never overwrite output files", Scope: ScopeGlobalOpt, Type: TypeBoolean},
-		{CanonicalName: "loglevel", ShortName: "v", Description: "set logging level", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "loglevel", ShortName: "v", Description: "set logging level", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueLogLevel},
 		{CanonicalName: "report", ShortName: "report", Description: "generate a report", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "hide_banner", ShortName: "hide_banner", Description: "suppress startup banner", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueBoolean},
 		{CanonicalName: "benchmark", ShortName: "benchmark", Description: "show benchmark timing info", Scope: ScopeGlobalOpt, Type: TypeBoolean},
@@ -111,7 +119,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "auto_conversion_filters", ShortName: "auto_conversion_filters", Description: "enable automatic conversion filters globally", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "print_graphs", ShortName: "print_graphs", Description: "print execution graph data to stderr", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "print_graphs_file", ShortName: "print_graphs_file", Description: "write execution graph data to file", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueFileURL},
-		{CanonicalName: "print_graphs_format", ShortName: "print_graphs_format", Description: "set the output printing format", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "print_graphs_format", ShortName: "print_graphs_format", Description: "set the output printing format", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValuePrintGraphFmt},
 		{CanonicalName: "progress", ShortName: "progress", Description: "write program-readable progress information", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
 		{CanonicalName: "stdin", ShortName: "stdin", Description: "enable or disable interaction on standard input", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueBoolean},
 		{CanonicalName: "timelimit", ShortName: "timelimit", Description: "set max runtime in seconds (CPU user time)", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueInt},
@@ -120,11 +128,11 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "frame_drop_threshold", ShortName: "frame_drop_threshold", Description: "frame drop threshold", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueFloat},
 		{CanonicalName: "copyts", ShortName: "copyts", Description: "copy timestamps", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "start_at_zero", ShortName: "start_at_zero", Description: "shift input timestamps to start at 0 when using copyts", Scope: ScopeGlobalOpt, Type: TypeBoolean},
-		{CanonicalName: "copytb", ShortName: "copytb", Description: "copy input stream time base when stream copying", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueInt},
+		{CanonicalName: "copytb", ShortName: "copytb", Description: "copy input stream time base when stream copying", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueCopyTB},
 		{CanonicalName: "dts_delta_threshold", ShortName: "dts_delta_threshold", Description: "timestamp discontinuity delta threshold", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueFloat},
 		{CanonicalName: "dts_error_threshold", ShortName: "dts_error_threshold", Description: "timestamp error delta threshold", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueFloat},
 		{CanonicalName: "xerror", ShortName: "xerror", Description: "exit on error", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueBoolean},
-		{CanonicalName: "abort_on", ShortName: "abort_on", Description: "abort on the specified condition flags", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "abort_on", ShortName: "abort_on", Description: "abort on the specified condition flags", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueAbortOn},
 		{CanonicalName: "stats_period", ShortName: "stats_period", Description: "set the period at which ffmpeg updates stats and -progress output", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueDuration},
 		{CanonicalName: "debug_ts", ShortName: "debug_ts", Description: "print timestamp debugging info", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "max_error_rate", ShortName: "max_error_rate", Description: "maximum error rate above which ffmpeg returns an error", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueFloat},
@@ -135,7 +143,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "ignore_unknown", ShortName: "ignore_unknown", Description: "ignore unknown stream types", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "copy_unknown", ShortName: "copy_unknown", Description: "copy unknown stream types", Scope: ScopeGlobalOpt, Type: TypeBoolean},
 		{CanonicalName: "recast_media", ShortName: "recast_media", Description: "allow recasting stream type to force a decoder of different media type", Scope: ScopeGlobalOpt, Type: TypeBoolean},
-		{CanonicalName: "vsync", ShortName: "vsync", Description: "set video sync method globally (deprecated, use -fps_mode)", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "vsync", ShortName: "vsync", Description: "set video sync method globally (deprecated, use -fps_mode)", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueFPSMode},
 		{CanonicalName: "init_hw_device", ShortName: "init_hw_device", Description: "initialise hardware device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
 		{CanonicalName: "filter_hw_device", ShortName: "filter_hw_device", Description: "set hardware device used when filtering", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
 		{CanonicalName: "vaapi_device", ShortName: "vaapi_device", Description: "set VAAPI hardware device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
@@ -176,10 +184,10 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "program", ShortName: "program", Description: "add program with specified streams", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "stream_group", ShortName: "stream_group", Description: "add stream group with specified streams", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "dframes", ShortName: "dframes", Description: "set the number of data frames to output", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueInt64},
-		{CanonicalName: "target", ShortName: "target", Description: "specify target file type", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "target", ShortName: "target", Description: "specify target file type", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueTarget},
 		{CanonicalName: "shortest", ShortName: "shortest", Description: "finish encoding within shortest input", Scope: ScopeOutputOnlyOpt, Type: TypeBoolean},
 		{CanonicalName: "shortest_buf_duration", ShortName: "shortest_buf_duration", Description: "maximum buffering duration for -shortest option", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueFloat},
-		{CanonicalName: "dec", ShortName: "dec", Description: "force decoder", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "dec", ShortName: "dec", Description: "force decoder", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueCodec},
 		{CanonicalName: "attach", ShortName: "attach", Description: "add an attachment to the output file", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueFileURL},
 		{CanonicalName: "muxdelay", ShortName: "muxdelay", Description: "set the maximum demux-decode delay", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueFloat},
 		{CanonicalName: "muxpreload", ShortName: "muxpreload", Description: "set the initial demux-decode delay", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueFloat},
@@ -190,7 +198,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "b", ShortName: "b", Aliases: []string{"ab"}, Description: "bitrate (bits/s)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBitrate, AcceptsSpec: true},
 		{CanonicalName: "filter", ShortName: "filter", Description: "stream filter graph", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFilter, AcceptsSpec: true, Aliases: []string{"vf", "af"}},
 		{CanonicalName: "frames", ShortName: "frames", Description: "set the number of frames to output", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt64, AcceptsSpec: true},
-		{CanonicalName: "bsf", ShortName: "bsf", Description: "bitstream filter", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
+		{CanonicalName: "bsf", ShortName: "bsf", Description: "bitstream filter", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBSF, AcceptsSpec: true},
 		{CanonicalName: "disposition", ShortName: "disposition", Description: "stream disposition", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueDisposition, AcceptsSpec: true},
 		{CanonicalName: "tag", ShortName: "tag", Description: "force codec tag/fourcc", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "qscale", ShortName: "q", Description: "use fixed quality scale (VBR)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFloat, AcceptsSpec: true},
@@ -201,7 +209,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "filter_script", ShortName: "filter_script", Description: "apply filter from file (deprecated, use -/filter)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFileURL, AcceptsSpec: true},
 		{CanonicalName: "reinit_filter", ShortName: "reinit_filter", Description: "reinit filtergraph on input parameter changes", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBoolean, AcceptsSpec: true},
 		{CanonicalName: "drop_changed", ShortName: "drop_changed", Description: "drop frame instead of reiniting filtergraph on input parameter changes", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBoolean, AcceptsSpec: true},
-		{CanonicalName: "discard", ShortName: "discard", Description: "discard", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
+		{CanonicalName: "discard", ShortName: "discard", Description: "discard", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueDiscard, AcceptsSpec: true},
 		{CanonicalName: "bits_per_raw_sample", ShortName: "bits_per_raw_sample", Description: "set the number of bits per raw sample", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
 		{CanonicalName: "stats_enc_pre", ShortName: "stats_enc_pre", Description: "write encoding stats before encoding", Scope: ScopePerStreamOpt, Type: TypeBoolean, AcceptsSpec: true},
 		{CanonicalName: "stats_enc_post", ShortName: "stats_enc_post", Description: "write encoding stats after encoding", Scope: ScopePerStreamOpt, Type: TypeBoolean, AcceptsSpec: true},
@@ -239,7 +247,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "inter_matrix", ShortName: "inter_matrix", Description: "specify inter matrix coeffs", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "chroma_intra_matrix", ShortName: "chroma_intra_matrix", Description: "specify intra matrix coeffs", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "vtag", ShortName: "vtag", Description: "force video tag/fourcc", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, ImplicitSpec: "v"},
-		{CanonicalName: "fps_mode", ShortName: "fps_mode", Description: "set framerate mode for matching video streams; overrides vsync", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
+		{CanonicalName: "fps_mode", ShortName: "fps_mode", Description: "set framerate mode for matching video streams; overrides vsync", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueFPSMode, AcceptsSpec: true},
 		{CanonicalName: "force_fps", ShortName: "force_fps", Description: "force the selected framerate, disable the best supported framerate selection", Scope: ScopePerStreamOpt, Type: TypeBoolean, AcceptsSpec: true},
 		{CanonicalName: "streamid", ShortName: "streamid", Description: "set the value of an outfile streamid", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, ImplicitSpec: "v"},
 		{CanonicalName: "force_key_frames", ShortName: "force_key_frames", Description: "force key frames at specified timestamps", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
@@ -248,7 +256,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "hwaccel_output_format", ShortName: "hwaccel_output_format", Description: "select output format used with HW accelerated decoding", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "autorotate", ShortName: "autorotate", Description: "automatically insert correct rotate filters", Scope: ScopePerStreamOpt, Type: TypeBoolean, AcceptsSpec: true},
 		{CanonicalName: "autoscale", ShortName: "autoscale", Description: "automatically insert a scale filter at the end of the filter graph", Scope: ScopePerStreamOpt, Type: TypeBoolean, AcceptsSpec: true},
-		{CanonicalName: "apply_cropping", ShortName: "apply_cropping", Description: "select the cropping to apply", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
+		{CanonicalName: "apply_cropping", ShortName: "apply_cropping", Description: "select the cropping to apply", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBoolean, AcceptsSpec: true},
 		{CanonicalName: "fix_sub_duration_heartbeat", ShortName: "fix_sub_duration_heartbeat", Description: "set this video output stream to be a heartbeat stream for fix_sub_duration", Scope: ScopePerStreamOpt, Type: TypeBoolean, AcceptsSpec: true},
 		{CanonicalName: "vpre", ShortName: "vpre", Description: "set the video options to the indicated preset", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, ImplicitSpec: "v"},
 		{CanonicalName: "deinterlace", ShortName: "deinterlace", Description: "deinterlace pictures", Scope: ScopePerStreamOpt, Type: TypeBoolean},

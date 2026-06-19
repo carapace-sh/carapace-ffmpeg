@@ -125,6 +125,22 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 		return carapace.ActionFiles()
 	case argstream.ValueHWAccel:
 		return ffmpeg.ActionHWAccels()
+	case argstream.ValueLogLevel:
+		return ffmpeg.ActionLogLevels()
+	case argstream.ValueFPSMode:
+		return ffmpeg.ActionFPSModes()
+	case argstream.ValueCopyTB:
+		return ffmpeg.ActionCopyTB()
+	case argstream.ValueAbortOn:
+		return ffmpeg.ActionAbortOn()
+	case argstream.ValueDiscard:
+		return ffmpeg.ActionDiscard()
+	case argstream.ValueBSF:
+		return ffmpeg.ActionBitstreamFilters()
+	case argstream.ValuePrintGraphFmt:
+		return ffmpeg.ActionPrintGraphsFormats()
+	case argstream.ValueTarget:
+		return ffmpeg.ActionTargets()
 	case argstream.ValueTimestamp:
 		return carapace.ActionValues("now")
 	default:
