@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"slices"
+	"strings"
 
 	"github.com/carapace-sh/carapace"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
@@ -13,7 +14,7 @@ import (
 
 var rootCmd = &cobra.Command{
 	Use:                "ffmpeg",
-	Short: "Hyper fast Audio and Video encoder",
+	Short:              "Hyper fast Audio and Video encoder",
 	Run:                func(cmd *cobra.Command, args []string) {},
 	DisableFlagParsing: true,
 }
@@ -30,16 +31,32 @@ func init() {
 
 	carapace.Gen(rootCmd).PositionalAnyCompletion(
 		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-			trailingSpace := c.Value == "" || (len(c.Value) > 0 && c.Value[0] == '-')
-			ctx := argstream.ParseForCompletion(c.Args, trailingSpace)
+			// When the current token is a mid-token option with a colon
+			// (e.g. "-c:" or "-c:v"), use ActionMultiParts to handle
+			// the colon-separated completion within the single token.
+			// This takes priority over the argstream dispatch since the
+			// user is actively typing an option+specifier as one word.
+			if isMidTokenOptionWithSpec(c.Value) {
+				args, _ := contextToArgs(c)
+				ctx := argstream.ParseForCompletion(args, false)
+				return carapace.ActionMultiParts(":", func(c carapace.Context) carapace.Action {
+					switch len(c.Parts) {
+					case 0:
+						return actionOptionNames(ctx).NoSpace(':')
+					default:
+						return actionStreamSpecifiers()
+					}
+				})
+			}
+
+			args, trailingSpace := contextToArgs(c)
+			ctx := argstream.ParseForCompletion(args, trailingSpace)
 
 			var actions []carapace.Action
-			for _, expected := range ctx.ExpectedTokens {
-				switch expected {
-				case argstream.ExpectedGlobalOption,
-					argstream.ExpectedInputOption,
-					argstream.ExpectedOutputOption:
-					actions = append(actions, actionOptions(ctx))
+			for _, token := range ctx.ExpectedTokens {
+				switch token {
+				case argstream.ExpectedGlobalOption, argstream.ExpectedInputOption, argstream.ExpectedOutputOption:
+					actions = append(actions, actionOptions(ctx, c))
 				case argstream.ExpectedInputURL:
 					actions = append(actions, carapace.ActionFiles())
 				case argstream.ExpectedOutputURL:
@@ -47,7 +64,7 @@ func init() {
 				case argstream.ExpectedOptionValue:
 					actions = append(actions, actionOptionValue(ctx))
 				case argstream.ExpectedStreamSpecifier:
-					actions = append(actions, actionStreamSpecifier(ctx))
+					actions = append(actions, actionStreamSpecifier(ctx, c))
 				case argstream.ExpectedFilterValue:
 					actions = append(actions, actionFilterValue())
 				case argstream.ExpectedMapValue:
@@ -56,14 +73,87 @@ func init() {
 			}
 
 			if len(actions) == 0 {
-				return carapace.ActionFiles()
+				return carapace.ActionValues()
 			}
 			return carapace.Batch(actions...).ToA()
 		}),
 	)
 }
 
-func actionOptions(ctx *argstream.CompletionContext) carapace.Action {
+// isMidTokenOptionWithSpec returns true when the current token is an option
+// that contains a colon AND the option accepts stream specifiers.
+// This detects mid-token option+specifier like "-c:" or "-c:v" where
+// the user is typing both the option name and specifier as one word.
+func isMidTokenOptionWithSpec(value string) bool {
+	if !strings.HasPrefix(value, "-") || !strings.Contains(value, ":") {
+		return false
+	}
+	optText := strings.TrimPrefix(value[1:], "-")
+	baseName, _, _ := argstream.ParseOptionName(optText)
+	optDef := argstream.LookupOption(baseName)
+	return optDef != nil && optDef.AcceptsSpec && optDef.ImplicitSpec == ""
+}
+
+// contextToArgs converts carapace.Context to the args and trailingSpace
+// expected by argstream.ParseForCompletion.
+//
+// c.Args contains all positional args ending with a trailing empty string
+// marking the word-break position. When the cursor is mid-token,
+// the current word appears both as the last non-empty arg AND in c.Value.
+// When the cursor is after a space, c.Value is empty.
+//
+// We strip the trailing empty string to get the args list, and determine
+// trailingSpace from whether c.Value is empty.
+func contextToArgs(c carapace.Context) (args []string, trailingSpace bool) {
+	n := len(c.Args)
+	if n > 0 && c.Args[n-1] == "" {
+		n--
+	}
+	args = c.Args[:n]
+	trailingSpace = c.Value == ""
+	return
+}
+
+// actionOptions returns completions for ffmpeg option names.
+// When called inside ActionMultiParts (for mid-token colon options),
+// the plain option names are returned without suffix.
+// Otherwise, options that accept stream specifiers get Suffix(":")
+// so the user can continue typing the specifier.
+func actionOptions(ctx *argstream.CompletionContext, _ carapace.Context) carapace.Action {
+	return actionOptionNamesWithSpecSuffix(ctx)
+}
+
+// actionOptionNamesWithSpecSuffix returns option name completions.
+// Options that accept stream specifiers get Suffix(":") so the user
+// can continue typing the specifier within the same token.
+func actionOptionNamesWithSpecSuffix(ctx *argstream.CompletionContext) carapace.Action {
+	var specOptions, noSpecOptions []string
+	for name, def := range argstream.OptionIndex {
+		switch {
+		case def.Scope == argstream.ScopeGlobalOpt && !containsToken(ctx.ExpectedTokens, argstream.ExpectedGlobalOption):
+			continue
+		case def.Scope == argstream.ScopeInputOnlyOpt && !containsToken(ctx.ExpectedTokens, argstream.ExpectedInputOption):
+			continue
+		case def.Scope == argstream.ScopeOutputOnlyOpt && !containsToken(ctx.ExpectedTokens, argstream.ExpectedOutputOption):
+			continue
+		}
+
+		if def.AcceptsSpec && def.ImplicitSpec == "" && def.Type == argstream.TypeValue {
+			specOptions = append(specOptions, "-"+name, def.Description, def.Style())
+		} else {
+			noSpecOptions = append(noSpecOptions, "-"+name, def.Description, def.Style())
+		}
+	}
+
+	specAction := carapace.ActionStyledValuesDescribed(specOptions...).Suffix(":").NoSpace(':')
+	noSpecAction := carapace.ActionStyledValuesDescribed(noSpecOptions...)
+	return carapace.Batch(specAction, noSpecAction).ToA()
+}
+
+// actionOptionNames returns plain option name completions without
+// any suffix or NoSpace (used inside ActionMultiParts where the
+// colon handling is already managed).
+func actionOptionNames(ctx *argstream.CompletionContext) carapace.Action {
 	var vals []string
 	for name, def := range argstream.OptionIndex {
 		switch {
@@ -137,29 +227,26 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 	}
 }
 
-func actionCodec(ctx *argstream.CompletionContext) carapace.Action {
-	switch ctx.Scope {
-	case argstream.ScopeGlobal, argstream.ScopeInputFile:
-		return carapace.Batch(
-			ffmpeg.ActionCodecs(),
-			ffmpeg.ActionDecoders(),
-		).ToA()
-	default:
-		return carapace.Batch(
-			ffmpeg.ActionCodecs(),
-			ffmpeg.ActionEncoders(),
-		).ToA()
-	}
-}
-
-func actionStreamSpecifier(ctx *argstream.CompletionContext) carapace.Action {
-	if ctx.CurrentOption == nil {
+// actionStreamSpecifier handles stream specifier completion.
+// When the cursor is mid-token inside an option with a colon
+// (handled by ActionMultiParts in actionOptions), this is not reached.
+// This is called when the argstream parser reports ExpectedStreamSpecifier
+// for the separate-arg form (e.g. "-c:" followed by a new arg after
+// shell splits the colon into a separate word).
+func actionStreamSpecifier(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
+	if ctx.CurrentOption == nil || !ctx.CurrentOption.AcceptsSpec {
 		return carapace.ActionValues()
 	}
-	return actionStreamSpecifiers(ctx)
+
+	if colon, after, ok := strings.Cut(c.Value, ":"); ok {
+		return actionStreamSpecifiers().Invoke(
+			carapace.Context{Value: after},
+		).Prefix(colon + ":").ToA()
+	}
+	return actionStreamSpecifiers()
 }
 
-func actionStreamSpecifiers(_ *argstream.CompletionContext) carapace.Action {
+func actionStreamSpecifiers() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"v", "video streams",
 		"V", "video streams (excluding attached pictures)",
@@ -175,6 +262,21 @@ func actionStreamSpecifiers(_ *argstream.CompletionContext) carapace.Action {
 		"disp", "disposition",
 		"u", "usable configuration",
 	).NoSpace(':')
+}
+
+func actionCodec(ctx *argstream.CompletionContext) carapace.Action {
+	switch ctx.Scope {
+	case argstream.ScopeGlobal, argstream.ScopeInputFile:
+		return carapace.Batch(
+			ffmpeg.ActionCodecs(),
+			ffmpeg.ActionDecoders(),
+		).ToA()
+	default:
+		return carapace.Batch(
+			ffmpeg.ActionCodecs(),
+			ffmpeg.ActionEncoders(),
+		).ToA()
+	}
 }
 
 func actionFilterValue() carapace.Action {

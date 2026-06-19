@@ -187,3 +187,113 @@ func TestCompletionAbExpectsValue(t *testing.T) {
 		t.Errorf("expected implicit stream specifier 'a', got %q", ctx.CurrentOption.StreamSpecifier)
 	}
 }
+
+func TestCompletionShellSplitColonOnly(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c", ":"}, true)
+	assertHasExpected(t, ctx, ExpectedStreamSpecifier)
+	assertNotHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.Name != "c" {
+		t.Errorf("expected option name 'c', got %q", ctx.CurrentOption.Name)
+	}
+}
+
+func TestCompletionShellSplitColonMidToken(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c", ":"}, false)
+	assertHasExpected(t, ctx, ExpectedStreamSpecifier)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+}
+
+func TestCompletionShellSplitColonSpecMidToken(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c", ":v"}, false)
+	assertHasExpected(t, ctx, ExpectedStreamSpecifier)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.PartialSpec != "v" {
+		t.Errorf("expected partial spec 'v', got %q", ctx.PartialSpec)
+	}
+}
+
+func TestCompletionShellSplitColonSpecTrailingSpace(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c", ":v"}, true)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.StreamSpecifier != "v" {
+		t.Errorf("expected stream specifier 'v', got %q", ctx.CurrentOption.StreamSpecifier)
+	}
+}
+
+func TestCompletionMidTokenOptionWithColon(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c:"}, false)
+	assertHasExpected(t, ctx, ExpectedStreamSpecifier)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.Name != "c" {
+		t.Errorf("expected option name 'c', got %q", ctx.CurrentOption.Name)
+	}
+}
+
+func TestCompletionMidTokenOptionWithSpec(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c:v"}, false)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.StreamSpecifier != "v" {
+		t.Errorf("expected stream specifier 'v', got %q", ctx.CurrentOption.StreamSpecifier)
+	}
+}
+
+func TestCompletionShellSplitNonSpecOption(t *testing.T) {
+	// -loglevel :  → the ":" is consumed as the loglevel value (not a stream specifier)
+	ctx := ParseForCompletion([]string{"-loglevel", ":"}, true)
+	assertNotHasExpected(t, ctx, ExpectedOptionValue)
+	assertNotHasExpected(t, ctx, ExpectedStreamSpecifier)
+}
+
+func TestCompletionShellSplitEmptySpecifierNextArg(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c", ":", "v"}, true)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.StreamSpecifier != "v" {
+		t.Errorf("expected stream specifier 'v', got %q", ctx.CurrentOption.StreamSpecifier)
+	}
+}
+
+func TestCompletionShellSplitEmptySpecifierNextArgMidToken(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-c", ":"}, true)
+	assertHasExpected(t, ctx, ExpectedStreamSpecifier)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+}
+
+func TestCompletionImplicitSpecNoStreamSpecifier(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-acodec"}, true)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.AcceptsSpec {
+		t.Error("acodec should not accept additional stream specifier")
+	}
+}
+
+func TestCompletionImplicitSpecMidTokenWithColon(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-acodec:"}, false)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+}
+

@@ -48,12 +48,39 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 		// consume it as the value
 		if pendingOption != nil {
 			if !isOption(arg) {
+				// Shells split "-c:v" at the colon (COMP_WORDBREAKS), producing
+				// args [-c, :v] or [-c, v]. Detect this: when the pending option
+				// accepts a stream specifier and the partial starts with colon,
+				// it's actually a stream specifier continuation.
 				if i == len(args)-1 && !trailingSpace {
-					// Completing the option value (mid-token)
+					if pendingOption.AcceptsSpec && strings.HasPrefix(arg, ":") {
+						ctx.CurrentOption = pendingOption
+						ctx.PartialSpec = strings.TrimPrefix(arg, ":")
+						ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedStreamSpecifier)
+						return ctx
+					}
 					ctx.CurrentOption = pendingOption
 					ctx.PartialValue = arg
 					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOptionValue)
 					return ctx
+				}
+				// When the shell splits "-c:" into [-c, :], the ":" arg
+				// is consumed as the stream specifier prefix.
+				if pendingOption.AcceptsSpec && strings.HasPrefix(arg, ":") {
+					spec := strings.TrimPrefix(arg, ":")
+					if spec == "" {
+						// "-c:" split into [-c, :] — spec is empty, expect specifier at next position
+						pendingSpecOption = pendingOption
+						pendingOption = nil
+						i++
+						continue
+					}
+					pendingOption.StreamSpecifier = spec
+					// Don't clear pendingOption — the option still needs its value.
+					// The specifier was consumed from the shell-split, but the
+					// value argument hasn't been provided yet.
+					i++
+					continue
 				}
 				// Consume the value
 				pendingOption = nil
