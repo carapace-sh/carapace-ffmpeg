@@ -815,3 +815,33 @@ func ActionShowOptionalFields() carapace.Action {
 		"-1", "Print only if valid (default)",
 	).Tag("show optional fields").Uid("ffmpeg", "show-optional-fields")
 }
+
+// ActionMetadataKeys completes common stream metadata keys
+//
+//	language (Language of the stream)
+//	title (Title of the stream)
+func ActionMetadataKeys() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"album", "Album name",
+		"album_artist", "Album artist",
+		"artist", "Artist name",
+		"comment", "Comment",
+		"composer", "Composer",
+		"copyright", "Copyright notice",
+		"date", "Date",
+		"description", "Description",
+		"encoder", "Encoder used",
+		"genre", "Genre",
+		"language", "Language of the stream",
+		"lyrics", "Lyrics",
+		"network_name", "Network name (DVB)",
+		"provider_name", "Provider name (DVB)",
+		"service_name", "Service name (DVB)",
+		"sort_album_artist", "Sort album artist",
+		"sort_artist", "Sort artist",
+		"sort_title", "Sort title",
+		"synopsis", "Synopsis",
+		"title", "Title of the stream",
+		"track", "Track number",
+	).NoSpace(':').Tag("metadata keys").Uid("ffmpeg", "metadata-keys")
+}

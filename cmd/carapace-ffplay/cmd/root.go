@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/carapace-sh/carapace"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
@@ -34,12 +35,17 @@ func init() {
 			if completer.IsMidTokenOptionWithSpec(c.Value, profile) {
 				args, _ := completer.ContextToArgs(c)
 				ctx := argstream.ParseForCompletionWithProfile(args, false, profile)
+				originalValue := c.Value
 				return carapace.ActionMultiParts(":", func(c carapace.Context) carapace.Action {
 					switch len(c.Parts) {
 					case 0:
 						return completer.ActionOptionNames(ctx, profile).NoSpace(':')
 					default:
-						return completer.ActionStreamSpecifiers()
+						specifierPart := ""
+						if _, after, ok := strings.Cut(originalValue, ":"); ok {
+							specifierPart = after
+						}
+						return completer.ActionStreamSpecifierParts(specifierPart, c.Value)
 					}
 				})
 			}

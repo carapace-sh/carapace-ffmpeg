@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/carapace-sh/carapace"
 	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
@@ -35,12 +36,24 @@ func init() {
 			if completer.IsMidTokenOptionWithSpec(c.Value, profile) {
 				args, _ := completer.ContextToArgs(c)
 				ctx := argstream.ParseForCompletionWithProfile(args, false, profile)
+				originalValue := c.Value
 				return carapace.ActionMultiParts(":", func(c carapace.Context) carapace.Action {
 					switch len(c.Parts) {
 					case 0:
 						return completer.ActionOptionNames(ctx, profile).NoSpace(':')
 					default:
-						return completer.ActionStreamSpecifiers()
+						// Reconstruct the full specifier portion from the original
+						// value. ActionMultiParts splits on every colon, but stream
+						// specifier colons are context-dependent (m:KEY:VALUE,
+						// disp:DEFAULT+FORCED, etc.), so we need the streamspec
+						// completion parser on the full specifier text.
+						// Extract specifier: everything after the first colon
+						// in the original option token.
+						specifierPart := ""
+						if _, after, ok := strings.Cut(originalValue, ":"); ok {
+							specifierPart = after
+						}
+						return completer.ActionStreamSpecifierParts(specifierPart, c.Value)
 					}
 				})
 			}
