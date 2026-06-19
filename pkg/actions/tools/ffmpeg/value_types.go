@@ -684,7 +684,7 @@ func ActionDevices(opts DeviceOpts) carapace.Action {
 			if matches := r.FindStringSubmatch(line); matches != nil {
 				demuxing := matches[1] == "D" && opts.Demuxing
 				muxing := matches[2] == "E" && opts.Muxing
-				s := style.Default
+				var s string
 				switch {
 				case demuxing && muxing:
 					s = style.Magenta
