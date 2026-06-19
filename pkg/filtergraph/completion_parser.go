@@ -25,10 +25,10 @@ type compParser struct {
 	cursor int
 	ctx    *CompletionContext
 
-	chainIndex    int
-	filterIndex   int
-	inFilter      bool
-	optionKeys    []string // tracks key=value keys already consumed in the current filter
+	chainIndex  int
+	filterIndex int
+	inFilter    bool
+	optionKeys  []string // tracks key=value keys already consumed in the current filter
 }
 
 func (p *compParser) atCursorOrEnd() bool {

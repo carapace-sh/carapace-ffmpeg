@@ -1,0 +1,12 @@
+"0": |
+  Display video (numeric form). Equivalent to `video` mode — shows the decoded video frames in the player window. This is the default show mode when none is specified.
+"1": |
+  Show audio waveform (numeric form). Equivalent to `waves` mode — renders the audio signal as an oscilloscope-style waveform display instead of showing video.
+"2": |
+  Show audio frequency data using RDFT (numeric form). Equivalent to `rdft` mode — displays the audio frequency spectrum computed via Real Discrete Fourier Transform.
+video: |
+  Display the decoded video frames in the player window. This is the default show mode for ffplay.
+waves: |
+  Show an audio waveform visualization instead of video. Renders the audio signal's amplitude over time in an oscilloscope-style display. Useful for inspecting audio levels and clipping.
+rdft: |
+  Show audio frequency data computed using Real Discrete Fourier Transform (RDFT). Displays the audio spectrum in real-time. Useful for analyzing the frequency content of audio streams.

@@ -1,0 +1,6 @@
+audio: |
+  Audio clock is the master synchronization source (default). Video timestamps are adjusted to match the audio clock. If video frames arrive too early or too late, they are delayed or dropped to keep audio playback smooth. This is the most common sync mode since audio glitches are more noticeable than video glitches.
+video: |
+  Video clock is the master synchronization source. Audio is adjusted to match the video clock. May cause audio stuttering if video frames arrive irregularly, but ensures every video frame is displayed at its correct timestamp. Useful for frame-accurate video analysis.
+ext: |
+  External clock is the master synchronization source. Both audio and video are synchronized to an external timebase. Used when the playback should follow an external timing source rather than either stream's internal clock.
