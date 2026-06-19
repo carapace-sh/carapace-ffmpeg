@@ -48,6 +48,15 @@ func init() {
 			args, trailingSpace := completer.ContextToArgs(c)
 			ctx := argstream.ParseForCompletionWithProfile(args, trailingSpace, profile)
 
+			// When completing a partial option name (e.g. `-v` matching `-vcodec`,
+			// `-vframes`, `-vn`), include option names so the shell can filter them.
+			if ctx.PartialOption != "" && !trailingSpace {
+				return carapace.Batch(
+					completer.ActionPartialOption(ctx, profile),
+					actionOptionValueIfExpected(ctx),
+				).ToA()
+			}
+
 			var actions []carapace.Action
 			for _, token := range ctx.ExpectedTokens {
 				switch token {
@@ -74,6 +83,18 @@ func init() {
 			return carapace.Batch(actions...).ToA()
 		}),
 	)
+}
+
+// actionOptionValueIfExpected returns option value completions only when
+// the completion context expects an option value (e.g. when a partial option
+// like `-v` resolved to a known value option like `-vloglevel`).
+func actionOptionValueIfExpected(ctx *argstream.CompletionContext) carapace.Action {
+	for _, token := range ctx.ExpectedTokens {
+		if token == argstream.ExpectedOptionValue {
+			return actionOptionValue(ctx)
+		}
+	}
+	return carapace.ActionValues()
 }
 
 // actionOptionValue returns completions for option values, with ffmpeg-specific

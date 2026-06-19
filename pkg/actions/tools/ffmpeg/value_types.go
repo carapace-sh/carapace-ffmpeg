@@ -208,13 +208,13 @@ func ActionEncoders(opts EncoderOpts) carapace.Action {
 //	ac3 (raw AC-3)
 func ActionFormats() carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-formats")(func(output []byte) carapace.Action {
-		_, content, ok := strings.Cut(string(output), " -------")
+		_, content, ok := strings.Cut(string(output), " ---")
 		if !ok {
 			return carapace.ActionMessage("failed to parse formats")
 		}
 
 		lines := strings.Split(content, "\n")
-		r := regexp.MustCompile(`^ (?P<decoding>.)(?P<muxing>.) (?P<name>[^ ]+) +(?P<description>.*)$`)
+		r := regexp.MustCompile(`^ (?P<decoding>D?)(?P<muxing>E?)(?P<device>d?) +(?P<names>[^ ]+) +(?P<description>.*)$`)
 
 		vals := make([]string, 0)
 		for _, line := range lines {
@@ -228,8 +228,8 @@ func ActionFormats() carapace.Action {
 				case matches[2] == "E":
 					s = style.Yellow
 				}
-				for _, name := range strings.Split(matches[3], ",") {
-					vals = append(vals, name, matches[4], s)
+				for _, name := range strings.Split(matches[4], ",") {
+					vals = append(vals, name, matches[5], s)
 				}
 			}
 		}
@@ -243,7 +243,7 @@ func ActionFormats() carapace.Action {
 //	0bgr (0bgr)
 func ActionPixelFormats() carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-pix_fmts")(func(output []byte) carapace.Action {
-		_, content, ok := strings.Cut(string(output), " -----")
+		_, content, ok := strings.Cut(string(output), "-----")
 		if !ok {
 			return carapace.ActionMessage("failed to parse pixel formats")
 		}
@@ -287,17 +287,17 @@ func ActionSampleFormats() carapace.Action {
 //	stereo (FL+FR)
 func ActionChannelLayouts() carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-layouts")(func(output []byte) carapace.Action {
-		_, content, ok := strings.Cut(string(output), " -----")
-		if !ok {
-			return carapace.ActionMessage("failed to parse channel layouts")
-		}
-
-		contentLines := strings.Split(content, "\n")
+		content := string(output)
+		lines := strings.Split(content, "\n")
 		r := regexp.MustCompile(`^(?P<name>[^ ]+) +(?P<channels>.+)$`)
 
 		vals := make([]string, 0)
-		for _, line := range contentLines[1:] {
-			if matches := r.FindStringSubmatch(strings.TrimSpace(line)); matches != nil {
+		for _, line := range lines {
+			trimmed := strings.TrimSpace(line)
+			if trimmed == "" || strings.HasPrefix(trimmed, "Individual") || strings.HasPrefix(trimmed, "Standard") || strings.HasPrefix(trimmed, "NAME") {
+				continue
+			}
+			if matches := r.FindStringSubmatch(trimmed); matches != nil {
 				vals = append(vals, matches[1], matches[2])
 			}
 		}
@@ -311,13 +311,13 @@ func ActionChannelLayouts() carapace.Action {
 //	acue (Delay filtering to match a cue.)
 func ActionFilters() carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-filters")(func(output []byte) carapace.Action {
-		_, content, ok := strings.Cut(string(output), " -------")
+		_, content, ok := strings.Cut(string(output), " ------")
 		if !ok {
 			return carapace.ActionMessage("failed to parse filters")
 		}
 
 		lines := strings.Split(content, "\n")
-		r := regexp.MustCompile(`^ .{3} (?P<name>[^ ]+) +[^ ]+ *(?P<description>.*)$`)
+		r := regexp.MustCompile(`^ .{2,3} (?P<name>[^ ]+) +[^ ]+ *(?P<description>.*)$`)
 
 		vals := make([]string, 0)
 		for _, line := range lines {
@@ -433,7 +433,7 @@ func ActionDiscard() carapace.Action {
 //	dts2pts
 func ActionBitstreamFilters() carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-bsfs")(func(output []byte) carapace.Action {
-		_, content, ok := strings.Cut(string(output), " -----")
+		_, content, ok := strings.Cut(string(output), ":")
 		if !ok {
 			return carapace.ActionMessage("failed to parse bitstream filters")
 		}

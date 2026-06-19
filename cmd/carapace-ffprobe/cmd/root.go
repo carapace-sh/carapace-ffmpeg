@@ -47,6 +47,10 @@ func init() {
 			args, trailingSpace := completer.ContextToArgs(c)
 			ctx := argstream.ParseForCompletionWithProfile(args, trailingSpace, profile)
 
+			if ctx.PartialOption != "" && !trailingSpace {
+				return completer.ActionPartialOption(ctx, profile)
+			}
+
 			var actions []carapace.Action
 			for _, token := range ctx.ExpectedTokens {
 				switch token {
