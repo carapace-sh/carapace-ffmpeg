@@ -161,7 +161,22 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 			// Update scope based on option
 			updateScope(ctx, optDef)
 		} else {
-			// Non-option: output URL
+			// Non-option: could be an output URL, or a partial option
+			// being typed (e.g. bare "-" at cursor position).
+			if i == len(args)-1 && !trailingSpace && strings.HasPrefix(arg, "-") {
+				// Partial option being typed — don't change scope,
+				// return option completions based on current scope.
+				ctx.PartialOption = strings.TrimLeft(arg, "-")
+				switch ctx.Scope {
+				case ScopeGlobal:
+					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedGlobalOption, ExpectedInputOption)
+				case ScopeInputFile:
+					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputOption, ExpectedOutputOption)
+				case ScopeOutputFile:
+					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOutputOption)
+				}
+				return ctx
+			}
 			ctx.OutputCount++
 			ctx.Scope = ScopeOutputFile
 			i++

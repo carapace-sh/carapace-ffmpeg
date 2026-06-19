@@ -297,3 +297,33 @@ func TestCompletionImplicitSpecMidTokenWithColon(t *testing.T) {
 	}
 }
 
+func TestCompletionPartialDashAfterValue(t *testing.T) {
+	// "-i test -c:v 012v -" with no trailing space: the dash is a partial option
+	ctx := ParseForCompletion([]string{"-i", "test", "-c:v", "012v", "-"}, false)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	assertNotHasExpected(t, ctx, ExpectedOutputURL)
+	if ctx.Scope != ScopeInputFile {
+		t.Errorf("expected ScopeInputFile, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionPartialDashAfterValueTrailingSpace(t *testing.T) {
+	// "-i test -c:v libx264 -" with trailing space: the dash is a complete token (stdin)
+	ctx := ParseForCompletion([]string{"-i", "test", "-c:v", "libx264", "-"}, true)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	assertHasExpected(t, ctx, ExpectedOutputURL)
+	if ctx.Scope != ScopeOutputFile {
+		t.Errorf("expected ScopeOutputFile, got %v", ctx.Scope)
+	}
+}
+
+func TestCompletionPartialDoubleDashAfterValue(t *testing.T) {
+	// "--" with no trailing space: partial long option being typed
+	ctx := ParseForCompletion([]string{"-i", "test", "-c:v", "libx264", "--"}, false)
+	assertHasExpected(t, ctx, ExpectedInputOption)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	if ctx.Scope != ScopeInputFile {
+		t.Errorf("expected ScopeInputFile, got %v", ctx.Scope)
+	}
+}
