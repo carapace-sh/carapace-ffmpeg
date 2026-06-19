@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os/exec"
 	"strconv"
+	"strings"
 )
 
 // StreamInfo holds metadata for a single stream probed from a media file.
@@ -18,7 +19,12 @@ type StreamInfo struct {
 }
 
 type ffprobeOutput struct {
-	Streams []StreamInfo `json:"streams"`
+	Streams []StreamInfo      `json:"streams"`
+	Format  ffprobeFormatTags `json:"format"`
+}
+
+type ffprobeFormatTags struct {
+	Tags map[string]string `json:"tags"`
 }
 
 // Probe runs ffprobe on a local file and returns stream metadata.
@@ -31,6 +37,7 @@ func Probe(inputURL string) ([]StreamInfo, error) {
 	cmd := exec.Command("ffprobe",
 		"-hide_banner",
 		"-show_streams",
+		"-show_format",
 		"-of", "json=c=1",
 		"--",
 		inputURL,
@@ -44,18 +51,38 @@ func Probe(inputURL string) ([]StreamInfo, error) {
 	if err := json.Unmarshal(out, &result); err != nil {
 		return nil, nil
 	}
+
+	// Merge format-level tags into each stream's tags.
+	// Stream-level tags take precedence over format-level tags.
+	formatTags := result.Format.Tags
+	for i := range result.Streams {
+		if len(formatTags) > 0 {
+			if result.Streams[i].Tags == nil {
+				result.Streams[i].Tags = make(map[string]string)
+			}
+			for k, v := range formatTags {
+				if _, exists := result.Streams[i].Tags[k]; !exists {
+					result.Streams[i].Tags[k] = v
+				}
+			}
+		}
+	}
 	return result.Streams, nil
 }
 
 // MetadataValues extracts unique values for a metadata key from the given streams.
+// Key matching is case-insensitive, matching ffmpeg's behavior for -m:KEY: lookups.
 func MetadataValues(streams []StreamInfo, key string) []string {
+	keyLower := strings.ToLower(key)
 	seen := make(map[string]bool)
 	var vals []string
 	for _, s := range streams {
 		if s.Tags != nil {
-			if v, ok := s.Tags[key]; ok && v != "" && !seen[v] {
-				seen[v] = true
-				vals = append(vals, v)
+			for k, v := range s.Tags {
+				if strings.ToLower(k) == keyLower && v != "" && !seen[v] {
+					seen[v] = true
+					vals = append(vals, v)
+				}
 			}
 		}
 	}

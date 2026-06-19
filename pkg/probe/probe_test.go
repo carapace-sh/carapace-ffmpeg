@@ -81,6 +81,36 @@ func TestMetadataValues(t *testing.T) {
 	}
 }
 
+func TestMetadataValuesCaseInsensitive(t *testing.T) {
+	streams := []StreamInfo{
+		{Index: 0, Tags: map[string]string{"ARTIST": "Bach", "Title": "Fugue"}},
+	}
+
+	tests := []struct {
+		key  string
+		want []string
+	}{
+		{"artist", []string{"Bach"}},
+		{"ARTIST", []string{"Bach"}},
+		{"Artist", []string{"Bach"}},
+		{"title", []string{"Fugue"}},
+		{"TITLE", []string{"Fugue"}},
+	}
+
+	for _, tt := range tests {
+		got := MetadataValues(streams, tt.key)
+		if len(got) != len(tt.want) {
+			t.Errorf("MetadataValues(%q) = %v, want %v", tt.key, got, tt.want)
+			continue
+		}
+		for i := range got {
+			if got[i] != tt.want[i] {
+				t.Errorf("MetadataValues(%q)[%d] = %q, want %q", tt.key, i, got[i], tt.want[i])
+			}
+		}
+	}
+}
+
 func TestMetadataValuesEmpty(t *testing.T) {
 	if got := MetadataValues(nil, "language"); len(got) != 0 {
 		t.Errorf("MetadataValues(nil) = %v, want empty", got)
@@ -189,6 +219,32 @@ func TestIsLocalFile(t *testing.T) {
 	}
 }
 
+// generateTaggedMKV creates an MKV with format-level metadata (title, artist, etc.)
+// and stream-level metadata (language) to test tag merging. Returns the file path.
+func generateTaggedMKV(t *testing.T) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "tagged.mkv")
+
+	cmd := exec.Command("ffmpeg", "-hide_banner", "-y",
+		"-f", "lavfi", "-i", "sine=frequency=1000:duration=0.01:r=8000",
+		"-metadata", "title=Test Song",
+		"-metadata", "artist=Test Artist",
+		"-metadata", "album=Test Album",
+		"-metadata", "genre=Synthwave",
+		"-metadata", "track=1",
+		"-metadata", "date=2024",
+		"-metadata:s:a:0", "language=eng",
+		"-c:a", "pcm_s16le",
+		path,
+	)
+	if err := cmd.Run(); err != nil {
+		t.Skipf("skipping: ffmpeg not available or failed: %v", err)
+	}
+	return path
+}
+
 func TestProbeMonoWAV(t *testing.T) {
 	path := generateMonoWAV(t)
 
@@ -263,6 +319,43 @@ func TestProbeNonLocalFile(t *testing.T) {
 	if streams != nil {
 		t.Errorf("Probe() for remote URL = %v, want nil", streams)
 	}
+}
+
+func TestProbeTaggedMKV(t *testing.T) {
+	path := generateTaggedMKV(t)
+
+	streams, err := Probe(path)
+	if err != nil {
+		t.Fatalf("Probe() error = %v", err)
+	}
+	if len(streams) == 0 {
+		t.Fatal("Probe() returned no streams")
+	}
+
+	s := streams[0]
+
+	// Format-level tags should be merged into stream tags
+	// Note: MKV muxer writes some keys in uppercase (e.g. ARTIST)
+	if s.Tags["title"] != "Test Song" {
+		t.Errorf("title = %q, want 'Test Song'", s.Tags["title"])
+	}
+	// Case-insensitive matching: ARTIST in format, "artist" in lookup
+	artist := MetadataValues(streams, "artist")
+	if len(artist) != 1 || artist[0] != "Test Artist" {
+		t.Errorf("MetadataValues(artist) = %v, want [Test Artist]", artist)
+	}
+	artistUpper := MetadataValues(streams, "ARTIST")
+	if len(artistUpper) != 1 || artistUpper[0] != "Test Artist" {
+		t.Errorf("MetadataValues(ARTIST) = %v, want [Test Artist]", artistUpper)
+	}
+
+	// Stream-level tag should be present (language was set on stream)
+	if s.Tags["language"] != "eng" {
+		t.Errorf("language = %q, want 'eng'", s.Tags["language"])
+	}
+
+	// Stream-level tag should take precedence over format-level
+	// (if both had the same key, stream wins)
 }
 
 func TestProbeNonexistentFile(t *testing.T) {
