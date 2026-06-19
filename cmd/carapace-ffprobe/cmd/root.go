@@ -59,7 +59,7 @@ func init() {
 				case argstream.ExpectedInputURL:
 					actions = append(actions, carapace.ActionFiles())
 				case argstream.ExpectedOptionValue:
-					actions = append(actions, completer.ActionOptionValue(ctx, completer.ActionDecoderOnlyCodec))
+					actions = append(actions, completer.ActionOptionValue(ctx, completer.ActionDecoderOnlyCodec, c.Value))
 				case argstream.ExpectedStreamSpecifier:
 					actions = append(actions, completer.ActionStreamSpecifier(ctx, c))
 				}

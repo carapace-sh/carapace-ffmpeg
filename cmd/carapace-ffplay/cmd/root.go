@@ -59,11 +59,13 @@ func init() {
 				case argstream.ExpectedInputURL:
 					actions = append(actions, carapace.ActionFiles())
 				case argstream.ExpectedOptionValue:
-					actions = append(actions, completer.ActionOptionValue(ctx, completer.ActionDecoderOnlyCodec))
+					actions = append(actions, completer.ActionOptionValue(ctx, completer.ActionDecoderOnlyCodec, c.Value))
 				case argstream.ExpectedStreamSpecifier:
 					actions = append(actions, completer.ActionStreamSpecifier(ctx, c))
 				case argstream.ExpectedFilterValue:
-					actions = append(actions, completer.ActionFilterValue())
+					isComplex := ctx.CurrentOption != nil &&
+						(ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi")
+					actions = append(actions, completer.ActionFilterValue(c.Value, isComplex))
 				}
 			}
 

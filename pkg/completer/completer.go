@@ -7,6 +7,7 @@ import (
 	"github.com/carapace-sh/carapace"
 	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
+	"github.com/carapace-sh/carapace-ffmpeg/pkg/filtergraph"
 )
 
 // ContextToArgs converts carapace.Context to the args and trailingSpace
@@ -102,7 +103,8 @@ func ActionOptions(ctx *argstream.CompletionContext, profile *argstream.ToolProf
 }
 
 // ActionOptionValue returns completions for the value of the current option.
-func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argstream.CompletionContext) carapace.Action) carapace.Action {
+// filterValue is the partial filtergraph text when the option is ValueFilter (empty otherwise).
+func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argstream.CompletionContext) carapace.Action, filterValue string) carapace.Action {
 	if ctx.CurrentOption == nil {
 		return carapace.ActionValues()
 	}
@@ -118,7 +120,8 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	case argstream.ValueChannelLayout:
 		return ffmpeg.ActionChannelLayouts()
 	case argstream.ValueFilter:
-		return ActionFilterValue()
+		isComplex := ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi"
+		return ActionFilterValue(filterValue, isComplex)
 	case argstream.ValueVideoSize:
 		return ffmpeg.ActionVideoSizes()
 	case argstream.ValueVideoRate:
@@ -219,9 +222,47 @@ func ActionStreamSpecifiers() carapace.Action {
 	).NoSpace(':').Uid("ffmpeg", "stream-specifier")
 }
 
-// ActionFilterValue returns completions for filter values.
-func ActionFilterValue() carapace.Action {
-	return ffmpeg.ActionFilters().NoSpace()
+// ActionFilterValue returns completions for filter values using the filtergraph parser.
+// isComplex indicates whether link labels are allowed (-filter_complex, -lavfi).
+func ActionFilterValue(value string, isComplex bool) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+		fgCtx := filtergraph.ParseForCompletion(value)
+		fgCtx.IsComplex = isComplex
+
+		// prefixToReplace is the part of the value before the partial ident
+		// that needs to be prefixed back onto completion results.
+		prefixToReplace := value
+		if fgCtx.PartialIdent != "" {
+			prefixToReplace = strings.TrimSuffix(value, fgCtx.PartialIdent)
+		}
+
+		var actions []carapace.Action
+		for _, token := range fgCtx.ExpectedTokens {
+			switch token {
+			case filtergraph.ExpectedFilterName:
+				action := ffmpeg.ActionFilters()
+				// Invoke with PartialIdent (or empty) as the Value so carapace
+				// filters filter names correctly, then prefix back the
+				// preceding filtergraph text.
+				action = action.Invoke(carapace.Context{Value: fgCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+				actions = append(actions, action.NoSpace())
+			case filtergraph.ExpectedFilterOption, filtergraph.ExpectedFilterOptionKey, filtergraph.ExpectedFilterOptionValue:
+				// TODO: filter-specific option completion (requires filter option database)
+				actions = append(actions, carapace.ActionValues())
+			case filtergraph.ExpectedLinkLabel:
+				if fgCtx.IsComplex {
+					actions = append(actions, carapace.ActionValues().NoSpace())
+				}
+			case filtergraph.ExpectedChainSeparator:
+				actions = append(actions, carapace.ActionValues(";").NoSpace())
+			}
+		}
+
+		if len(actions) == 0 {
+			return ffmpeg.ActionFilters().NoSpace()
+		}
+		return carapace.Batch(actions...).ToA()
+	})
 }
 
 // ActionDecoderOnlyCodec returns codec completions restricted to decoders.
