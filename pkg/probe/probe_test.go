@@ -1,8 +1,10 @@
 package probe
 
 import (
+	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -186,6 +188,64 @@ func TestActiveDispositionsEmpty(t *testing.T) {
 	}
 	if got := ActiveDispositions([]StreamInfo{{Disposition: map[string]int{"default": 0}}}); len(got) != 0 {
 		t.Errorf("ActiveDispositions with all-zero = %v, want empty", got)
+	}
+}
+
+func TestExpandPath(t *testing.T) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Skipf("skipping: cannot determine home directory: %v", err)
+	}
+
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"~/slop/example.mkv", filepath.Join(home, "slop/example.mkv")},
+		{"~/", home + "/"},
+		{"~", "~"},
+		{"~user/foo", "~user/foo"},
+		{"/absolute/path", "/absolute/path"},
+		{"relative/path", "relative/path"},
+		{"", ""},
+	}
+
+	for _, tt := range tests {
+		got := expandPath(tt.input)
+		if got != tt.want {
+			t.Errorf("expandPath(%q) = %q, want %q", tt.input, got, tt.want)
+		}
+	}
+}
+
+func TestProbeWithTildePath(t *testing.T) {
+	path := generateMonoWAV(t)
+
+	// Construct a ~/... path by replacing the home dir prefix
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Skipf("skipping: cannot determine home directory: %v", err)
+	}
+
+	relPath := path
+	if strings.HasPrefix(path, home+"/") {
+		relPath = "~" + path[len(home):]
+	} else {
+		// If temp dir isn't under home, symlink it there
+		symlinkDir := filepath.Join(home, ".carapace-ffmpeg-test-"+t.Name())
+		if err := os.Symlink(filepath.Dir(path), symlinkDir); err != nil {
+			t.Skipf("skipping: cannot create symlink in home dir: %v", err)
+		}
+		defer os.Remove(symlinkDir)
+		relPath = filepath.Join("~", ".carapace-ffmpeg-test-"+t.Name(), filepath.Base(path))
+	}
+
+	streams, err := Probe(relPath)
+	if err != nil {
+		t.Fatalf("Probe() error = %v", err)
+	}
+	if len(streams) == 0 {
+		t.Fatal("Probe() returned no streams for tilde-expanded path")
 	}
 }
 

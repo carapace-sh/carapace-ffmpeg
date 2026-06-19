@@ -2,6 +2,7 @@ package probe
 
 import (
 	"encoding/json"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -27,9 +28,20 @@ type ffprobeFormatTags struct {
 	Tags map[string]string `json:"tags"`
 }
 
+// expandPath expands a leading ~/ in the path to the user's home directory.
+func expandPath(path string) string {
+	if len(path) >= 2 && path[0] == '~' && path[1] == '/' {
+		if home, err := os.UserHomeDir(); err == nil {
+			return home + path[1:]
+		}
+	}
+	return path
+}
+
 // Probe runs ffprobe on a local file and returns stream metadata.
 // Returns nil and no error if ffprobe is unavailable or the file cannot be probed.
 func Probe(inputURL string) ([]StreamInfo, error) {
+	inputURL = expandPath(inputURL)
 	if !isLocalFile(inputURL) {
 		return nil, nil
 	}
