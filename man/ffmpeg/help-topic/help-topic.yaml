@@ -1,0 +1,18 @@
+long: |
+  Print advanced tool options in addition to the basic tool options. Shows more detailed help for the ffmpeg/ffplay/ffprobe command itself, including esoteric options not shown by default.
+full: |
+  Print the complete list of options, including all format-specific and codec-specific options. This is the most verbose help output and can be very long. Use this to discover options for specific demuxers, muxers, encoders, and decoders.
+"decoder=": |
+  Print detailed information about a specific decoder. Append the decoder name after the equals sign (e.g., `-h decoder=h264`). Shows the decoder's capabilities, supported input formats, and all decoder-specific options.
+"encoder=": |
+  Print detailed information about a specific encoder. Append the encoder name after the equals sign (e.g., `-h encoder=libx264`). Shows the encoder's capabilities, supported output formats, and all encoder-specific options.
+"demuxer=": |
+  Print detailed information about a specific demuxer. Append the demuxer name after the equals sign (e.g., `-h demuxer=matroska`). Shows the demuxer's capabilities and all demuxer-specific options.
+"muxer=": |
+  Print detailed information about a specific muxer. Append the muxer name after the equals sign (e.g., `-h muxer=mp4`). Shows the muxer's capabilities and all muxer-specific options.
+"filter=": |
+  Print detailed information about a specific filter. Append the filter name after the equals sign (e.g., `-h filter=scale`). Shows the filter's input/output types, all options with their types and default values, and enum ranges.
+"bsf=": |
+  Print detailed information about a specific bitstream filter. Append the BSF name after the equals sign (e.g., `-h bsf=h264_mp4toannexb`). Shows the BSF's options and capabilities.
+"protocol=": |
+  Print detailed information about a specific protocol. Append the protocol name after the equals sign (e.g., `-h protocol=http`). Shows the protocol's options and capabilities.

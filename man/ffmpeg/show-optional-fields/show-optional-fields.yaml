@@ -1,0 +1,12 @@
+always: |
+  Always print all fields, even if they contain invalid or unset values. Ensures the output structure is consistent — every field is present in every section regardless of validity. Equivalent to numeric value `1`.
+"1": |
+  Numeric form of `always`. Always print fields, including those with invalid values. Same behavior as the `always` keyword.
+never: |
+  Never print fields that have invalid or unset values. Omits problematic fields entirely from the output, producing a cleaner but potentially inconsistent structure. Equivalent to numeric value `0`.
+"0": |
+  Numeric form of `never`. Never print invalid fields. Same behavior as the `never` keyword.
+auto: |
+  Print fields only if they contain valid values (default). If a field's value is valid it is included; if not, it is omitted from the output. This is the standard behavior when no explicit mode is set. Equivalent to numeric value `-1`.
+"-1": |
+  Numeric form of `auto`. Print only valid fields. Same behavior as the `auto` keyword and the default behavior.

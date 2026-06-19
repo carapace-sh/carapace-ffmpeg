@@ -28,6 +28,7 @@ type compParser struct {
 	chainIndex  int
 	filterIndex int
 	inFilter    bool
+	optionKeys  []string // tracks key=value keys already consumed in the current filter
 }
 
 func (p *compParser) atCursorOrEnd() bool {
@@ -94,6 +95,7 @@ func (p *compParser) parseFilter() {
 	p.inFilter = true
 	p.ctx.ChainIndex = p.chainIndex
 	p.ctx.FilterIndex = p.filterIndex
+	p.optionKeys = nil
 
 	// Filter name
 	name := p.scanFilterNameForCompletion()
@@ -117,16 +119,27 @@ func (p *compParser) parseFilter() {
 		p.parseFilterOption(name, argIndex)
 		argIndex++
 
+		// Don't overwrite the filter context if we're at the cursor
+		// (parseFilterOption already set it with the right fields).
+		if p.atCursorOrEnd() {
+			return
+		}
+
 		// Additional options separated by ':'
 		for !p.atCursorOrEnd() && p.peekRaw() == ':' {
 			p.pos++
 			p.parseFilterOption(name, argIndex)
 			argIndex++
 		}
+
+		if p.atCursorOrEnd() {
+			return
+		}
 	}
 
 	p.ctx.Filter = &FilterContext{
-		Name: name,
+		Name:       name,
+		OptionKeys: p.optionKeys,
 	}
 }
 
@@ -138,8 +151,9 @@ func (p *compParser) parseFilterOption(filterName string, argIndex int) {
 		// Could be key or positional value
 		p.ctx.PartialIdent = first
 		p.ctx.Filter = &FilterContext{
-			Name:     filterName,
-			ArgIndex: argIndex,
+			Name:       filterName,
+			ArgIndex:   argIndex,
+			OptionKeys: p.optionKeys,
 		}
 		p.addExpected(ExpectedFilterOptionValue)
 		p.addExpected(ExpectedFilterOptionKey)
@@ -149,12 +163,15 @@ func (p *compParser) parseFilterOption(filterName string, argIndex int) {
 	// Check for '=' after the first segment
 	if p.peekRaw() == '=' {
 		p.pos++
+		p.optionKeys = append(p.optionKeys, first)
 		value := p.scanOptionSegmentForCompletion()
 		p.ctx.Filter = &FilterContext{
-			Name:     filterName,
-			ArgIndex: argIndex,
-			InKey:    false,
-			InValue:  true,
+			Name:       filterName,
+			ArgIndex:   argIndex,
+			InKey:      false,
+			InValue:    true,
+			OptionKeys: p.optionKeys,
+			OptionKey:  first,
 		}
 		p.ctx.PartialIdent = value
 		p.addExpected(ExpectedFilterOptionValue)
@@ -163,8 +180,9 @@ func (p *compParser) parseFilterOption(filterName string, argIndex int) {
 
 	// Positional value
 	p.ctx.Filter = &FilterContext{
-		Name:     filterName,
-		ArgIndex: argIndex,
+		Name:       filterName,
+		ArgIndex:   argIndex,
+		OptionKeys: p.optionKeys,
 	}
 	p.ctx.PartialIdent = first
 }

@@ -1,0 +1,4 @@
+xxd: |
+  Hex+ASCII dump format (default). Packet data is displayed in a traditional hex dump with both hexadecimal values and their ASCII representation side by side. Each line shows the offset, hex bytes, and printable ASCII characters. Familiar from the `xxd` utility.
+base64: |
+  Base64-encoded format. Packet data is encoded as a continuous Base64 string. Compact representation suitable for embedding in JSON, XML, or other text-based formats. Can be decoded with `base64 -d` or equivalent tools.

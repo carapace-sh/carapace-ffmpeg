@@ -55,3 +55,67 @@ func TestCompletionInLabel(t *testing.T) {
 		t.Error("expected InLabel=true")
 	}
 }
+
+func TestCompletionOptionKeyTracking(t *testing.T) {
+	ctx := ParseForCompletion("scale=w=1280:h=720")
+	assertHasExpected(t, ctx, ExpectedFilterOptionValue)
+	if ctx.Filter == nil {
+		t.Fatal("expected filter context")
+	}
+	if ctx.Filter.Name != "scale" {
+		t.Errorf("expected filter name 'scale', got %q", ctx.Filter.Name)
+	}
+	if ctx.Filter.OptionKey != "h" {
+		t.Errorf("expected optionKey 'h', got %q", ctx.Filter.OptionKey)
+	}
+	if !ctx.Filter.InValue {
+		t.Error("expected InValue=true")
+	}
+	expectedKeys := []string{"w", "h"}
+	if len(ctx.Filter.OptionKeys) != len(expectedKeys) {
+		t.Errorf("expected %d optionKeys, got %d", len(expectedKeys), len(ctx.Filter.OptionKeys))
+	}
+	for i, k := range expectedKeys {
+		if ctx.Filter.OptionKeys[i] != k {
+			t.Errorf("expected optionKeys[%d] = %q, got %q", i, k, ctx.Filter.OptionKeys[i])
+		}
+	}
+}
+
+func TestCompletionOptionKeyAfterEquals(t *testing.T) {
+	ctx := ParseForCompletion("overlay=format=")
+	assertHasExpected(t, ctx, ExpectedFilterOptionValue)
+	if ctx.Filter == nil {
+		t.Fatal("expected filter context")
+	}
+	if ctx.Filter.OptionKey != "format" {
+		t.Errorf("expected optionKey 'format', got %q", ctx.Filter.OptionKey)
+	}
+	if !ctx.Filter.InValue {
+		t.Error("expected InValue=true")
+	}
+}
+
+func TestCompletionAmbiguousKeyValue(t *testing.T) {
+	ctx := ParseForCompletion("scale=w")
+	assertHasExpected(t, ctx, ExpectedFilterOptionKey)
+	assertHasExpected(t, ctx, ExpectedFilterOptionValue)
+	if ctx.Filter == nil {
+		t.Fatal("expected filter context")
+	}
+	if ctx.Filter.Name != "scale" {
+		t.Errorf("expected filter name 'scale', got %q", ctx.Filter.Name)
+	}
+}
+
+func TestCompletionPositionalValue(t *testing.T) {
+	ctx := ParseForCompletion("scale=1280")
+	assertHasExpected(t, ctx, ExpectedFilterOptionKey)
+	assertHasExpected(t, ctx, ExpectedFilterOptionValue)
+	if ctx.Filter == nil {
+		t.Fatal("expected filter context")
+	}
+	if ctx.Filter.ArgIndex != 0 {
+		t.Errorf("expected argIndex 0, got %d", ctx.Filter.ArgIndex)
+	}
+}

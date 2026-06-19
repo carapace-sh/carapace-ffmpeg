@@ -1,0 +1,14 @@
+default: |
+  Human-readable key=value format (default). Each section is printed with its fields in a readable `key=value` layout. Sections are separated by blank lines. This is the default output format when `-of` is not specified.
+compact: |
+  Compact one-line format. Each section is printed on a single line with fields separated by the `separator_key` option (default `|`). Useful for machine parsing or grepping output.
+csv: |
+  CSV (Comma-Separated Values) format. Each section is printed as a CSV row with field names as the header. Items within a field are separated by `:`. Compatible with standard CSV parsers and spreadsheet tools.
+flat: |
+  Flat key=value format. Keys use dot-separated paths (e.g., `streams.0.codec_name=h264`) to represent the hierarchical structure. Useful for simple shell scripting with `grep` and `awk`.
+ini: |
+  INI-style sections. Each stream or format section is printed under an `[section]` header with `key=value` pairs. Familiar format used by many configuration file parsers.
+json: |
+  JSON format. Outputs the full probe result as a JSON object with proper nesting. The most structured and programmatically accessible format. Preferred for integration with JSON-processing tools like `jq`.
+xml: |
+  XML format. Outputs the probe result as an XML document with hierarchical element nesting. Suitable for integration with XML-processing tools and XSLT transformations.
