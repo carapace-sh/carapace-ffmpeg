@@ -549,3 +549,39 @@ func ActionHWAccels() carapace.Action {
 		return carapace.ActionValues(vals...)
 	}).Tag("hardware accelerators").UidF(Uid("hwaccel"))
 }
+
+// ActionSwsFlags completes sws_flags/scaler algorithm values
+//
+//	fast_bilinear (Select fast bilinear scaling algorithm)
+//	bilinear (Select bilinear scaling algorithm)
+func ActionSwsFlags() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"fast_bilinear", "Select fast bilinear scaling algorithm",
+		"bilinear", "Select bilinear scaling algorithm",
+		"bicubic", "Select bicubic scaling algorithm (default)",
+		"experimental", "Select experimental scaling algorithm",
+		"neighbor", "Select nearest neighbor rescaling algorithm",
+		"area", "Select averaging area rescaling algorithm",
+		"bicublin", "Select bicubic for luma, bilinear for chroma",
+		"gauss", "Select Gaussian rescaling algorithm",
+		"sinc", "Select sinc rescaling algorithm",
+		"lanczos", "Select Lanczos rescaling algorithm",
+		"spline", "Select natural bicubic spline rescaling algorithm",
+		"print_info", "Enable printing/debug logging",
+		"accurate_rnd", "Enable accurate rounding",
+		"full_chroma_int", "Enable full chroma interpolation",
+		"full_chroma_inp", "Select full chroma input",
+		"bitexact", "Enable bitexact output",
+	).Tag("sws flags").Uid("ffmpeg", "sws-flags")
+}
+
+// ActionHelpTopics completes help topic values for -h
+//
+//	long (print more options)
+//	full (print all options)
+func ActionHelpTopics() carapace.Action {
+	return carapace.ActionValuesDescribed(
+		"long", "print more options",
+		"full", "print all options (including all format and codec specific options, very long)",
+	).Tag("help topics").Uid("ffmpeg", "help-topic")
+}

@@ -73,6 +73,7 @@ const (
 	ValueBSF           ValueType = "bsf"
 	ValuePrintGraphFmt ValueType = "print_graphs_format"
 	ValueTarget        ValueType = "target"
+	ValueSwsFlags       ValueType = "sws_flags"
 )
 
 // OptionDef defines a single ffmpeg option.
@@ -149,6 +150,30 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "vaapi_device", ShortName: "vaapi_device", Description: "set VAAPI hardware device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
 		{CanonicalName: "qsv_device", ShortName: "qsv_device", Description: "set QSV hardware device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
 
+		// Informational options (print info and exit)
+		{CanonicalName: "h", ShortName: "h", Aliases: []string{"help", "?"}, Description: "show help", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "version", ShortName: "version", Description: "show version", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "L", ShortName: "L", Aliases: []string{"license"}, Description: "show license", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "buildconf", ShortName: "buildconf", Description: "show build configuration", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "formats", ShortName: "formats", Description: "show available formats", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "codecs", ShortName: "codecs", Description: "show available codecs", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "decoders", ShortName: "decoders", Description: "show available decoders", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "encoders", ShortName: "encoders", Description: "show available encoders", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "bsfs", ShortName: "bsfs", Description: "show available bitstream filters", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "protocols", ShortName: "protocols", Description: "show available protocols", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "filters", ShortName: "filters", Description: "show available filters", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "pix_fmts", ShortName: "pix_fmts", Description: "show available pixel formats", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "layouts", ShortName: "layouts", Description: "show standard channel layouts", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "sample_fmts", ShortName: "sample_fmts", Description: "show available audio sample formats", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "colors", ShortName: "colors", Description: "show available color names", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "dispositions", ShortName: "dispositions", Description: "show available stream dispositions", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "hwaccels", ShortName: "hwaccels", Description: "show available HW acceleration methods", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "devices", ShortName: "devices", Description: "show available devices", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "muxers", ShortName: "muxers", Description: "show available muxers", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "demuxers", ShortName: "demuxers", Description: "show available demuxers", Scope: ScopeGlobalOpt, Type: TypeBoolean},
+		{CanonicalName: "sources", ShortName: "sources", Description: "list sources of the input device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "sinks", ShortName: "sinks", Description: "list sinks of the output device", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+
 		// Per-file options (input + output)
 		{CanonicalName: "f", ShortName: "f", Description: "force container format", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueFormat},
 		{CanonicalName: "t", ShortName: "t", Description: "stop transcoding after specified duration", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueDuration},
@@ -158,6 +183,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "thread_queue_size", ShortName: "thread_queue_size", Description: "set the maximum number of queued packets from the demuxer", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueInt},
 		{CanonicalName: "probesize", ShortName: "probesize", Description: "set probing size in bytes", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueInt64},
 		{CanonicalName: "analyzeduration", ShortName: "analyzeduration", Description: "set analysis duration", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueDuration},
+		{CanonicalName: "sws_flags", ShortName: "sws_flags", Description: "set default flags for the libswscale library", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueSwsFlags},
 
 		// Input-only options
 		{CanonicalName: "i", ShortName: "i", Description: "input file", Scope: ScopeInputOnlyOpt, Type: TypeValue, ValueType: ValueFileURL},
@@ -260,6 +286,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "fix_sub_duration_heartbeat", ShortName: "fix_sub_duration_heartbeat", Description: "set this video output stream to be a heartbeat stream for fix_sub_duration", Scope: ScopePerStreamOpt, Type: TypeBoolean, AcceptsSpec: true},
 		{CanonicalName: "vpre", ShortName: "vpre", Description: "set the video options to the indicated preset", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueString, ImplicitSpec: "v"},
 		{CanonicalName: "deinterlace", ShortName: "deinterlace", Description: "deinterlace pictures", Scope: ScopePerStreamOpt, Type: TypeBoolean},
+		{CanonicalName: "top", ShortName: "top", Description: "deprecated, use the setfield video filter", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueBoolean, AcceptsSpec: true},
 
 		// Audio per-stream options
 		{CanonicalName: "ar", ShortName: "ar", Description: "set audio sampling rate (in Hz)", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},

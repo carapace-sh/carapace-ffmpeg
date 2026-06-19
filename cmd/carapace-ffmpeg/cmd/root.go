@@ -226,6 +226,13 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 		return ffmpeg.ActionTargets()
 	case argstream.ValueTimestamp:
 		return carapace.ActionValues("now")
+	case argstream.ValueSwsFlags:
+		return ffmpeg.ActionSwsFlags()
+	case argstream.ValueString:
+		if ctx.CurrentOption.CanonicalName == "h" {
+			return ffmpeg.ActionHelpTopics()
+		}
+		return carapace.ActionValues()
 	default:
 		return carapace.ActionValues()
 	}
