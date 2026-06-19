@@ -579,11 +579,97 @@ func ActionSwsFlags() carapace.Action {
 	).Tag("sws flags").Uid("ffmpeg", "sws-flags")
 }
 
+type DeviceOpts struct {
+	Demuxing bool
+	Muxing   bool
+}
+
+func (o DeviceOpts) Default() DeviceOpts {
+	o.Demuxing = true
+	o.Muxing = true
+	return o
+}
+
+// ActionDemuxers completes demuxers
+//
+//	aax (CRI AAX)
+//	ac3 (raw AC-3)
+func ActionDemuxers() carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-demuxers")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " ---")
+		if !ok {
+			return carapace.ActionMessage("failed to parse demuxers")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^.{5}(?P<name>[^ ]+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
+		for _, line := range lines {
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				vals = append(vals, matches[1], matches[2])
+			}
+		}
+		return carapace.ActionValuesDescribed(vals...)
+	}).Tag("demuxers").UidF(Uid("demuxer"))
+}
+
+// ActionMuxers completes muxers
+//
+//	aax (CRI AAX)
+//	ac3 (raw AC-3)
+func ActionMuxers() carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-muxers")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " ---")
+		if !ok {
+			return carapace.ActionMessage("failed to parse muxers")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^.{5}(?P<name>[^ ]+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
+		for _, line := range lines {
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				vals = append(vals, matches[1], matches[2])
+			}
+		}
+		return carapace.ActionValuesDescribed(vals...)
+	}).Tag("muxers").UidF(Uid("muxer"))
+}
+
+// ActionProtocols completes input/output protocols
+//
+//	concatf
+//	crypto
+func ActionProtocols() carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-protocols")(func(output []byte) carapace.Action {
+		lines := strings.Split(string(output), "\n")
+
+		found := false
+		vals := make([]string, 0)
+		for _, line := range lines[2 : len(lines)-1] {
+			if !found && line == "Output:" {
+				found = true
+				continue
+			}
+
+			switch found {
+			case true:
+				vals = append(vals, strings.TrimSpace(line), style.Yellow)
+			default:
+				vals = append(vals, strings.TrimSpace(line), style.Blue)
+			}
+		}
+		return carapace.ActionStyledValues(vals...)
+	}).Tag("protocols").UidF(Uid("protocol"))
+}
+
 // ActionDevices completes device names for -sinks/-sources
 //
 //	alsa (ALSA audio output)
 //	pulse (Pulse audio output)
-func ActionDevices() carapace.Action {
+func ActionDevices(opts DeviceOpts) carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-devices")(func(output []byte) carapace.Action {
 		_, content, ok := strings.Cut(string(output), " ---")
 		if !ok {
@@ -596,14 +682,18 @@ func ActionDevices() carapace.Action {
 		vals := make([]string, 0)
 		for _, line := range lines {
 			if matches := r.FindStringSubmatch(line); matches != nil {
+				demuxing := matches[1] == "D" && opts.Demuxing
+				muxing := matches[2] == "E" && opts.Muxing
 				s := style.Default
 				switch {
-				case matches[1] == "D" && matches[2] == "E":
+				case demuxing && muxing:
 					s = style.Magenta
-				case matches[1] == "D":
+				case demuxing:
 					s = style.Blue
-				case matches[2] == "E":
+				case muxing:
 					s = style.Yellow
+				default:
+					continue
 				}
 				for _, name := range strings.Split(matches[3], ",") {
 					vals = append(vals, name, matches[4], s)
@@ -618,9 +708,41 @@ func ActionDevices() carapace.Action {
 //
 //	long (print more options)
 //	full (print all options)
+//	decoder= (print detailed information about the decoder)
 func ActionHelpTopics() carapace.Action {
-	return carapace.ActionValuesDescribed(
-		"long", "print more options",
-		"full", "print all options (including all format and codec specific options, very long)",
-	).Tag("help topics").Uid("ffmpeg", "help-topic")
+	return carapace.ActionMultiPartsN("=", 2, func(c carapace.Context) carapace.Action {
+		switch len(c.Parts) {
+		case 0:
+			return carapace.ActionValuesDescribed(
+				"long", "Print advanced tool options in addition to the basic tool options.",
+				"full", "Print complete list of options, including all format and codec specific options",
+				"decoder=", "Print detailed information about the decoder",
+				"encoder=", "Print detailed information about the encoder",
+				"demuxer=", "Print detailed information about the demuxer",
+				"muxer=", "Print detailed information about the muxer",
+				"filter=", "Print detailed information about the filter",
+				"bsf=", "Print detailed information about the bitstream filter",
+				"protocol=", "Print detailed information about the protocol",
+			).Tag("help topics").Uid("ffmpeg", "help-topic")
+		default:
+			switch c.Parts[0] {
+			case "decoder":
+				return ActionDecoders(DecoderOpts{}.Default())
+			case "encoder":
+				return ActionEncoders(EncoderOpts{}.Default())
+			case "demuxer":
+				return ActionDemuxers()
+			case "muxer":
+				return ActionMuxers()
+			case "filter":
+				return ActionFilters()
+			case "bsf":
+				return ActionBitstreamFilters()
+			case "protocol":
+				return ActionProtocols()
+			default:
+				return carapace.ActionValues()
+			}
+		}
+	})
 }

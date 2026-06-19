@@ -229,7 +229,10 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 	case argstream.ValueSwsFlags:
 		return ffmpeg.ActionSwsFlags()
 	case argstream.ValueDevice:
-		return ffmpeg.ActionDevices()
+		if ctx.CurrentOption != nil && ctx.CurrentOption.CanonicalName == "sinks" {
+			return ffmpeg.ActionDevices(ffmpeg.DeviceOpts{Demuxing: true})
+		}
+		return ffmpeg.ActionDevices(ffmpeg.DeviceOpts{Muxing: true})
 	case argstream.ValueString:
 		if ctx.CurrentOption.CanonicalName == "h" {
 			return ffmpeg.ActionHelpTopics()
@@ -278,16 +281,46 @@ func actionStreamSpecifiers() carapace.Action {
 }
 
 func actionCodec(ctx *argstream.CompletionContext) carapace.Action {
+	audio := true
+	subtitle := true
+	video := true
+	if ctx.CurrentOption != nil {
+		spec := ctx.CurrentOption.StreamSpecifier
+		if spec != "" {
+			if strings.HasPrefix(spec, "a") {
+				audio = true
+				subtitle = false
+				video = false
+			} else if strings.HasPrefix(spec, "v") || strings.HasPrefix(spec, "V") {
+				audio = false
+				subtitle = false
+				video = true
+			} else if strings.HasPrefix(spec, "s") {
+				audio = false
+				subtitle = true
+				video = false
+			} else if strings.HasPrefix(spec, "d") {
+				audio = false
+				subtitle = false
+				video = false
+			}
+		} else if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+			audio = optDef.ImplicitSpec == "a"
+			subtitle = optDef.ImplicitSpec == "s"
+			video = optDef.ImplicitSpec == "v"
+		}
+	}
+
 	switch ctx.Scope {
 	case argstream.ScopeGlobal, argstream.ScopeInputFile:
 		return carapace.Batch(
-			ffmpeg.ActionCodecs(ffmpeg.CodecOpts{}.Default()),
-			ffmpeg.ActionDecoders(ffmpeg.DecoderOpts{}.Default()),
+			ffmpeg.ActionDecodableCodecs(ffmpeg.CodecOpts{Audio: audio, Subtitle: subtitle, Video: video}),
+			ffmpeg.ActionDecoders(ffmpeg.DecoderOpts{Audio: audio, Subtitle: subtitle, Video: video}),
 		).ToA()
 	default:
 		return carapace.Batch(
-			ffmpeg.ActionCodecs(ffmpeg.CodecOpts{}.Default()),
-			ffmpeg.ActionEncoders(ffmpeg.EncoderOpts{}.Default()),
+			ffmpeg.ActionEncodableCodecs(ffmpeg.CodecOpts{Audio: audio, Subtitle: subtitle, Video: video}),
+			ffmpeg.ActionEncoders(ffmpeg.EncoderOpts{Audio: audio, Subtitle: subtitle, Video: video}),
 		).ToA()
 	}
 }
