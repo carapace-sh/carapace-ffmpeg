@@ -53,7 +53,7 @@ func init() {
 			if ctx.PartialOption != "" && !trailingSpace {
 				return carapace.Batch(
 					completer.ActionPartialOption(ctx, profile),
-					actionOptionValueIfExpected(ctx),
+					actionOptionValueIfExpected(ctx, c),
 				).ToA()
 			}
 
@@ -67,11 +67,11 @@ func init() {
 				case argstream.ExpectedOutputURL:
 					actions = append(actions, carapace.ActionFiles())
 				case argstream.ExpectedOptionValue:
-					actions = append(actions, actionOptionValue(ctx))
+					actions = append(actions, actionOptionValue(ctx, c))
 				case argstream.ExpectedStreamSpecifier:
 					actions = append(actions, completer.ActionStreamSpecifier(ctx, c))
 				case argstream.ExpectedFilterValue:
-					actions = append(actions, completer.ActionFilterValue())
+					actions = append(actions, actionFilterValue(ctx, c))
 				case argstream.ExpectedMapValue:
 					actions = append(actions, carapace.ActionValues())
 				}
@@ -88,10 +88,10 @@ func init() {
 // actionOptionValueIfExpected returns option value completions only when
 // the completion context expects an option value (e.g. when a partial option
 // like `-v` resolved to a known value option like `-vloglevel`).
-func actionOptionValueIfExpected(ctx *argstream.CompletionContext) carapace.Action {
+func actionOptionValueIfExpected(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
 	for _, token := range ctx.ExpectedTokens {
 		if token == argstream.ExpectedOptionValue {
-			return actionOptionValue(ctx)
+			return actionOptionValue(ctx, c)
 		}
 	}
 	return carapace.ActionValues()
@@ -99,8 +99,14 @@ func actionOptionValueIfExpected(ctx *argstream.CompletionContext) carapace.Acti
 
 // actionOptionValue returns completions for option values, with ffmpeg-specific
 // codec handling (encoder vs. decoder depending on scope).
-func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
-	return completer.ActionOptionValue(ctx, actionCodec)
+func actionOptionValue(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
+	return completer.ActionOptionValue(ctx, actionCodec, c.Value)
+}
+
+func actionFilterValue(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
+	isComplex := ctx.CurrentOption != nil &&
+		(ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi")
+	return completer.ActionFilterValue(c.Value, isComplex)
 }
 
 // actionCodec returns codec completions scoped to the current position.
