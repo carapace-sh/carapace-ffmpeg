@@ -221,24 +221,24 @@ func actionStreamSpecifierAfter(specifierPart string) carapace.Action {
 			case streamspec.ExpectedSpecifierType, streamspec.ExpectedStreamTypeLetter:
 				actions = append(actions, streamTypeActions(specCtx, prefixToReplace))
 			case streamspec.ExpectedStreamIndex:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues())
 			case streamspec.ExpectedMetadataKey:
 				action := ffmpeg.ActionMetadataKeys()
 				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
-				actions = append(actions, action.NoSpace(':'))
+				actions = append(actions, action)
 			case streamspec.ExpectedMetadataValue:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues().Suffix(":"))
 			case streamspec.ExpectedDispositionName:
 				action := ffmpeg.ActionDispositions()
 				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
-				actions = append(actions, action.NoSpace(':'))
+				actions = append(actions, action.Suffix(":"))
 			case streamspec.ExpectedGroupSpecifier,
 				streamspec.ExpectedGroupIndex,
 				streamspec.ExpectedGroupID:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues().Suffix(":"))
 			case streamspec.ExpectedProgramID,
 				streamspec.ExpectedStreamIDValue:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues().Suffix(":"))
 			}
 		}
 
@@ -250,14 +250,31 @@ func actionStreamSpecifierAfter(specifierPart string) carapace.Action {
 }
 
 // streamTypeActions returns completions for stream specifier type forms
-// filtered by the current partial ident.
+// filtered by the current partial ident. Forms that already end with ":"
+// (e.g. "g:", "m:") get no additional suffix; others get Suffix(":")
+// since all specifier types can be followed by additional specifiers.
 func streamTypeActions(specCtx *streamspec.CompletionContext, prefixToReplace string) carapace.Action {
-	var entries []string
+	var suffixed, unsuffixed []string
 	for _, form := range specCtx.ValidForms {
-		entries = append(entries, form.Prefix, form.Description)
+		switch {
+		case form.Prefix == "":
+			// numeric index — skip, user types these directly
+			continue
+		case form.Prefix == "#" || strings.HasSuffix(form.Prefix, ":"):
+			unsuffixed = append(unsuffixed, form.Prefix, form.Description)
+		default:
+			suffixed = append(suffixed, form.Prefix, form.Description)
+		}
 	}
-	action := carapace.ActionValuesDescribed(entries...).NoSpace(':')
-	return action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+	var actions []carapace.Action
+	if len(suffixed) > 0 {
+		actions = append(actions, carapace.ActionValuesDescribed(suffixed...).Suffix(":"))
+	}
+	if len(unsuffixed) > 0 {
+		actions = append(actions, carapace.ActionValuesDescribed(unsuffixed...))
+	}
+	combined := carapace.Batch(actions...).ToA()
+	return combined.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
 }
 
 // ActionStreamSpecifiers returns completions for stream specifier types.
@@ -276,7 +293,7 @@ func ActionStreamSpecifiers() carapace.Action {
 		"m", "metadata",
 		"disp", "disposition",
 		"u", "usable configuration",
-	).NoSpace(':').Uid("ffmpeg", "stream-specifier")
+	).Suffix(":").Uid("ffmpeg", "stream-specifier")
 }
 
 // ActionStreamSpecifierParts returns context-aware stream specifier completions
@@ -293,24 +310,24 @@ func ActionStreamSpecifierParts(specifierPart string, partialValue string) carap
 			case streamspec.ExpectedSpecifierType, streamspec.ExpectedStreamTypeLetter:
 				actions = append(actions, streamTypeActions(specCtx, ""))
 			case streamspec.ExpectedStreamIndex:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues())
 			case streamspec.ExpectedMetadataKey:
 				action := ffmpeg.ActionMetadataKeys()
 				action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
-				actions = append(actions, action.NoSpace(':'))
+				actions = append(actions, action)
 			case streamspec.ExpectedMetadataValue:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues().Suffix(":"))
 			case streamspec.ExpectedDispositionName:
 				action := ffmpeg.ActionDispositions()
 				action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
-				actions = append(actions, action.NoSpace(':'))
+				actions = append(actions, action.Suffix(":"))
 			case streamspec.ExpectedGroupSpecifier,
 				streamspec.ExpectedGroupIndex,
 				streamspec.ExpectedGroupID:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues().Suffix(":"))
 			case streamspec.ExpectedProgramID,
 				streamspec.ExpectedStreamIDValue:
-				actions = append(actions, carapace.ActionValues().NoSpace(':'))
+				actions = append(actions, carapace.ActionValues().Suffix(":"))
 			}
 		}
 
