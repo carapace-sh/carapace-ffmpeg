@@ -1,10 +1,54 @@
 package probe
 
 import (
-	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 )
+
+// generateMultistreamMKV creates a tiny MKV with 1 video + 2 audio streams
+// (eng, fre) using ffmpeg from lavfi sources. Returns the file path.
+func generateMultistreamMKV(t *testing.T) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.mkv")
+
+	cmd := exec.Command("ffmpeg", "-hide_banner", "-y",
+		"-f", "lavfi", "-i", "color=c=black:s=2x2:d=0.01:r=1",
+		"-f", "lavfi", "-i", "sine=frequency=440:duration=0.01:r=8000",
+		"-f", "lavfi", "-i", "sine=frequency=880:duration=0.01:r=8000",
+		"-map", "0:v", "-map", "1:a", "-map", "2:a",
+		"-metadata:s:a:0", "language=eng",
+		"-metadata:s:a:1", "language=fre",
+		"-c:v", "libx264", "-preset", "ultrafast", "-tune", "stillimage", "-crf", "51",
+		"-c:a", "pcm_s16le",
+		path,
+	)
+	if err := cmd.Run(); err != nil {
+		t.Skipf("skipping: ffmpeg not available or failed: %v", err)
+	}
+	return path
+}
+
+// generateMonoWAV creates a minimal WAV file with a single audio stream
+// using ffmpeg from a lavfi source. Returns the file path.
+func generateMonoWAV(t *testing.T) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.wav")
+
+	cmd := exec.Command("ffmpeg", "-hide_banner", "-y",
+		"-f", "lavfi", "-i", "sine=frequency=1000:duration=0.01:r=8000",
+		"-c:a", "pcm_s16le",
+		path,
+	)
+	if err := cmd.Run(); err != nil {
+		t.Skipf("skipping: ffmpeg not available or failed: %v", err)
+	}
+	return path
+}
 
 func TestMetadataValues(t *testing.T) {
 	streams := []StreamInfo{
@@ -145,13 +189,10 @@ func TestIsLocalFile(t *testing.T) {
 	}
 }
 
-func TestProbeWithRealFile(t *testing.T) {
-	wavPath := filepath.Join("/", "usr", "share", "filezilla", "resources", "finished.wav")
-	if _, err := os.Stat(wavPath); err != nil {
-		t.Skip("skipping: test wav file not found")
-	}
+func TestProbeMonoWAV(t *testing.T) {
+	path := generateMonoWAV(t)
 
-	streams, err := Probe(wavPath)
+	streams, err := Probe(path)
 	if err != nil {
 		t.Fatalf("Probe() error = %v", err)
 	}
@@ -163,6 +204,54 @@ func TestProbeWithRealFile(t *testing.T) {
 	}
 	if streams[0].CodecName == "" {
 		t.Error("first stream CodecName is empty")
+	}
+}
+
+func TestProbeMultistreamMKV(t *testing.T) {
+	path := generateMultistreamMKV(t)
+
+	streams, err := Probe(path)
+	if err != nil {
+		t.Fatalf("Probe() error = %v", err)
+	}
+	if len(streams) < 3 {
+		t.Fatalf("expected at least 3 streams, got %d", len(streams))
+	}
+
+	// Verify video stream
+	if streams[0].CodecType != "video" {
+		t.Errorf("stream 0 CodecType = %q, want 'video'", streams[0].CodecType)
+	}
+
+	// Verify audio streams with language tags
+	for i := 1; i <= 2; i++ {
+		if streams[i].CodecType != "audio" {
+			t.Errorf("stream %d CodecType = %q, want 'audio'", i, streams[i].CodecType)
+		}
+	}
+	if streams[1].Tags["language"] != "eng" {
+		t.Errorf("stream 1 language = %q, want 'eng'", streams[1].Tags["language"])
+	}
+	if streams[2].Tags["language"] != "fre" {
+		t.Errorf("stream 2 language = %q, want 'fre'", streams[2].Tags["language"])
+	}
+
+	// Verify stream indices
+	audioIndices := StreamIndices(streams, "audio")
+	if len(audioIndices) != 2 {
+		t.Errorf("StreamIndices(audio) = %v, want 2 entries", audioIndices)
+	}
+
+	// Verify metadata values
+	langs := MetadataValues(streams, "language")
+	if len(langs) != 2 {
+		t.Errorf("MetadataValues(language) = %v, want 2 entries", langs)
+	}
+
+	// Verify dispositions
+	disp := ActiveDispositions(streams)
+	if len(disp) == 0 {
+		t.Error("ActiveDispositions returned empty, expected at least 'default'")
 	}
 }
 
