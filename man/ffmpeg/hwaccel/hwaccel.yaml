@@ -1,0 +1,3 @@
+example: |
+  A hardware acceleration method in ffmpeg. Hardware accelerators use GPU or dedicated hardware to speed up
+  video decoding or encoding. Use `ffmpeg -hwaccels` to list all available hardware accelerators on your system.

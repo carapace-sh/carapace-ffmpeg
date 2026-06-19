@@ -1,0 +1,38 @@
+v: |
+  Matches video streams. Common shorthand for stream type `video`.
+  Use `v:INDEX` to target a specific video stream by zero-based index (e.g. `v:0` for the first video stream).
+V: |
+  Matches video streams excluding attached pictures and cover art.
+  Useful when you want to operate on "real" video streams without processing thumbnail images embedded as video streams.
+a: |
+  Matches audio streams. Common shorthand for stream type `audio`.
+  Use `a:INDEX` to target a specific audio stream by zero-based index (e.g. `a:1` for the second audio stream).
+s: |
+  Matches subtitle streams.
+  Use `s:INDEX` to target a specific subtitle stream by zero-based index.
+d: |
+  Matches data streams. Data streams carry metadata or timing information rather than audio/video content.
+  Use `d:INDEX` to target a specific data stream by zero-based index.
+t: |
+  Matches attachment streams. Attachments are typically cover art or similar embedded resources.
+  Use `t:INDEX` to target a specific attachment stream by zero-based index.
+g: |
+  Matches stream groups. Stream groups bundle related streams together.
+  Use `g:INDEX` to target a specific stream group by zero-based index.
+p: |
+  Matches streams belonging to a specific program. Programs are used in MPEG-TS and similar container formats.
+  Use `p:PROGRAM_ID` to target streams within a specific program.
+"#": |
+  Matches a stream by its stream ID (hexadecimal). For example, `#0x1F3` matches the stream with ID 0x1F3.
+i: |
+  Matches a stream by its stream ID (hexadecimal, alternate form). Functionally identical to `#` but uses `i` as the prefix.
+  Use `i:0x1F3` to match stream with ID 0x1F3.
+m: |
+  Matches streams by metadata key-value pairs. For example, `m:language:eng` matches streams with language metadata set to English.
+  The general form is `m:KEY:VALUE`. The `KEY` can be any metadata field name.
+disp: |
+  Matches streams by disposition flags. Dispositions describe how a stream should be treated (default, forced, hearing-impaired, etc.).
+  Multiple dispositions can be combined with `+`. For example, `disp:default+forced` matches streams that have both the default and forced dispositions set.
+u: |
+  Matches streams with a usable configuration. A stream has a usable configuration when it can be decoded or encoded without errors.
+  This is useful as a filter to skip streams that are broken or have missing decoders.

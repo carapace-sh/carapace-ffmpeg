@@ -1,0 +1,4 @@
+example: |
+  A bitstream filter in ffmpeg. Bitstream filters operate on the compressed bitstream without fully decoding it.
+  They can modify codec-specific parameters, extract or insert data, and transform between codec variants.
+  Use `ffmpeg -bsfs` to list all available bitstream filters on your system.

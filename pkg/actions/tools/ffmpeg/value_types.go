@@ -99,7 +99,7 @@ func actionCodecs(opts CodecOpts, filter func(s string) bool) carapace.Action {
 			vals = append(vals, "copy", "copy the codec of the input", style.Default)
 		}
 		return carapace.ActionStyledValuesDescribed(vals...)
-	}).Tag("codecs")
+	}).Tag("codecs").UidF(Uid("codec"))
 }
 
 type DecoderOpts struct {
@@ -149,7 +149,7 @@ func ActionDecoders(opts DecoderOpts) carapace.Action {
 			}
 		}
 		return carapace.ActionStyledValuesDescribed(vals...)
-	}).Tag("decoders")
+	}).Tag("decoders").UidF(Uid("decoder"))
 }
 
 type EncoderOpts struct {
@@ -199,7 +199,7 @@ func ActionEncoders(opts EncoderOpts) carapace.Action {
 			}
 		}
 		return carapace.ActionStyledValuesDescribed(vals...)
-	}).Tag("encoders")
+	}).Tag("encoders").UidF(Uid("encoder"))
 }
 
 // ActionFormats completes formats
@@ -230,7 +230,7 @@ func ActionFormats() carapace.Action {
 			}
 		}
 		return carapace.ActionStyledValuesDescribed(vals...)
-	}).Tag("formats")
+	}).Tag("formats").UidF(Uid("format"))
 }
 
 // ActionPixelFormats completes pixel formats
@@ -254,7 +254,7 @@ func ActionPixelFormats() carapace.Action {
 			}
 		}
 		return carapace.ActionValuesDescribed(vals...)
-	}).Tag("pixel formats")
+	}).Tag("pixel formats").UidF(Uid("pixel-format"))
 }
 
 // ActionSampleFormats completes sample formats
@@ -274,7 +274,7 @@ func ActionSampleFormats() carapace.Action {
 			}
 		}
 		return carapace.ActionValuesDescribed(vals...)
-	}).Tag("sample formats")
+	}).Tag("sample formats").UidF(Uid("sample-format"))
 }
 
 // ActionChannelLayouts completes channel layouts
@@ -298,7 +298,7 @@ func ActionChannelLayouts() carapace.Action {
 			}
 		}
 		return carapace.ActionValuesDescribed(vals...)
-	}).Tag("channel layouts")
+	}).Tag("channel layouts").UidF(Uid("channel-layout"))
 }
 
 // ActionFilters completes filters
@@ -322,7 +322,7 @@ func ActionFilters() carapace.Action {
 			}
 		}
 		return carapace.ActionValuesDescribed(vals...)
-	}).Tag("filters")
+	}).Tag("filters").UidF(Uid("filter"))
 }
 
 // ActionVideoSizes completes video size abbreviations
@@ -338,7 +338,7 @@ func ActionVideoSizes() carapace.Action {
 		"qxga", "sxga", "qsxga", "hsxga",
 		"hd1080", "hd720", "hd480",
 		"uhd2160", "uhd4320", "4k", "2k",
-	).Tag("video sizes")
+	).Tag("video sizes").Uid("ffmpeg", "video-size")
 }
 
 // ActionFrameRates completes frame rate abbreviations
@@ -349,7 +349,7 @@ func ActionFrameRates() carapace.Action {
 	return carapace.ActionValues(
 		"ntsc", "pal", "qntsc", "qpal", "sntsc", "spal",
 		"film", "ntsc-film",
-	).Tag("frame rates")
+	).Tag("frame rates").Uid("ffmpeg", "frame-rate")
 }
 
 // ActionLogLevels completes log levels
@@ -367,7 +367,7 @@ func ActionLogLevels() carapace.Action {
 		"verbose", "Same as \"info\", except more verbose",
 		"debug", "Show everything, including debugging information",
 		"trace", "",
-	).StyleF(style.ForLogLevel).Tag("log levels")
+	).StyleF(style.ForLogLevel).Tag("log levels").Uid("ffmpeg", "log-level")
 }
 
 // ActionFPSModes completes fps_mode/vsync values
@@ -381,7 +381,7 @@ func ActionFPSModes() carapace.Action {
 		"vfr", "variable frame rate (prevent duplicate timestamps)",
 		"auto", "automatically choose between cfr and vfr (default)",
 		"drop", "same as passthrough but drop all frames (deprecated)",
-	).Tag("fps modes")
+	).Tag("fps modes").Uid("ffmpeg", "fps-mode")
 }
 
 // ActionCopyTB completes copytb values
@@ -393,7 +393,7 @@ func ActionCopyTB() carapace.Action {
 		"-1", "choose automatically (default)",
 		"0", "use decoder timebase",
 		"1", "use demuxer timebase",
-	).Tag("copy timebase")
+	).Tag("copy timebase").Uid("ffmpeg", "copytb")
 }
 
 // ActionAbortOn completes abort_on flag values
@@ -404,7 +404,7 @@ func ActionAbortOn() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"empty_output", "abort when no packets were passed to the muxer",
 		"empty_output_stream", "abort when some output streams are empty",
-	).Tag("abort on flags")
+	).Tag("abort on flags").Uid("ffmpeg", "abort-on")
 }
 
 // ActionDiscard completes discard values
@@ -420,7 +420,7 @@ func ActionDiscard() carapace.Action {
 		"nointra", "discard all non-intra frames",
 		"nokey", "discard all frames except keyframes",
 		"all", "discard all frames",
-	).Tag("discard values")
+	).Tag("discard values").Uid("ffmpeg", "discard")
 }
 
 // ActionBitstreamFilters completes bitstream filters
@@ -443,7 +443,7 @@ func ActionBitstreamFilters() carapace.Action {
 			}
 		}
 		return carapace.ActionValues(vals...)
-	}).Tag("bitstream filters")
+	}).Tag("bitstream filters").UidF(Uid("bitstream-filter"))
 }
 
 // ActionPrintGraphsFormats completes print_graphs_format values
@@ -461,7 +461,7 @@ func ActionPrintGraphsFormats() carapace.Action {
 		"xml", "XML format",
 		"mermaid", "Mermaid flowchart format",
 		"mermaidhtml", "Mermaid flowchart as HTML",
-	).Tag("print graphs formats")
+	).Tag("print graphs formats").Uid("ffmpeg", "print-graphs-format")
 }
 
 // ActionTargets completes target file type values
@@ -483,7 +483,7 @@ func ActionTargets() carapace.Action {
 		"ntsc-dvd", "NTSC DVD",
 		"film-vcd", "FILM Video CD",
 		"film-dvd", "FILM DVD",
-	).Tag("targets")
+	).Tag("targets").Uid("ffmpeg", "target")
 }
 
 // ActionDispositions completes stream disposition names
@@ -496,7 +496,7 @@ func ActionDispositions() carapace.Action {
 		"forced", "hearing_impaired", "visual_impaired", "clean_effects",
 		"attached_pic", "timed_thumbnails", "non_diegetic", "captions",
 		"descriptions", "metadata", "dependent", "still_image", "multilayer",
-	).Tag("dispositions")
+	).Tag("dispositions").Uid("ffmpeg", "disposition")
 }
 
 // ActionBoolean completes boolean value options
@@ -504,7 +504,7 @@ func ActionDispositions() carapace.Action {
 //	true
 //	false
 func ActionBoolean() carapace.Action {
-	return carapace.ActionValues("true", "false", "1", "0").Tag("booleans")
+	return carapace.ActionValues("true", "false", "1", "0").Tag("booleans").Uid("ffmpeg", "boolean")
 }
 
 // ActionBitrates completes common bitrate values
@@ -529,7 +529,7 @@ func ActionBitrates() carapace.Action {
 		"20M", "20 Mbit/s",
 		"25M", "25 Mbit/s",
 		"50M", "50 Mbit/s",
-	).Tag("bitrates")
+	).Tag("bitrates").Uid("ffmpeg", "bitrate")
 }
 
 // ActionHWAccels completes hardware acceleration method names
@@ -547,5 +547,5 @@ func ActionHWAccels() carapace.Action {
 			}
 		}
 		return carapace.ActionValues(vals...)
-	}).Tag("hardware accelerators")
+	}).Tag("hardware accelerators").UidF(Uid("hwaccel"))
 }

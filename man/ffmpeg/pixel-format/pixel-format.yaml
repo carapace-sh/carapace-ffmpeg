@@ -1,0 +1,3 @@
+example: |
+  A pixel format in ffmpeg. Pixel formats define how color channels are stored in video frames.
+  Use `ffmpeg -pix_fmts` to list all available pixel formats on your system.

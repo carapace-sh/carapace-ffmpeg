@@ -1,0 +1,26 @@
+quiet: |
+  Show nothing at all. All log output is suppressed. Useful when you want completely silent operation.
+panic: |
+  Only show fatal errors that could lead the process to crash, such as assertion failures or memory corruption.
+  Nothing is shown for recoverable errors.
+fatal: |
+  Only show fatal errors. These are errors from which the process cannot recover and will exit with an error code.
+  More permissive than `panic` — includes errors that are fatal but not necessarily crash-inducing.
+error: |
+  Show all errors, including those from which the process might be able to recover. This includes errors that cause
+  output quality degradation but don't prevent completion.
+warning: |
+  Show all warnings and errors. Warnings indicate potential issues that may affect output quality or correctness.
+  This is the default log level when no `-loglevel` is specified.
+info: |
+  Show informative messages during processing in addition to warnings and errors. Includes progress indicators and
+  general status information about what ffmpeg is doing.
+verbose: |
+  Same as `info` but more verbose. Shows additional details about stream processing, format detection, and other
+  operational parameters. Useful for understanding what ffmpeg is doing internally.
+debug: |
+  Show everything including detailed debugging information. This is very verbose and primarily useful for development
+  and troubleshooting. Not recommended for normal use due to the volume of output.
+trace: |
+  The most verbose log level. Shows extremely detailed trace information about every internal operation.
+  Primarily useful for developers debugging ffmpeg internals.

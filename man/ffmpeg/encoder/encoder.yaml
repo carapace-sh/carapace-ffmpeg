@@ -1,0 +1,3 @@
+example: |
+  An encoder in ffmpeg. Encoders convert raw frames into compressed media data for output.
+  Use `ffmpeg -encoders` to list all available encoders on your system.

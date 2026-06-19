@@ -1,0 +1,31 @@
+vcd: |
+  Video CD target (PAL or NTSC). Sets encoding parameters for Video CD compliance including bitrate, resolution,
+  and GOP structure. VCD uses MPEG-1 at approximately 1.15 Mbit/s.
+svcd: |
+  Super Video CD target. Sets encoding parameters for SVCD compliance including MPEG-2 at up to 2.6 Mbit/s
+  with higher resolution than VCD.
+dvd: |
+  DVD target (PAL or NTSC). Sets encoding parameters for DVD-Video compliance including MPEG-2 at up to 9.8 Mbit/s
+  with standard DVD resolution and GOP structure.
+dv: |
+  DV target (PAL or NTSC). Sets encoding parameters for DV (Digital Video) compliance, matching the standard
+  DV25 format used in miniDV cameras.
+dv50: |
+  DV50 target (PAL or NTSC). Sets encoding parameters for DV50 (DVCPRO50) compliance, a higher quality variant
+  of DV with approximately 50 Mbit/s bitrate.
+pal-vcd: |
+  PAL Video CD target. Same as `vcd` but explicitly selects PAL parameters (25 fps, 352×288 resolution).
+pal-svcd: |
+  PAL Super Video CD target. Same as `svcd` but explicitly selects PAL parameters (25 fps, 480×576 resolution).
+pal-dvd: |
+  PAL DVD target. Same as `dvd` but explicitly selects PAL parameters (25 fps, 720×576 resolution).
+ntsc-vcd: |
+  NTSC Video CD target. Same as `vcd` but explicitly selects NTSC parameters (29.97 fps, 352×240 resolution).
+ntsc-svcd: |
+  NTSC Super Video CD target. Same as `svcd` but explicitly selects NTSC parameters (29.97 fps, 480×480 resolution).
+ntsc-dvd: |
+  NTSC DVD target. Same as `dvd` but explicitly selects NTSC parameters (29.97 fps, 720×480 resolution).
+film-vcd: |
+  FILM Video CD target. VCD parameters at 24 fps film frame rate instead of PAL or NTSC rates.
+film-dvd: |
+  FILM DVD target. DVD parameters at 24 fps film frame rate instead of PAL or NTSC rates.

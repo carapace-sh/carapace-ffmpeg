@@ -1,0 +1,8 @@
+"true": |
+  Boolean true. Enables the option or feature.
+"false": |
+  Boolean false. Disables the option or feature.
+"1": |
+  Numeric boolean true. Equivalent to `true` — enables the option or feature.
+"0": |
+  Numeric boolean false. Equivalent to `false` — disables the option or feature.

@@ -1,0 +1,6 @@
+"-1": |
+  Choose the timebase automatically (default). ffmpeg selects the most appropriate timebase based on the input and output formats.
+"0": |
+  Use the decoder timebase. The output stream timebase is set to match the decoder's internal timebase.
+"1": |
+  Use the demuxer timebase. The output stream timebase is set to match the demuxer's timebase from the input container.

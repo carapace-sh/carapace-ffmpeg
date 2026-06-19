@@ -1,0 +1,3 @@
+example: |
+  A sample format in ffmpeg. Sample formats define how audio samples are stored (bit depth and planar/interleaved layout).
+  Use `ffmpeg -sample_fmts` to list all available sample formats on your system.

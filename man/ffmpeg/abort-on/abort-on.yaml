@@ -1,0 +1,6 @@
+empty_output: |
+  Abort the encoding process when no packets were passed to the muxer. This can happen when all output streams
+  are empty or were filtered out, resulting in an output file with no media content.
+empty_output_stream: |
+  Abort the encoding process when some output streams are empty (no packets were passed for those streams).
+  Less strict than `empty_output` — only requires at least one stream to have content.

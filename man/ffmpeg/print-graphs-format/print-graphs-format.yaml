@@ -1,0 +1,20 @@
+default: |
+  Human-readable default format. Shows filter graph structure with indentation and labels for easy reading.
+compact: |
+  Compact format. A minimized representation of the filter graph with less whitespace, suitable for scripting.
+csv: |
+  CSV (Comma-Separated Values) format. Outputs filter graph structure as CSV data for programmatic processing.
+flat: |
+  Flat key=value format. Each filter graph property on its own line as a simple key=value pair.
+ini: |
+  INI configuration format. Uses the familiar INI section/key structure to represent the filter graph.
+json: |
+  JSON format. Outputs the filter graph as structured JSON data, ideal for API integration and programmatic consumption.
+xml: |
+  XML format. Outputs the filter graph as an XML document for systems that consume XML.
+mermaid: |
+  Mermaid flowchart format. Generates a [Mermaid](https://mermaid.js.org/) diagram definition that can be rendered
+  as a visual flowchart in compatible viewers.
+mermaidhtml: |
+  Mermaid flowchart as self-contained HTML. Generates an HTML page with an inline Mermaid diagram that can be
+  opened directly in a browser.

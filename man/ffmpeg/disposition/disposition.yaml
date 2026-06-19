@@ -1,0 +1,45 @@
+default: |
+  Default disposition. The stream is the default selection for its stream type when no explicit stream selection is made.
+  Only one stream of each type should have this flag set.
+dub: |
+  Dubbed or translated audio. Indicates the stream contains a dubbed or translated version rather than the original audio.
+original: |
+  Original language or content. Indicates the stream is in the original language or is the original content version.
+comment: |
+  Commentary track. Typically used for director's commentary or similar secondary audio descriptions.
+lyrics: |
+  Lyrics track. Contains song lyrics, typically synchronized with the audio.
+karaoke: |
+  Karaoke track. An audio stream without lead vocals, intended for karaoke use.
+forced: |
+  Forced display. Subtitles or audio that should always be displayed regardless of user preferences.
+  Commonly used for on-screen text translations in foreign language scenes.
+hearing_impaired: |
+  Hearing impaired. Audio or subtitles optimized for viewers with hearing impairments,
+  e.g. reduced dynamic range or descriptive subtitles for sound effects.
+visual_impaired: |
+  Visually impaired. Audio with additional narration describing visual content for viewers with visual impairments.
+clean_effects: |
+  Clean effects. Audio stream containing only sound effects and music without dialogue.
+  Used when dialogue is provided as a separate stream.
+attached_pic: |
+  Attached picture. A video stream that consists of a single still image (typically album art).
+  Such streams are usually excluded from video processing.
+timed_thumbnails: |
+  Timed thumbnails. A set of thumbnail images synchronized with the main video stream.
+non_diegetic: |
+  Non-diegetic. Audio that is not part of the story world (e.g. background music, narrator voice).
+captions: |
+  Captions. Closed captions including both dialogue and sound effect descriptions.
+  Distinct from subtitles in that they include non-speech audio information.
+descriptions: |
+  Descriptions. Audio descriptions of visual content for visually impaired viewers.
+metadata: |
+  Metadata. Contains metadata about the stream or content rather than playable media.
+dependent: |
+  Dependent. The stream depends on another stream and cannot be decoded independently.
+  Commonly used for auxiliary or enhancement layers.
+still_image: |
+  Still image. The stream represents a still image rather than a video sequence.
+multilayer: |
+  Multilayer. The stream is composed of multiple layers that can be rendered independently.

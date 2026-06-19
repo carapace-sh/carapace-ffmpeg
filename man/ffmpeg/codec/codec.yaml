@@ -1,0 +1,3 @@
+copy: |
+  Copy the codec of the input stream without re-encoding. The stream data is passed through unchanged.
+  Use `copy` when you want to preserve the original quality and avoid transcoding overhead.

@@ -1,0 +1,3 @@
+example: |
+  A filter in ffmpeg. Filters transform media streams — examples include `scale` (resize video), `volume` (adjust audio),
+  `overlay` (composite video), and hundreds more. Use `ffmpeg -filters` to list all available filters on your system.

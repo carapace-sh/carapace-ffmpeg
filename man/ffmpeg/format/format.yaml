@@ -1,0 +1,3 @@
+example: |
+  A container format in ffmpeg. Formats define how media data is multiplexed/demultiplexed in a file or stream.
+  Use `ffmpeg -formats` to list all available formats on your system.

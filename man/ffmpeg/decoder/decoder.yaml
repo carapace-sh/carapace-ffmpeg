@@ -1,0 +1,3 @@
+example: |
+  A decoder in ffmpeg. Decoders convert compressed media data into raw frames for processing or display.
+  Use `ffmpeg -decoders` to list all available decoders on your system.

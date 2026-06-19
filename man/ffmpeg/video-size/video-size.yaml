@@ -1,0 +1,60 @@
+ntsc: |
+  NTSC resolution: 720×480 at 29.97 fps. Standard definition video format used in North America, Japan, and other countries.
+pal: |
+  PAL resolution: 720×576 at 25 fps. Standard definition video format used in Europe, China, and other countries.
+qntsc: |
+  Quarter NTSC resolution: 320×240. Quarter the pixel count of NTSC standard definition.
+qpal: |
+  Quarter PAL resolution: 384×288. Quarter the pixel count of PAL standard definition.
+sntsc: |
+  Squared NTSC resolution: 640×480. NTSC with square pixels (adjusted from rectangular pixel source).
+spal: |
+  Squared PAL resolution: 768×576. PAL with square pixels (adjusted from rectangular pixel source).
+film: |
+  Film resolution: 720×480 at 23.976 fps. Native film frame rate resolution.
+ntsc-film: |
+  NTSC film resolution: 720×480 at 23.976 fps. NTSC frame size at film frame rate.
+sqcif: |
+  Sub-QCIF resolution: 128×96. Very small resolution used in early video conferencing.
+qcif: |
+  Quarter CIF resolution: 176×144. Small resolution used in H.323 video conferencing.
+cif: |
+  Common Intermediate Format resolution: 352×288. Standard resolution for video conferencing.
+4cif: |
+  4× CIF resolution: 704×576. Four times CIF resolution.
+16cif: |
+  16× CIF resolution: 1408×1152. Sixteen times CIF resolution.
+qqvga: |
+  Quarter-QVGA resolution: 160×120. Very small display resolution.
+qvga: |
+  Quarter VGA resolution: 320×240. Common in early mobile devices.
+vga: |
+  VGA resolution: 640×480. Standard display resolution introduced with IBM VGA.
+svga: |
+  Super VGA resolution: 800×600. Extended VGA resolution.
+xga: |
+  XGA resolution: 1024×768. Extended Graphics Array resolution.
+uxga: |
+  Ultra XGA resolution: 1600×1200. High-resolution display standard.
+qxga: |
+  Quad XGA resolution: 2048×1536. Four times XGA pixel count.
+sxga: |
+  Super XGA resolution: 1280×1024. Common 5:4 aspect ratio resolution.
+qsxga: |
+  Quad SXGA resolution: 2560×2048. Four times SXGA pixel count.
+hsxga: |
+  Hex SXGA resolution: 5120×4096. Six times SXGA pixel count (very high resolution).
+hd1080: |
+  Full HD 1080 resolution: 1920×1080. Standard high-definition resolution.
+hd720: |
+  HD 720 resolution: 1280×720. Lower high-definition resolution.
+hd480: |
+  HD 480 resolution: 854×480. Standard definition widescreen resolution.
+uhd2160: |
+  Ultra HD 4K resolution: 3840×2160. 4K high-definition resolution.
+uhd4320: |
+  Ultra HD 8K resolution: 7680×4320. 8K ultra-high-definition resolution.
+4k: |
+  Alias for `uhd2160`. DCI 4K resolution: 3840×2160.
+2k: |
+  2K resolution: 2048×1080. DCI 2K cinema resolution.

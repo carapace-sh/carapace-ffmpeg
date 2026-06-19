@@ -265,7 +265,7 @@ func actionStreamSpecifiers() carapace.Action {
 		"m", "metadata",
 		"disp", "disposition",
 		"u", "usable configuration",
-	).NoSpace(':')
+	).NoSpace(':').Uid("ffmpeg", "stream-specifier")
 }
 
 func actionCodec(ctx *argstream.CompletionContext) carapace.Action {

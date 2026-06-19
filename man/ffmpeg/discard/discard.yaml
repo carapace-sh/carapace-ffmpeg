@@ -1,0 +1,19 @@
+none: |
+  Discard nothing. All packets are kept regardless of their type or content.
+default: |
+  Discard useless packets (default behavior). This is the standard discard mode applied when no explicit mode is set.
+  Typically discards packets that are not needed for decoding, such as padding or timing-only packets.
+noref: |
+  Discard all non-reference frames. Only reference frames (keyframes and frames needed for reconstruction) are kept.
+  Useful for seeking or thumbnail extraction where only I-frames are needed.
+bidir: |
+  Discard all bidirectional (B) frames. Only I-frames and P-frames are kept.
+  Reduces quality but can speed up processing since B-frames are computationally expensive.
+nointra: |
+  Discard all non-intra frames. Only intra-coded (I) frames are kept.
+  Similar to `noref` but more aggressive — discards both P-frames and B-frames.
+nokey: |
+  Discard all frames except keyframes (I-frames). Only the most essential reference frames are kept.
+  Results in very low quality but maximum processing speed.
+all: |
+  Discard all frames. No frames are decoded. Useful for probing the stream format without decoding any content.

@@ -1,0 +1,32 @@
+96k: |
+  96 kbit/s. Low quality audio bitrate, suitable for speech or very low quality music.
+128k: |
+  128 kbit/s. Standard quality audio bitrate for MP3/AAC. Acceptable for casual listening.
+160k: |
+  160 kbit/s. Good quality audio bitrate. Noticeably better than 128k for music.
+192k: |
+  192 kbit/s. High quality audio bitrate. Good balance between quality and file size for music.
+256k: |
+  256 kbit/s. Very high quality audio bitrate. Near-transparent for most listeners.
+320k: |
+  320 kbit/s. Maximum quality for most lossy audio codecs. Virtually indistinguishable from lossless for most content.
+500k: |
+  500 kbit/s. Low video bitrate, suitable for very low resolution or high compression content.
+1M: |
+  1 Mbit/s. Low video bitrate. Suitable for standard definition video with moderate quality.
+2M: |
+  2 Mbit/s. Moderate video bitrate. Typical for DVD-quality standard definition video.
+5M: |
+  5 Mbit/s. Medium video bitrate. Suitable for 720p HD video with reasonable quality.
+8M: |
+  8 Mbit/s. Good video bitrate. Suitable for high quality 720p or moderate quality 1080p video.
+10M: |
+  10 Mbit/s. High video bitrate. Good quality 1080p HD video.
+15M: |
+  15 Mbit/s. Very high video bitrate. High quality 1080p video or moderate quality 4K.
+20M: |
+  20 Mbit/s. Very high video bitrate. Excellent quality 1080p video or good quality 4K.
+25M: |
+  25 Mbit/s. Extremely high video bitrate. Near-lossless 1080p or high quality 4K.
+50M: |
+  50 Mbit/s. Ultra high video bitrate. Suitable for professional 4K mastering or very high quality content.

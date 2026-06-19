@@ -1,0 +1,3 @@
+example: |
+  A channel layout in ffmpeg. Channel layouts define the speaker configuration for audio (mono, stereo, 5.1, etc.).
+  Use `ffmpeg -layouts` to list all available channel layouts on your system.

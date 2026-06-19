@@ -1,0 +1,15 @@
+passthrough: |
+  Each frame is passed through with its timestamp from the demuxer to the muxer unchanged.
+  No timestamp modification or frame duplication/dropping is performed.
+cfr: |
+  Constant frame rate. Frames are duplicated or dropped as needed to maintain a constant output frame rate.
+  If the input has variable timestamps or missing frames, `cfr` will insert duplicates to fill gaps.
+vfr: |
+  Variable frame rate. Prevents duplicate timestamps but allows the frame rate to vary.
+  Frames with the same timestamp as the previous frame are dropped. Timestamps are otherwise preserved.
+auto: |
+  Automatically choose between `cfr` and `vfr` depending on the input format and muxer requirements.
+  This is the default mode when no `-fps_mode` is specified.
+drop: |
+  Same as `passthrough` but all frames are dropped. The output file will have no video frames.
+  This mode is deprecated and exists for backwards compatibility only.
