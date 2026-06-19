@@ -8,6 +8,7 @@ import (
 	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/filtergraph"
+	"github.com/carapace-sh/carapace-ffmpeg/pkg/probe"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/streamspec"
 )
 
@@ -190,14 +191,77 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	}
 }
 
+// ProbeAll probes all input URLs in the completion context and returns
+// the merged stream info. Uses caching to avoid probing the same URL twice.
+func ProbeAll(ctx *argstream.CompletionContext) []probe.StreamInfo {
+	return probeURLs(ctx.InputURLs)
+}
+
+func probeURLs(urls []string) []probe.StreamInfo {
+	var all []probe.StreamInfo
+	seen := make(map[string]bool)
+	for _, url := range urls {
+		if seen[url] {
+			continue
+		}
+		seen[url] = true
+		streams, _ := probe.Probe(url)
+		all = append(all, streams...)
+	}
+	return all
+}
+
+// streamTypeToCodecType maps a stream specifier type letter to the ffprobe codec_type value.
+func streamTypeToCodecType(letter string) string {
+	switch letter {
+	case "v", "V":
+		return "video"
+	case "a":
+		return "audio"
+	case "s":
+		return "subtitle"
+	case "d":
+		return "data"
+	case "t":
+		return "attachment"
+	default:
+		return ""
+	}
+}
+
+// extractStreamTypeLetter extracts the stream type letter from a specifier string.
+// For example "a:" returns "a", "a:1" returns "a", "v" returns "v", "m:language:eng" returns "".
+// Returns empty for "disp:" since that's a disposition specifier, not a data stream.
+func extractStreamTypeLetter(specifierPart string) string {
+	if len(specifierPart) == 0 {
+		return ""
+	}
+	// disp: is a disposition specifier, not a data stream type
+	if len(specifierPart) >= 5 && specifierPart[:5] == "disp:" {
+		return ""
+	}
+	ch := specifierPart[0]
+	switch ch {
+	case 'v', 'V', 'a', 's', 'd', 't':
+		return string(ch)
+	default:
+		return ""
+	}
+}
+
 // ActionStreamSpecifier handles stream specifier completion.
 func ActionStreamSpecifier(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
+	return ActionStreamSpecifierWithStreams(ctx, c, nil)
+}
+
+// ActionStreamSpecifierWithStreams handles stream specifier completion with optional probed stream info.
+func ActionStreamSpecifierWithStreams(ctx *argstream.CompletionContext, c carapace.Context, streams []probe.StreamInfo) carapace.Action {
 	if ctx.CurrentOption == nil || !ctx.CurrentOption.AcceptsSpec {
 		return carapace.ActionValues()
 	}
 
 	if colon, after, ok := strings.Cut(c.Value, ":"); ok {
-		return actionStreamSpecifierAfter(after).Invoke(
+		return actionStreamSpecifierAfter(after, streams).Invoke(
 			carapace.Context{Value: after},
 		).Prefix(colon + ":").ToA()
 	}
@@ -206,7 +270,7 @@ func ActionStreamSpecifier(ctx *argstream.CompletionContext, c carapace.Context)
 
 // actionStreamSpecifierAfter returns context-aware completions for the
 // specifier portion after the first colon (e.g. "l" in "-c:m:l").
-func actionStreamSpecifierAfter(specifierPart string) carapace.Action {
+func actionStreamSpecifierAfter(specifierPart string, streams []probe.StreamInfo) carapace.Action {
 	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		specCtx := streamspec.ParseForCompletion(specifierPart)
 
@@ -221,17 +285,16 @@ func actionStreamSpecifierAfter(specifierPart string) carapace.Action {
 			case streamspec.ExpectedSpecifierType, streamspec.ExpectedStreamTypeLetter:
 				actions = append(actions, streamTypeActions(specCtx, prefixToReplace))
 			case streamspec.ExpectedStreamIndex:
-				actions = append(actions, carapace.ActionValues())
+				actions = append(actions, actionStreamIndex(specCtx, specifierPart, streams, prefixToReplace))
 			case streamspec.ExpectedMetadataKey:
 				action := ffmpeg.ActionMetadataKeys()
 				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
 				actions = append(actions, action)
 			case streamspec.ExpectedMetadataValue:
-				actions = append(actions, carapace.ActionValues().Suffix(":").NoSpace(':'))
+				actions = append(actions, actionMetadataValue(specCtx, streams, prefixToReplace))
 			case streamspec.ExpectedDispositionName:
-				action := ffmpeg.ActionDispositions()
-				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
-				actions = append(actions, action.Suffix(":").NoSpace(':'))
+				action := actionDispositionName(specCtx, streams, prefixToReplace)
+				actions = append(actions, action)
 			case streamspec.ExpectedGroupSpecifier,
 				streamspec.ExpectedGroupIndex,
 				streamspec.ExpectedGroupID:
@@ -308,6 +371,12 @@ func ActionStreamSpecifiers() carapace.Action {
 // text after the option name's colon, and partialValue is the currently typed
 // part being completed (c.Value from ActionMultiParts callback).
 func ActionStreamSpecifierParts(specifierPart string, partialValue string) carapace.Action {
+	return ActionStreamSpecifierPartsWithStreams(specifierPart, partialValue, nil)
+}
+
+// ActionStreamSpecifierPartsWithStreams is like ActionStreamSpecifierParts but with
+// optional probed stream info for stream-aware completion.
+func ActionStreamSpecifierPartsWithStreams(specifierPart string, partialValue string, streams []probe.StreamInfo) carapace.Action {
 	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		specCtx := streamspec.ParseForCompletion(specifierPart)
 
@@ -317,17 +386,15 @@ func ActionStreamSpecifierParts(specifierPart string, partialValue string) carap
 			case streamspec.ExpectedSpecifierType, streamspec.ExpectedStreamTypeLetter:
 				actions = append(actions, streamTypeActions(specCtx, ""))
 			case streamspec.ExpectedStreamIndex:
-				actions = append(actions, carapace.ActionValues())
+				actions = append(actions, actionStreamIndex(specCtx, specifierPart, streams, ""))
 			case streamspec.ExpectedMetadataKey:
 				action := ffmpeg.ActionMetadataKeys()
 				action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
 				actions = append(actions, action)
 			case streamspec.ExpectedMetadataValue:
-				actions = append(actions, carapace.ActionValues().Suffix(":").NoSpace(':'))
+				actions = append(actions, actionMetadataValueParts(specCtx, streams, partialValue))
 			case streamspec.ExpectedDispositionName:
-				action := ffmpeg.ActionDispositions()
-				action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
-				actions = append(actions, action.Suffix(":").NoSpace(':'))
+				actions = append(actions, actionDispositionNameParts(specCtx, streams, partialValue))
 			case streamspec.ExpectedGroupSpecifier,
 				streamspec.ExpectedGroupIndex,
 				streamspec.ExpectedGroupID:
@@ -343,6 +410,90 @@ func ActionStreamSpecifierParts(specifierPart string, partialValue string) carap
 		}
 		return carapace.Batch(actions...).ToA()
 	})
+}
+
+// actionStreamIndex returns completions for stream indices, using probed stream info
+// when available to list only actual stream indices for the resolved type.
+func actionStreamIndex(specCtx *streamspec.CompletionContext, specifierPart string, streams []probe.StreamInfo, prefixToReplace string) carapace.Action {
+	if len(streams) > 0 {
+		var codecType string
+		if specCtx.CurrentKind == streamspec.KindStreamType {
+			codecType = streamTypeToCodecType(extractStreamTypeLetter(specifierPart))
+		}
+		// When CurrentKind is KindStreamIndex (bare numeric), codecType stays ""
+		// which means all stream indices are returned.
+		indices := probe.StreamIndices(streams, codecType)
+		if len(indices) > 0 {
+			action := carapace.ActionValues(indices...)
+			if specCtx.PartialIdent != "" {
+				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+			}
+			return action.Suffix(":").NoSpace(':')
+		}
+	}
+	return carapace.ActionValues()
+}
+
+// actionMetadataValue returns completions for metadata values, using probed stream info
+// when available to list actual tag values from input streams.
+func actionMetadataValue(specCtx *streamspec.CompletionContext, streams []probe.StreamInfo, prefixToReplace string) carapace.Action {
+	if len(streams) > 0 && specCtx.MetadataKey != "" {
+		vals := probe.MetadataValues(streams, specCtx.MetadataKey)
+		if len(vals) > 0 {
+			action := carapace.ActionValues(vals...)
+			if specCtx.PartialIdent != "" {
+				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+			}
+			return action.Suffix(":").NoSpace(':')
+		}
+	}
+	return carapace.ActionValues().Suffix(":").NoSpace(':')
+}
+
+// actionMetadataValueParts returns metadata value completions for the ActionMultiParts path.
+func actionMetadataValueParts(specCtx *streamspec.CompletionContext, streams []probe.StreamInfo, partialValue string) carapace.Action {
+	if len(streams) > 0 && specCtx.MetadataKey != "" {
+		vals := probe.MetadataValues(streams, specCtx.MetadataKey)
+		if len(vals) > 0 {
+			action := carapace.ActionValues(vals...)
+			action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
+			return action.Suffix(":").NoSpace(':')
+		}
+	}
+	return carapace.ActionValues().Suffix(":").NoSpace(':')
+}
+
+// actionDispositionName returns disposition completions, preferring probed stream info
+// when available to show only dispositions that are actually set in the input.
+func actionDispositionName(specCtx *streamspec.CompletionContext, streams []probe.StreamInfo, prefixToReplace string) carapace.Action {
+	if len(streams) > 0 {
+		active := probe.ActiveDispositions(streams)
+		if len(active) > 0 {
+			action := carapace.ActionValues(active...)
+			if specCtx.PartialIdent != "" {
+				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+			}
+			return action.Suffix(":").NoSpace(':')
+		}
+	}
+	action := ffmpeg.ActionDispositions()
+	action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+	return action.Suffix(":").NoSpace(':')
+}
+
+// actionDispositionNameParts returns disposition completions for the ActionMultiParts path.
+func actionDispositionNameParts(_ *streamspec.CompletionContext, streams []probe.StreamInfo, partialValue string) carapace.Action {
+	if len(streams) > 0 {
+		active := probe.ActiveDispositions(streams)
+		if len(active) > 0 {
+			action := carapace.ActionValues(active...)
+			action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
+			return action.Suffix(":").NoSpace(':')
+		}
+	}
+	action := ffmpeg.ActionDispositions()
+	action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
+	return action.Suffix(":").NoSpace(':')
 }
 
 // ActionFilterValue returns completions for filter values using the filtergraph parser.

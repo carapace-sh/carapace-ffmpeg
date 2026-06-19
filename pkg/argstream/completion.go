@@ -60,6 +60,9 @@ type CompletionContext struct {
 	InputCount     int             `json:"inputCount"`
 	OutputCount    int             `json:"outputCount"`
 
+	// Input URLs collected from -i arguments (for stream-aware completion)
+	InputURLs []string `json:"inputURLs,omitempty"`
+
 	// Current option being completed (if any)
 	CurrentOption *OptionContext `json:"currentOption,omitempty"`
 

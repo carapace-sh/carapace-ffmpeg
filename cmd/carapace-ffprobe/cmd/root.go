@@ -35,6 +35,7 @@ func init() {
 			if completer.IsMidTokenOptionWithSpec(c.Value, profile) {
 				args, _ := completer.ContextToArgs(c)
 				ctx := argstream.ParseForCompletionWithProfile(args, false, profile)
+				streams := completer.ProbeAll(ctx)
 				originalValue := c.Value
 				return carapace.ActionMultiParts(":", func(c carapace.Context) carapace.Action {
 					switch len(c.Parts) {
@@ -45,13 +46,14 @@ func init() {
 						if _, after, ok := strings.Cut(originalValue, ":"); ok {
 							specifierPart = after
 						}
-						return completer.ActionStreamSpecifierParts(specifierPart, c.Value)
+						return completer.ActionStreamSpecifierPartsWithStreams(specifierPart, c.Value, streams)
 					}
 				})
 			}
 
 			args, trailingSpace := completer.ContextToArgs(c)
 			ctx := argstream.ParseForCompletionWithProfile(args, trailingSpace, profile)
+			streams := completer.ProbeAll(ctx)
 
 			if ctx.PartialOption != "" && !trailingSpace {
 				return completer.ActionPartialOption(ctx, profile)
@@ -67,7 +69,7 @@ func init() {
 				case argstream.ExpectedOptionValue:
 					actions = append(actions, completer.ActionOptionValue(ctx, completer.ActionDecoderOnlyCodec, c.Value))
 				case argstream.ExpectedStreamSpecifier:
-					actions = append(actions, completer.ActionStreamSpecifier(ctx, c))
+					actions = append(actions, completer.ActionStreamSpecifierWithStreams(ctx, c, streams))
 				}
 			}
 
