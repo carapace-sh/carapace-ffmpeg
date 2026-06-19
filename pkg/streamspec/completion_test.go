@@ -1,15 +1,14 @@
 package streamspec
 
 import (
+	"slices"
 	"testing"
 )
 
 func assertHasExpected(t *testing.T, ctx *CompletionContext, expected ExpectedToken) {
 	t.Helper()
-	for _, e := range ctx.ExpectedTokens {
-		if e == expected {
-			return
-		}
+	if slices.Contains(ctx.ExpectedTokens, expected) {
+		return
 	}
 	t.Errorf("expected token %v not found in %v", expected, ctx.ExpectedTokens)
 }

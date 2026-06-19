@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	"github.com/carapace-sh/carapace"
@@ -102,10 +103,8 @@ func init() {
 // the completion context expects an option value (e.g. when a partial option
 // like `-v` resolved to a known value option like `-vloglevel`).
 func actionOptionValueIfExpected(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
-	for _, token := range ctx.ExpectedTokens {
-		if token == argstream.ExpectedOptionValue {
-			return actionOptionValue(ctx, c)
-		}
+	if slices.Contains(ctx.ExpectedTokens, argstream.ExpectedOptionValue) {
+		return actionOptionValue(ctx, c)
 	}
 	return carapace.ActionValues()
 }

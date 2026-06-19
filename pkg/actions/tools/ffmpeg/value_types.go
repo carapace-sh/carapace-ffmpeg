@@ -228,7 +228,7 @@ func ActionFormats() carapace.Action {
 				case matches[2] == "E":
 					s = style.Yellow
 				}
-				for _, name := range strings.Split(matches[4], ",") {
+				for name := range strings.SplitSeq(matches[4], ",") {
 					vals = append(vals, name, matches[5], s)
 				}
 			}
@@ -695,7 +695,7 @@ func ActionDevices(opts DeviceOpts) carapace.Action {
 				default:
 					continue
 				}
-				for _, name := range strings.Split(matches[3], ",") {
+				for name := range strings.SplitSeq(matches[3], ",") {
 					vals = append(vals, name, matches[4], s)
 				}
 			}

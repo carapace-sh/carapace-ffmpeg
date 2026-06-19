@@ -98,9 +98,7 @@ func (p *compParser) addForm(prefix, desc string, suffixes ...string) {
 }
 
 func (p *compParser) addTopLevelForms() {
-	for _, f := range allForms() {
-		p.ctx.ValidForms = append(p.ctx.ValidForms, f)
-	}
+	p.ctx.ValidForms = append(p.ctx.ValidForms, allForms()...)
 }
 
 func (p *compParser) parseSpecifier() {
