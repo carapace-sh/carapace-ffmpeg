@@ -19,7 +19,58 @@ archives:
     builds:
       - carapace-ffmpeg
       - carapace-ffplay
-      - carapace-ffmprobe
+      - carapace-ffprobe
     format_overrides:
       - goos: windows
         format: zip
+
+brews:
+  -
+    name: carapace-ffmpeg
+    description: "An FFmpeg argstream lexer and completer."
+    homepage: "https://github.com/carapace-sh/carapace-ffmpeg"
+    license: "MIT"
+    repository:
+      owner: rsteube
+      name: homebrew-tap
+      token: "{{ .Env.GORELEASER_GITHUB_TOKEN }}"
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+
+scoops:
+  -
+    description: "An FFmpeg argstream lexer and completer."
+    homepage: "https://github.com/carapace-sh/carapace-ffmpeg"
+    license: "MIT"
+    repository:
+      owner: rsteube
+      name: scoop-bucket
+      token: "{{ .Env.GORELEASER_GITHUB_TOKEN }}"
+    commit_msg_template: "Scoop update for {{ .ProjectName }} version {{ .Tag }}"
+
+aurs:
+  -
+    description: "An FFmpeg argstream lexer and completer."
+    homepage: "https://github.com/carapace-sh/carapace-ffmpeg"
+    license: "MIT"
+    maintainers:
+      - rsteube <rsteube@users.noreply.github.com>
+    private_key: '{{ .Env.AUR_KEY }}'
+    git_url: 'ssh://aur@aur.archlinux.org/carapace-ffmpeg-bin.git'
+
+nfpms:
+  -
+    description: "An FFmpeg argstream lexer and completer."
+    homepage: "https://github.com/carapace-sh/carapace-ffmpeg"
+    license: "MIT"
+    maintainer: rsteube <rsteube@users.noreply.github.com>
+    formats:
+      - apk
+      - deb
+      - rpm
+      - termux.deb
+
+publishers:
+  - name: fury
+    cmd: "bash -c \"[[ {{.ArtifactPath}} =~ ^.*.(deb|rpm)$ ]] && curl -F package=@{{abs .ArtifactPath}} https://$FURY_TOKEN@push.fury.io/rsteube/ || true\""
+    env:
+      - FURY_TOKEN={{ .Env.FURY_TOKEN }}
