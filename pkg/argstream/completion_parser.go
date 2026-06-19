@@ -138,6 +138,7 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 			if baseName == "i" {
 				if i < len(args) && !isOption(args[i]) {
 					ctx.InputCount++
+					ctx.InputURLs = append(ctx.InputURLs, args[i])
 					ctx.Scope = ScopeInputFile
 					i++ // consume the URL
 				} else {

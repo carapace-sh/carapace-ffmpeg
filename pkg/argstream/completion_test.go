@@ -410,3 +410,33 @@ func TestCompletionPartialDashAtGlobalScope(t *testing.T) {
 		t.Errorf("expected ScopeGlobal, got %v", ctx.Scope)
 	}
 }
+
+func TestCompletionInputURLs(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "input1.mp4", "-i", "input2.mkv"}, true)
+	if len(ctx.InputURLs) != 2 {
+		t.Fatalf("expected 2 InputURLs, got %d", len(ctx.InputURLs))
+	}
+	if ctx.InputURLs[0] != "input1.mp4" {
+		t.Errorf("expected InputURLs[0]=input1.mp4, got %q", ctx.InputURLs[0])
+	}
+	if ctx.InputURLs[1] != "input2.mkv" {
+		t.Errorf("expected InputURLs[1]=input2.mkv, got %q", ctx.InputURLs[1])
+	}
+}
+
+func TestCompletionInputURLsEmpty(t *testing.T) {
+	ctx := ParseForCompletion([]string{}, true)
+	if len(ctx.InputURLs) != 0 {
+		t.Errorf("expected 0 InputURLs, got %d", len(ctx.InputURLs))
+	}
+}
+
+func TestCompletionInputURLsSingle(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "video.mp4"}, true)
+	if len(ctx.InputURLs) != 1 {
+		t.Fatalf("expected 1 InputURL, got %d", len(ctx.InputURLs))
+	}
+	if ctx.InputURLs[0] != "video.mp4" {
+		t.Errorf("expected InputURLs[0]=video.mp4, got %q", ctx.InputURLs[0])
+	}
+}
