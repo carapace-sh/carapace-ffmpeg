@@ -97,19 +97,23 @@ func isMidTokenOptionWithSpec(value string) bool {
 // contextToArgs converts carapace.Context to the args and trailingSpace
 // expected by argstream.ParseForCompletion.
 //
-// c.Args contains all positional args ending with a trailing empty string
-// marking the word-break position. When the cursor is mid-token,
-// the current word appears both as the last non-empty arg AND in c.Value.
-// When the cursor is after a space, c.Value is empty.
+// c.Args contains the positional arguments up to (but not including) the
+// current token being completed. c.Value contains the current token.
 //
-// We strip the trailing empty string to get the args list, and determine
-// trailingSpace from whether c.Value is empty.
+// Some shell protocols include a trailing empty string in c.Args to mark
+// the word-break position. We strip it. When c.Value is non-empty, it is
+// the current token being completed and must be appended to args so the
+// argstream parser can see it. trailingSpace is true when the cursor is
+// at a new blank position after the last token (c.Value == "").
 func contextToArgs(c carapace.Context) (args []string, trailingSpace bool) {
 	n := len(c.Args)
 	if n > 0 && c.Args[n-1] == "" {
 		n--
 	}
 	args = c.Args[:n]
+	if c.Value != "" {
+		args = append(args, c.Value)
+	}
 	trailingSpace = c.Value == ""
 	return
 }
