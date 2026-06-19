@@ -243,11 +243,9 @@ func isOption(arg string) bool {
 
 // isKnownBoolean checks if a name is a known boolean option.
 func isKnownBoolean(name string) bool {
-	booleans := map[string]bool{
-		"y": true, "n": true, "vn": true, "an": true, "sn": true, "dn": true,
-		"report": true, "hide_banner": true, "benchmark": true, "stats": true,
-		"shortest": true, "re": true, "bitexact": true, "deinterlace": true,
-		"nostdin": true,
+	if opt, ok := OptionIndex[name]; ok {
+		return opt.Type == TypeBoolean
 	}
-	return booleans[name]
+	// Fallback for options not yet in the index
+	return false
 }

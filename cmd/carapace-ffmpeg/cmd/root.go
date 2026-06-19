@@ -123,6 +123,10 @@ func actionOptionValue(ctx *argstream.CompletionContext) carapace.Action {
 		return carapace.ActionValues()
 	case argstream.ValueFileURL:
 		return carapace.ActionFiles()
+	case argstream.ValueHWAccel:
+		return ffmpeg.ActionHWAccels()
+	case argstream.ValueTimestamp:
+		return carapace.ActionValues("now")
 	default:
 		return carapace.ActionValues()
 	}

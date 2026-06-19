@@ -1,6 +1,8 @@
 package ffmpeg
 
 import (
+	"strings"
+
 	"github.com/carapace-sh/carapace"
 )
 
@@ -198,4 +200,19 @@ func ActionBitrates() carapace.Action {
 		"25M", "25 Mbit/s",
 		"50M", "50 Mbit/s",
 	)
+}
+
+// ActionHWAccels completes hardware acceleration method names.
+func ActionHWAccels() carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hwaccels")(func(output []byte) carapace.Action {
+		lines := splitLines(output)
+		var values []string
+		for _, line := range lines {
+			fields := splitFields(line)
+			if len(fields) >= 1 && !strings.Contains(fields[0], "Hardware") && fields[0] != "Type" {
+				values = append(values, fields[0])
+			}
+		}
+		return carapace.ActionValues(values...)
+	})
 }
