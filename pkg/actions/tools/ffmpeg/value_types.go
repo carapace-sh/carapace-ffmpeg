@@ -219,13 +219,17 @@ func ActionFormats() carapace.Action {
 		vals := make([]string, 0)
 		for _, line := range lines {
 			if matches := r.FindStringSubmatch(line); matches != nil {
+				s := style.Default
 				switch {
 				case matches[1] == "D" && matches[2] == "E":
-					vals = append(vals, matches[3], matches[4], style.Magenta)
+					s = style.Magenta
 				case matches[1] == "D":
-					vals = append(vals, matches[3], matches[4], style.Blue)
+					s = style.Blue
 				case matches[2] == "E":
-					vals = append(vals, matches[3], matches[4], style.Yellow)
+					s = style.Yellow
+				}
+				for _, name := range strings.Split(matches[3], ",") {
+					vals = append(vals, name, matches[4], s)
 				}
 			}
 		}
@@ -592,13 +596,17 @@ func ActionDevices() carapace.Action {
 		vals := make([]string, 0)
 		for _, line := range lines {
 			if matches := r.FindStringSubmatch(line); matches != nil {
+				s := style.Default
 				switch {
 				case matches[1] == "D" && matches[2] == "E":
-					vals = append(vals, matches[3], matches[4], style.Magenta)
+					s = style.Magenta
 				case matches[1] == "D":
-					vals = append(vals, matches[3], matches[4], style.Blue)
+					s = style.Blue
 				case matches[2] == "E":
-					vals = append(vals, matches[3], matches[4], style.Yellow)
+					s = style.Yellow
+				}
+				for _, name := range strings.Split(matches[3], ",") {
+					vals = append(vals, name, matches[4], s)
 				}
 			}
 		}
