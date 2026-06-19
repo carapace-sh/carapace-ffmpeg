@@ -1,145 +1,334 @@
 package ffmpeg
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/carapace-sh/carapace"
+	"github.com/carapace-sh/carapace/pkg/style"
 )
 
-// ActionCodecs completes codec names.
-// Shells out to ffmpeg -codecs to get the list.
-func ActionCodecs() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-codecs")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
-		for _, line := range lines {
-			if len(line) < 7 {
-				continue
-			}
-			// Format: " D.VSI.S..... codec_name   description"
-			// The codec name starts at position 8 (after flags+spaces)
-			name := extractCodecName(line)
-			if name != "" {
-				values = append(values, name)
-			}
-		}
-		return carapace.ActionValues(values...)
+type CodecOpts struct {
+	Attachment bool
+	Audio      bool
+	Data       bool
+	Subtitle   bool
+	Video      bool
+}
+
+func (o CodecOpts) Default() CodecOpts {
+	o.Attachment = true
+	o.Audio = true
+	o.Data = true
+	o.Subtitle = true
+	o.Video = true
+	return o
+}
+
+// ActionCodecs completes codecs
+//
+//	4gv (4GV (Fourth Generation Vocoder))
+//	4xm (4X Movie)
+func ActionCodecs(opts CodecOpts) carapace.Action {
+	return actionCodecs(opts, nil)
+}
+
+// ActionEncodableCodecs completes codecs with encoding support
+//
+//	amv (AMV Video)
+//	anull (Null audio codec)
+func ActionEncodableCodecs(opts CodecOpts) carapace.Action {
+	return actionCodecs(opts, func(s string) bool {
+		return s[1] != 'E'
 	})
 }
 
-// ActionDecoders completes decoder names.
-func ActionDecoders() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-decoders")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
-		for _, line := range lines {
-			name := extractCodecName(line)
-			if name != "" {
-				values = append(values, name)
-			}
-		}
-		return carapace.ActionValues(values...)
+// ActionDecodableCodecs completes codecs with decoding support
+//
+//	avrn (Avid AVI Codec)
+//	avrp (Avid 1:1 10-bit RGB Packer)
+func ActionDecodableCodecs(opts CodecOpts) carapace.Action {
+	return actionCodecs(opts, func(s string) bool {
+		return s[0] != 'D'
 	})
 }
 
-// ActionEncoders completes encoder names.
-func ActionEncoders() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-encoders")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
+func actionCodecs(opts CodecOpts, filter func(s string) bool) carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-codecs")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " -------")
+		if !ok {
+			return carapace.ActionMessage("failed to parse codecs")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^ (?P<decoding>.)(?P<encoding>.)(?P<type>.).{3} (?P<codec>[^ ]+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
 		for _, line := range lines {
-			name := extractCodecName(line)
-			if name != "" {
-				values = append(values, name)
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				if filter != nil && filter(line[1:7]) {
+					continue
+				}
+
+				switch matches[3] {
+				case "A":
+					if opts.Audio {
+						vals = append(vals, matches[4], matches[5], style.Yellow)
+					}
+				case "D":
+					if opts.Data {
+						vals = append(vals, matches[4], matches[5], style.Cyan)
+					}
+				case "S":
+					if opts.Subtitle {
+						vals = append(vals, matches[4], matches[5], style.Magenta)
+					}
+				case "T":
+					if opts.Attachment {
+						vals = append(vals, matches[4], matches[5], style.Green)
+					}
+				case "V":
+					if opts.Video {
+						vals = append(vals, matches[4], matches[5], style.Blue)
+					}
+				}
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+
+		if filter == nil || !filter("D      ") {
+			vals = append(vals, "copy", "copy the codec of the input", style.Default)
+		}
+		return carapace.ActionStyledValuesDescribed(vals...)
+	}).Tag("codecs")
 }
 
-// ActionFormats completes container format names.
+type DecoderOpts struct {
+	Audio    bool
+	Subtitle bool
+	Video    bool
+}
+
+func (o DecoderOpts) Default() DecoderOpts {
+	o.Audio = true
+	o.Subtitle = true
+	o.Video = true
+	return o
+}
+
+// ActionDecoders completes decoders
+//
+//	4xm (4X Movie)
+//	8bps (QuickTime 8BPS video)
+func ActionDecoders(opts DecoderOpts) carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-decoders")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " ------")
+		if !ok {
+			return carapace.ActionMessage("failed to parse decoders")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^ (?P<type>.).{5} (?P<name>[^ ]+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
+		for _, line := range lines {
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				switch matches[1] {
+				case "A":
+					if opts.Audio {
+						vals = append(vals, matches[2], matches[3], style.Yellow)
+					}
+				case "S":
+					if opts.Subtitle {
+						vals = append(vals, matches[2], matches[3], style.Magenta)
+					}
+				case "V":
+					if opts.Video {
+						vals = append(vals, matches[2], matches[3], style.Blue)
+					}
+				}
+			}
+		}
+		return carapace.ActionStyledValuesDescribed(vals...)
+	}).Tag("decoders")
+}
+
+type EncoderOpts struct {
+	Audio    bool
+	Subtitle bool
+	Video    bool
+}
+
+func (o EncoderOpts) Default() EncoderOpts {
+	o.Audio = true
+	o.Subtitle = true
+	o.Video = true
+	return o
+}
+
+// ActionEncoders completes encoders
+//
+//	ac3 (ATSC A/52A (AC-3))
+//	ac3_fixed (ATSC A/52A (AC-3) (codec ac3))
+func ActionEncoders(opts EncoderOpts) carapace.Action {
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-encoders")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " ------")
+		if !ok {
+			return carapace.ActionMessage("failed to parse encoders")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^ (?P<type>.).{5} (?P<name>[^ ]+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
+		for _, line := range lines {
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				switch matches[1] {
+				case "A":
+					if opts.Audio {
+						vals = append(vals, matches[2], matches[3], style.Yellow)
+					}
+				case "S":
+					if opts.Subtitle {
+						vals = append(vals, matches[2], matches[3], style.Magenta)
+					}
+				case "V":
+					if opts.Video {
+						vals = append(vals, matches[2], matches[3], style.Blue)
+					}
+				}
+			}
+		}
+		return carapace.ActionStyledValuesDescribed(vals...)
+	}).Tag("encoders")
+}
+
+// ActionFormats completes formats
+//
+//	aax (CRI AAX)
+//	ac3 (raw AC-3)
 func ActionFormats() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-formats")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-formats")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " -------")
+		if !ok {
+			return carapace.ActionMessage("failed to parse formats")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^ (?P<decoding>.)(?P<muxing>.) (?P<name>[^ ]+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
 		for _, line := range lines {
-			if len(line) < 5 {
-				continue
-			}
-			// Format: " D  format_name   description"
-			name := extractFormatName(line)
-			if name != "" {
-				values = append(values, name)
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				switch {
+				case matches[1] == "D" && matches[2] == "E":
+					vals = append(vals, matches[3], matches[4], style.Magenta)
+				case matches[1] == "D":
+					vals = append(vals, matches[3], matches[4], style.Blue)
+				case matches[2] == "E":
+					vals = append(vals, matches[3], matches[4], style.Yellow)
+				}
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+		return carapace.ActionStyledValuesDescribed(vals...)
+	}).Tag("formats")
 }
 
-// ActionPixelFormats completes pixel format names.
+// ActionPixelFormats completes pixel formats
+//
+//	0rgb (0rgb)
+//	0bgr (0bgr)
 func ActionPixelFormats() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-pix_fmts")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-pix_fmts")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " -----")
+		if !ok {
+			return carapace.ActionMessage("failed to parse pixel formats")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^.{4}(?P<flags>[^ ]+) +(?P<name>[^ ]+) +(?P<nb_components>\d+) +(?P<description>.*)$`)
+
+		vals := make([]string, 0)
 		for _, line := range lines {
-			fields := splitFields(line)
-			if len(fields) >= 2 {
-				values = append(values, fields[1])
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				vals = append(vals, matches[2], strings.TrimSpace(matches[4]))
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+		return carapace.ActionValuesDescribed(vals...)
+	}).Tag("pixel formats")
 }
 
-// ActionSampleFormats completes sample format names.
+// ActionSampleFormats completes sample formats
+//
+//	dbl (64-bit double-precision floating-point)
+//	dblp (64-bit double-precision floating-point planar)
 func ActionSampleFormats() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-sample_fmts")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
-		for _, line := range lines {
-			fields := splitFields(line)
-			if len(fields) >= 1 {
-				values = append(values, fields[0])
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-sample_fmts")(func(output []byte) carapace.Action {
+		lines := strings.Split(string(output), "\n")
+
+		r := regexp.MustCompile(`^(?P<name>[^ ]+) +(?P<depth>\d+)$`)
+
+		vals := make([]string, 0)
+		for _, line := range lines[1:] {
+			if matches := r.FindStringSubmatch(strings.TrimSpace(line)); matches != nil {
+				vals = append(vals, matches[1], matches[1]+" ("+matches[2]+"-bit)")
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+		return carapace.ActionValuesDescribed(vals...)
+	}).Tag("sample formats")
 }
 
-// ActionChannelLayouts completes channel layout names.
+// ActionChannelLayouts completes channel layouts
+//
+//	mono (FC)
+//	stereo (FL+FR)
 func ActionChannelLayouts() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-layouts")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
-		for _, line := range lines {
-			fields := splitFields(line)
-			if len(fields) >= 1 {
-				values = append(values, fields[0])
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-layouts")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " -----")
+		if !ok {
+			return carapace.ActionMessage("failed to parse channel layouts")
+		}
+
+		contentLines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^(?P<name>[^ ]+) +(?P<channels>.+)$`)
+
+		vals := make([]string, 0)
+		for _, line := range contentLines[1:] {
+			if matches := r.FindStringSubmatch(strings.TrimSpace(line)); matches != nil {
+				vals = append(vals, matches[1], matches[2])
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+		return carapace.ActionValuesDescribed(vals...)
+	}).Tag("channel layouts")
 }
 
-// ActionFilters completes filter names for filtergraph.
+// ActionFilters completes filters
+//
+//	acrusher (Reduce audio bit resolution.)
+//	acue (Delay filtering to match a cue.)
 func ActionFilters() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-filters")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-filters")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " -------")
+		if !ok {
+			return carapace.ActionMessage("failed to parse filters")
+		}
+
+		lines := strings.Split(content, "\n")
+		r := regexp.MustCompile(`^ .{3} (?P<name>[^ ]+) +[^ ]+ *(?P<description>.*)$`)
+
+		vals := make([]string, 0)
 		for _, line := range lines {
-			if len(line) < 7 {
-				continue
-			}
-			name := extractFilterName(line)
-			if name != "" {
-				values = append(values, name)
+			if matches := r.FindStringSubmatch(line); matches != nil {
+				vals = append(vals, matches[1], matches[2])
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+		return carapace.ActionValuesDescribed(vals...)
+	}).Tag("filters")
 }
 
-// ActionVideoSizes completes video size abbreviations.
+// ActionVideoSizes completes video size abbreviations
+//
+//	ntsc
+//	pal
 func ActionVideoSizes() carapace.Action {
 	return carapace.ActionValues(
 		"ntsc", "pal", "qntsc", "qpal", "sntsc", "spal",
@@ -149,31 +338,42 @@ func ActionVideoSizes() carapace.Action {
 		"qxga", "sxga", "qsxga", "hsxga",
 		"hd1080", "hd720", "hd480",
 		"uhd2160", "uhd4320", "4k", "2k",
-	)
+	).Tag("video sizes")
 }
 
-// ActionFrameRates completes frame rate abbreviations.
+// ActionFrameRates completes frame rate abbreviations
+//
+//	ntsc
+//	pal
 func ActionFrameRates() carapace.Action {
 	return carapace.ActionValues(
 		"ntsc", "pal", "qntsc", "qpal", "sntsc", "spal",
 		"film", "ntsc-film",
-	)
+	).Tag("frame rates")
 }
 
-// ActionLogLevels completes log level values.
+// ActionLogLevels completes log levels
+//
+//	verbose (Same as "info", except more verbose)
+//	warning (Show all warnings and errors)
 func ActionLogLevels() carapace.Action {
 	return carapace.ActionValuesDescribed(
-		"quiet", "show nothing",
-		"error", "show only errors",
-		"warning", "show warnings and errors",
-		"info", "show informational messages (default)",
-		"verbose", "show verbose messages",
-		"debug", "show debug messages",
-		"trace", "show all internal messages",
-	)
+		"quiet", "Show nothing at all; be silent",
+		"panic", "Only show fatal errors which could lead the process to crash",
+		"fatal", "Only show fatal errors",
+		"error", "Show all errors, including ones which can be recovered from",
+		"warning", "Show all warnings and errors",
+		"info", "Show informative messages during processing",
+		"verbose", "Same as \"info\", except more verbose",
+		"debug", "Show everything, including debugging information",
+		"trace", "",
+	).StyleF(style.ForLogLevel).Tag("log levels")
 }
 
-// ActionFPSModes completes fps_mode/vsync values.
+// ActionFPSModes completes fps_mode/vsync values
+//
+//	cfr (constant frame rate (duplicate/drop frames))
+//	vfr (variable frame rate (prevent duplicate timestamps))
 func ActionFPSModes() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"passthrough", "each frame with its timestamp from demuxer to muxer",
@@ -181,27 +381,36 @@ func ActionFPSModes() carapace.Action {
 		"vfr", "variable frame rate (prevent duplicate timestamps)",
 		"auto", "automatically choose between cfr and vfr (default)",
 		"drop", "same as passthrough but drop all frames (deprecated)",
-	)
+	).Tag("fps modes")
 }
 
-// ActionCopyTB completes copytb values.
+// ActionCopyTB completes copytb values
+//
+//	-1 (choose automatically (default))
+//	0 (use decoder timebase)
 func ActionCopyTB() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"-1", "choose automatically (default)",
 		"0", "use decoder timebase",
 		"1", "use demuxer timebase",
-	)
+	).Tag("copy timebase")
 }
 
-// ActionAbortOn completes abort_on flag values.
+// ActionAbortOn completes abort_on flag values
+//
+//	empty_output (abort when no packets were passed to the muxer)
+//	empty_output_stream (abort when some output streams are empty)
 func ActionAbortOn() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"empty_output", "abort when no packets were passed to the muxer",
 		"empty_output_stream", "abort when some output streams are empty",
-	)
+	).Tag("abort on flags")
 }
 
-// ActionDiscard completes discard values.
+// ActionDiscard completes discard values
+//
+//	none (discard nothing)
+//	default (discard useless packets (default))
 func ActionDiscard() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"none", "discard nothing",
@@ -211,25 +420,36 @@ func ActionDiscard() carapace.Action {
 		"nointra", "discard all non-intra frames",
 		"nokey", "discard all frames except keyframes",
 		"all", "discard all frames",
-	)
+	).Tag("discard values")
 }
 
-// ActionBitstreamFilters completes bitstream filter names.
+// ActionBitstreamFilters completes bitstream filters
+//
+//	dca_core
+//	dts2pts
 func ActionBitstreamFilters() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-bsfs")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-bsfs")(func(output []byte) carapace.Action {
+		_, content, ok := strings.Cut(string(output), " -----")
+		if !ok {
+			return carapace.ActionMessage("failed to parse bitstream filters")
+		}
+
+		lines := strings.Split(content, "\n")
+		vals := make([]string, 0)
 		for _, line := range lines {
-			fields := splitFields(line)
-			if len(fields) >= 1 && !strings.Contains(fields[0], "Bitstream") {
-				values = append(values, fields[0])
+			line = strings.TrimSpace(line)
+			if line != "" {
+				vals = append(vals, line)
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+		return carapace.ActionValues(vals...)
+	}).Tag("bitstream filters")
 }
 
-// ActionPrintGraphsFormats completes print_graphs_format values.
+// ActionPrintGraphsFormats completes print_graphs_format values
+//
+//	default (human-readable default format)
+//	compact (compact format)
 func ActionPrintGraphsFormats() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"default", "human-readable default format",
@@ -241,10 +461,13 @@ func ActionPrintGraphsFormats() carapace.Action {
 		"xml", "XML format",
 		"mermaid", "Mermaid flowchart format",
 		"mermaidhtml", "Mermaid flowchart as HTML",
-	)
+	).Tag("print graphs formats")
 }
 
-// ActionTargets completes target file type values.
+// ActionTargets completes target file type values
+//
+//	vcd (Video CD (PAL or NTSC))
+//	svcd (Super Video CD)
 func ActionTargets() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"vcd", "Video CD (PAL or NTSC)",
@@ -260,25 +483,34 @@ func ActionTargets() carapace.Action {
 		"ntsc-dvd", "NTSC DVD",
 		"film-vcd", "FILM Video CD",
 		"film-dvd", "FILM DVD",
-	)
+	).Tag("targets")
 }
 
-// ActionDispositions completes stream disposition names.
+// ActionDispositions completes stream disposition names
+//
+//	default
+//	dub
 func ActionDispositions() carapace.Action {
 	return carapace.ActionValues(
 		"default", "dub", "original", "comment", "lyrics", "karaoke",
 		"forced", "hearing_impaired", "visual_impaired", "clean_effects",
 		"attached_pic", "timed_thumbnails", "non_diegetic", "captions",
 		"descriptions", "metadata", "dependent", "still_image", "multilayer",
-	)
+	).Tag("dispositions")
 }
 
-// ActionBoolean completes boolean value options.
+// ActionBoolean completes boolean value options
+//
+//	true
+//	false
 func ActionBoolean() carapace.Action {
-	return carapace.ActionValues("true", "false", "1", "0")
+	return carapace.ActionValues("true", "false", "1", "0").Tag("booleans")
 }
 
-// ActionBitrates completes common bitrate values.
+// ActionBitrates completes common bitrate values
+//
+//	96k (96 kbit/s)
+//	128k (128 kbit/s)
 func ActionBitrates() carapace.Action {
 	return carapace.ActionValuesDescribed(
 		"96k", "96 kbit/s",
@@ -297,20 +529,23 @@ func ActionBitrates() carapace.Action {
 		"20M", "20 Mbit/s",
 		"25M", "25 Mbit/s",
 		"50M", "50 Mbit/s",
-	)
+	).Tag("bitrates")
 }
 
-// ActionHWAccels completes hardware acceleration method names.
+// ActionHWAccels completes hardware acceleration method names
+//
+//	cuda
+//	drm
 func ActionHWAccels() carapace.Action {
-	return carapace.ActionExecCommand("ffmpeg", "-hwaccels")(func(output []byte) carapace.Action {
-		lines := splitLines(output)
-		var values []string
-		for _, line := range lines {
-			fields := splitFields(line)
-			if len(fields) >= 1 && !strings.Contains(fields[0], "Hardware") && fields[0] != "Type" {
-				values = append(values, fields[0])
+	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-hwaccels")(func(output []byte) carapace.Action {
+		lines := strings.Split(string(output), "\n")
+
+		vals := make([]string, 0)
+		for _, line := range lines[1:] {
+			if line != "" {
+				vals = append(vals, line)
 			}
 		}
-		return carapace.ActionValues(values...)
-	})
+		return carapace.ActionValues(vals...)
+	}).Tag("hardware accelerators")
 }

@@ -272,13 +272,13 @@ func actionCodec(ctx *argstream.CompletionContext) carapace.Action {
 	switch ctx.Scope {
 	case argstream.ScopeGlobal, argstream.ScopeInputFile:
 		return carapace.Batch(
-			ffmpeg.ActionCodecs(),
-			ffmpeg.ActionDecoders(),
+			ffmpeg.ActionCodecs(ffmpeg.CodecOpts{}.Default()),
+			ffmpeg.ActionDecoders(ffmpeg.DecoderOpts{}.Default()),
 		).ToA()
 	default:
 		return carapace.Batch(
-			ffmpeg.ActionCodecs(),
-			ffmpeg.ActionEncoders(),
+			ffmpeg.ActionCodecs(ffmpeg.CodecOpts{}.Default()),
+			ffmpeg.ActionEncoders(ffmpeg.EncoderOpts{}.Default()),
 		).ToA()
 	}
 }
