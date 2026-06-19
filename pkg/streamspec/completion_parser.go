@@ -9,19 +9,19 @@ import (
 func allForms() []SpecifierForm {
 	return []SpecifierForm{
 		{Prefix: "", Description: "stream index (0, 1, 2...)"},
-		{Prefix: "v", Description: "all video streams"},
-		{Prefix: "V", Description: "video streams excluding attached pictures"},
-		{Prefix: "a", Description: "all audio streams"},
-		{Prefix: "s", Description: "all subtitle streams"},
-		{Prefix: "d", Description: "all data streams"},
-		{Prefix: "t", Description: "all attachment streams"},
-		{Prefix: "g:", Description: "stream group by index or ID"},
-		{Prefix: "p:", Description: "program by ID"},
+		{Prefix: "v", Description: "all video streams", Suffix: ":"},
+		{Prefix: "V", Description: "video streams excluding attached pictures", Suffix: ":"},
+		{Prefix: "a", Description: "all audio streams", Suffix: ":"},
+		{Prefix: "s", Description: "all subtitle streams", Suffix: ":"},
+		{Prefix: "d", Description: "all data streams", Suffix: ":"},
+		{Prefix: "t", Description: "all attachment streams", Suffix: ":"},
+		{Prefix: "g", Description: "stream group by index or ID", Suffix: ":"},
+		{Prefix: "p", Description: "program by ID", Suffix: ":"},
 		{Prefix: "#", Description: "stream by ID"},
-		{Prefix: "i:", Description: "stream by ID (alternate)"},
-		{Prefix: "m:", Description: "stream by metadata key"},
-		{Prefix: "disp:", Description: "stream by disposition"},
-		{Prefix: "u", Description: "streams with usable configuration"},
+		{Prefix: "i", Description: "stream by ID (alternate)", Suffix: ":"},
+		{Prefix: "m", Description: "stream by metadata key", Suffix: ":"},
+		{Prefix: "disp", Description: "stream by disposition", Suffix: ":"},
+		{Prefix: "u", Description: "streams with usable configuration", Suffix: ":"},
 	}
 }
 
@@ -89,14 +89,16 @@ func (p *compParser) addExpected(t ExpectedToken) {
 	p.ctx.ExpectedTokens = append(p.ctx.ExpectedTokens, t)
 }
 
-func (p *compParser) addForm(prefix, desc string) {
-	p.ctx.ValidForms = append(p.ctx.ValidForms, SpecifierForm{Prefix: prefix, Description: desc})
+func (p *compParser) addForm(prefix, desc string, suffixes ...string) {
+	suffix := ""
+	if len(suffixes) > 0 {
+		suffix = suffixes[0]
+	}
+	p.ctx.ValidForms = append(p.ctx.ValidForms, SpecifierForm{Prefix: prefix, Description: desc, Suffix: suffix})
 }
 
 func (p *compParser) addTopLevelForms() {
-	for _, f := range allForms() {
-		p.addForm(f.Prefix, f.Description)
-	}
+	p.ctx.ValidForms = append(p.ctx.ValidForms, allForms()...)
 }
 
 func (p *compParser) parseSpecifier() {
@@ -267,7 +269,7 @@ func (p *compParser) parseGroupSpecifier() {
 		p.addExpected(ExpectedGroupIndex)
 		p.addExpected(ExpectedGroupID)
 		p.addForm("#", "group by ID")
-		p.addForm("i:", "group by ID (alternate)")
+		p.addForm("i", "group by ID (alternate)", ":")
 		return
 	}
 	ch := p.peek()
@@ -340,14 +342,26 @@ func (p *compParser) parseMetadataSpecifier() {
 		return
 	}
 
+	// Consume colon after key
 	p.advance()
 	p.ctx.InMetadataValue = true
 	start = p.pos
 	for !p.atCursorOrEnd() {
+		ch := p.peek()
+		if ch == ':' {
+			break
+		}
 		p.advance()
 	}
 	p.ctx.PartialIdent = p.input[start:p.pos]
 	p.addExpected(ExpectedMetadataValue)
+
+	// If cursor is at a colon after the value, transition to additional specifier
+	if !p.atCursorOrEnd() && p.peek() == ':' {
+		p.ctx.InMetadataValue = false
+		p.advance()
+		p.parseSpecifier()
+	}
 }
 
 func (p *compParser) parseDispositionSpecifier() {
@@ -367,6 +381,9 @@ func (p *compParser) parseDispositionSpecifier() {
 			start = p.pos
 			continue
 		}
+		if ch == ':' {
+			break
+		}
 		p.advance()
 	}
 	if p.pos > start {
@@ -377,6 +394,12 @@ func (p *compParser) parseDispositionSpecifier() {
 		p.ctx.PartialIdent = dispositions[len(dispositions)-1]
 	}
 	p.addExpected(ExpectedDispositionName)
+
+	// If cursor is at a colon after dispositions, transition to additional specifier
+	if !p.atCursorOrEnd() && p.peek() == ':' {
+		p.advance()
+		p.parseSpecifier()
+	}
 }
 
 func (p *compParser) scanIntegerForCompletion() {

@@ -1,6 +1,7 @@
 package argstream
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -148,10 +149,8 @@ func TestFFprobeOutputFormatOption(t *testing.T) {
 
 func AssertHasExpected(t *testing.T, ctx *CompletionContext, expected ExpectedToken) {
 	t.Helper()
-	for _, tok := range ctx.ExpectedTokens {
-		if tok == expected {
-			return
-		}
+	if slices.Contains(ctx.ExpectedTokens, expected) {
+		return
 	}
 	t.Errorf("expected token %v not found in %v", expected, ctx.ExpectedTokens)
 }

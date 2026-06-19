@@ -51,6 +51,7 @@ func (t ExpectedToken) MarshalText() ([]byte, error) {
 type SpecifierForm struct {
 	Prefix      string `json:"prefix"`
 	Description string `json:"description"`
+	Suffix      string `json:"suffix,omitempty"`
 }
 
 type CompletionContext struct {

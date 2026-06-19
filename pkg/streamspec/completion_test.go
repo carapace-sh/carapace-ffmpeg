@@ -1,15 +1,14 @@
 package streamspec
 
 import (
+	"slices"
 	"testing"
 )
 
 func assertHasExpected(t *testing.T, ctx *CompletionContext, expected ExpectedToken) {
 	t.Helper()
-	for _, e := range ctx.ExpectedTokens {
-		if e == expected {
-			return
-		}
+	if slices.Contains(ctx.ExpectedTokens, expected) {
+		return
 	}
 	t.Errorf("expected token %v not found in %v", expected, ctx.ExpectedTokens)
 }
@@ -76,6 +75,35 @@ func TestCompletionStreamID(t *testing.T) {
 	ctx := ParseForCompletion("#0x1")
 	if ctx.CurrentKind != KindStreamID {
 		t.Errorf("expected KindStreamID, got %v", ctx.CurrentKind)
+	}
+}
+
+func TestCompletionMetadataValueWithAdditionalSpecifier(t *testing.T) {
+	ctx := ParseForCompletion("m:language:eng:")
+	assertHasExpected(t, ctx, ExpectedSpecifierType)
+	assertHasExpected(t, ctx, ExpectedStreamIndex)
+	if ctx.InMetadataValue {
+		t.Error("expected InMetadataValue to be false after additional specifier colon")
+	}
+}
+
+func TestCompletionMetadataValueWithPartialAdditional(t *testing.T) {
+	ctx := ParseForCompletion("m:language:eng:a")
+	if ctx.CurrentKind != KindStreamType {
+		t.Errorf("expected KindStreamType after m:language:eng:a, got %v", ctx.CurrentKind)
+	}
+}
+
+func TestCompletionDispositionWithAdditionalSpecifier(t *testing.T) {
+	ctx := ParseForCompletion("disp:default:")
+	assertHasExpected(t, ctx, ExpectedSpecifierType)
+	assertHasExpected(t, ctx, ExpectedStreamIndex)
+}
+
+func TestCompletionDispositionWithPartialAdditional(t *testing.T) {
+	ctx := ParseForCompletion("disp:default:a")
+	if ctx.CurrentKind != KindStreamType {
+		t.Errorf("expected KindStreamType after disp:default:a, got %v", ctx.CurrentKind)
 	}
 }
 

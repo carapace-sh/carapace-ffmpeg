@@ -248,6 +248,46 @@ func TestParseStreamTypeWithAdditionalStreamType(t *testing.T) {
 	}
 }
 
+func TestParseMetadataWithAdditionalSpecifier(t *testing.T) {
+	spec, err := Parse("m:language:eng:1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := spec.Metadata()
+	if m.Key != "language" || m.Value != "eng" {
+		t.Errorf("expected key 'language' value 'eng', got key %q value %q", m.Key, m.Value)
+	}
+	if spec.Additional == nil {
+		t.Fatal("expected additional specifier")
+	}
+	if spec.Additional.Kind != KindStreamIndex {
+		t.Errorf("expected additional KindStreamIndex, got %v", spec.Additional.Kind)
+	}
+	if spec.Additional.StreamIndex() != 1 {
+		t.Errorf("expected additional index 1, got %d", spec.Additional.StreamIndex())
+	}
+}
+
+func TestParseDispositionWithAdditionalSpecifier(t *testing.T) {
+	spec, err := Parse("disp:default:1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	d := spec.Disposition()
+	if len(d.Dispositions) != 1 || d.Dispositions[0] != "default" {
+		t.Errorf("expected ['default'], got %v", d.Dispositions)
+	}
+	if spec.Additional == nil {
+		t.Fatal("expected additional specifier")
+	}
+	if spec.Additional.Kind != KindStreamIndex {
+		t.Errorf("expected additional KindStreamIndex, got %v", spec.Additional.Kind)
+	}
+	if spec.Additional.StreamIndex() != 1 {
+		t.Errorf("expected additional index 1, got %d", spec.Additional.StreamIndex())
+	}
+}
+
 func TestFormatRoundtrip(t *testing.T) {
 	tests := []string{
 		"0",
@@ -261,8 +301,10 @@ func TestFormatRoundtrip(t *testing.T) {
 		"#0x1F3",
 		"m:language",
 		"m:language:eng",
+		"m:language:eng:1",
 		"disp:default",
 		"disp:default+forced",
+		"disp:default:1",
 		"u",
 	}
 	for _, tt := range tests {

@@ -1,0 +1,80 @@
+album: |
+  The album or collection name the track belongs to. Common in music tagging
+  standards like ID3 and Vorbis Comments. Used by `-metadata:m:album` to set
+  or filter by album name.
+album_artist: |
+  The primary artist for the entire album, as opposed to the per-track artist.
+  Useful for compilations where individual tracks have different artists but the
+  album has a common creator. Supported by ID3 (TPE2) and Vorbis Comments.
+artist: |
+  The artist or performer of the track. Maps to ID3 TPE1 (lead artist) or
+  Vorbis ARTIST. One of the most commonly used metadata fields. Use
+  `-metadata:m:artist` to set or match the track artist.
+comment: |
+  A free-form comment about the track or stream. Maps to ID3 COMM or Vorbis
+  COMMENT. Often used for encoding information, credits, or notes.
+composer: |
+  The composer of the musical work. Distinct from the performer — for classical
+  music the composer and artist often differ. Maps to ID3 TCOM.
+copyright: |
+  Copyright notice for the content. Maps to ID3 TCOP. Typically contains the
+  year and rights holder, e.g. "2024 Example Records".
+date: |
+  The recording or release date. Commonly in ISO 8601 format (YYYY, YYYY-MM, or
+  YYYY-MM-DD). Maps to ID3 TDRC. Widely used for organizing media libraries.
+description: |
+  A longer description of the content. Similar to comment but intended as a
+  structured summary rather than a free-form note.
+encoder: |
+  The name and version of the encoder used to create the stream. Automatically
+  set by ffmpeg for encoded streams (e.g. "Lavf60.3.100"). Useful for
+  identifying the encoding toolchain. Maps to ID3 TENC.
+genre: |
+  The musical genre classification. Maps to ID3 TCON. Common values include
+  genres from the ID3v1 preset list (Blues, Classic Rock, Pop, Jazz, etc.) or
+  free-form text.
+language: |
+  The language of the stream using ISO 639 language codes (two-letter 639-1 or
+  three-letter 639-2/T). Common codes: `eng` (English), `fre` (French),
+  `ger` (German), `spa` (Spanish), `jpn` (Japanese), `zho` (Chinese).
+  Essential for multi-language tracks. Use `m:language:eng` to match English
+  streams.
+lyrics: |
+  Song lyrics or transcript text for the stream. Maps to ID3 USLT (unsynchronized
+  lyrics) or SYLT (synchronized). Some containers support embedded lyrics as
+  metadata rather than subtitle streams.
+network_name: |
+  The DVB network name. Used in digital video broadcasting metadata to identify
+  the broadcasting network (e.g. "BBC", "ARD"). Specific to MPEG-TS DVB streams.
+provider_name: |
+  The DVB service provider name. Identifies the organization providing the
+  broadcast service, distinct from the network operator. Used in EIT and SDT
+  tables of MPEG-TS DVB streams.
+service_name: |
+  The DVB service name. Identifies a specific service within a provider's
+  multiplex (e.g. "BBC One", "Das Erste"). Appears in the Service Description
+  Table (SDT) of MPEG-TS DVB streams.
+sort_album_artist: |
+  The sort-order version of album_artist. Used by media players to control
+  alphabetical ordering independently of display names (e.g. sorting "The
+  Beatles" under "B"). Maps to ID3 TSO2.
+sort_artist: |
+  The sort-order version of the artist name. Controls alphabetical sorting
+  independently of the display name. For example, "Beatles, The" as the sort
+  name for display name "The Beatles". Maps to ID3 TSOP.
+sort_title: |
+  The sort-order version of the title. Allows title sorting to differ from
+  display (e.g. sorting "2001: A Space Odyssey" under "2" rather than "2").
+  Maps to ID3 TIT1.
+synopsis: |
+  A brief summary or plot description of the content. Common in video libraries
+  for movie or episode descriptions. Not standardized in ID3 but supported by
+  many container formats.
+title: |
+  The title or name of the track, episode, or stream. One of the most fundamental
+  metadata fields. Maps to ID3 TIT2. Use `-metadata:m:title` to set or filter by
+  the stream title.
+track: |
+  The track number within an album. Often formatted as "N" or "N/T" where N is
+  the track number and T is the total number of tracks. Maps to ID3 TRCK.
+  Used for album ordering and playback sequencing.
