@@ -69,7 +69,11 @@ func actionOptions(ctx *argstream.CompletionContext) carapace.Action {
 		case 0:
 			return actionOptionNames(ctx).NoSpace(':')
 		default:
-			return actionStreamSpecifiers(ctx)
+			optDef := argstream.LookupOption(c.Parts[0])
+			if optDef != nil && optDef.AcceptsSpec && optDef.ImplicitSpec == "" {
+				return actionStreamSpecifiers(ctx)
+			}
+			return carapace.ActionValues()
 		}
 	})
 }
