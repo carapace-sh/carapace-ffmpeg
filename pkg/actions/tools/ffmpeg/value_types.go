@@ -843,5 +843,5 @@ func ActionMetadataKeys() carapace.Action {
 		"synopsis", "Synopsis",
 		"title", "Title of the stream",
 		"track", "Track number",
-	).Suffix(":").Tag("metadata keys").Uid("ffmpeg", "metadata-keys")
+	).Tag("metadata keys").Uid("ffmpeg", "metadata-keys").Suffix(":").NoSpace(':')
 }
