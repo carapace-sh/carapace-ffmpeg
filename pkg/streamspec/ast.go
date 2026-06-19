@@ -38,12 +38,12 @@ func (k SpecifierKind) String() string {
 type StreamType int
 
 const (
-	TypeVideo        StreamType = iota // v
-	TypeVideoNoAttached                 // V
-	TypeAudio                           // a
-	TypeSubtitle                        // s
-	TypeData                            // d
-	TypeAttachment                      // t
+	TypeVideo           StreamType = iota // v
+	TypeVideoNoAttached                   // V
+	TypeAudio                             // a
+	TypeSubtitle                          // s
+	TypeData                              // d
+	TypeAttachment                        // t
 )
 
 func (t StreamType) String() string {
@@ -86,8 +86,8 @@ type ProgramExpr struct {
 }
 
 type StreamIDExpr struct {
-	ID    string
-	Alt   bool // true for i: prefix, false for # prefix
+	ID  string
+	Alt bool // true for i: prefix, false for # prefix
 }
 
 type MetadataExpr struct {
@@ -100,10 +100,10 @@ type DispositionExpr struct {
 }
 
 type Specifier struct {
-	Kind        SpecifierKind
-	Span        Span
-	payload     any
-	Additional  *Specifier
+	Kind       SpecifierKind
+	Span       Span
+	payload    any
+	Additional *Specifier
 }
 
 func (s *Specifier) StreamIndex() int {

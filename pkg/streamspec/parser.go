@@ -101,8 +101,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			return nil, err
 		}
 		return p.withAdditional(&Specifier{
-			Kind: KindDisposition,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindDisposition,
+			Span:    Span{Start: start, End: p.pos},
 			payload: disp,
 		}, start)
 	}
@@ -113,8 +113,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 	if ch == 'u' {
 		p.advance()
 		return p.withAdditional(&Specifier{
-			Kind: KindUsable,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindUsable,
+			Span:    Span{Start: start, End: p.pos},
 			payload: struct{}{},
 		}, start)
 	}
@@ -123,8 +123,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 	if isStreamTypeLetter(ch) {
 		st := p.parseStreamTypeLetter()
 		return p.withAdditional(&Specifier{
-			Kind: KindStreamType,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindStreamType,
+			Span:    Span{Start: start, End: p.pos},
 			payload: st,
 		}, start)
 	}
@@ -137,8 +137,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			return nil, err
 		}
 		return p.withAdditional(&Specifier{
-			Kind: KindGroup,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindGroup,
+			Span:    Span{Start: start, End: p.pos},
 			payload: group,
 		}, start)
 	}
@@ -151,8 +151,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			return nil, err
 		}
 		return p.withAdditional(&Specifier{
-			Kind: KindProgram,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindProgram,
+			Span:    Span{Start: start, End: p.pos},
 			payload: prog,
 		}, start)
 	}
@@ -165,8 +165,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			return nil, err
 		}
 		return p.withAdditional(&Specifier{
-			Kind: KindStreamID,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindStreamID,
+			Span:    Span{Start: start, End: p.pos},
 			payload: &StreamIDExpr{ID: id, Alt: false},
 		}, start)
 	}
@@ -179,8 +179,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			return nil, err
 		}
 		return p.withAdditional(&Specifier{
-			Kind: KindStreamID,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindStreamID,
+			Span:    Span{Start: start, End: p.pos},
 			payload: &StreamIDExpr{ID: id, Alt: true},
 		}, start)
 	}
@@ -193,8 +193,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			return nil, err
 		}
 		return p.withAdditional(&Specifier{
-			Kind: KindMetadata,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindMetadata,
+			Span:    Span{Start: start, End: p.pos},
 			payload: meta,
 		}, start)
 	}
@@ -206,8 +206,8 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			return nil, err
 		}
 		return p.withAdditional(&Specifier{
-			Kind: KindStreamIndex,
-			Span: Span{Start: start, End: p.pos},
+			Kind:    KindStreamIndex,
+			Span:    Span{Start: start, End: p.pos},
 			payload: idx,
 		}, start)
 	}

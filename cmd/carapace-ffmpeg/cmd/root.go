@@ -5,9 +5,9 @@ import (
 	"os"
 
 	"github.com/carapace-sh/carapace"
+	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/completer"
-	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
 	"github.com/spf13/cobra"
 )
 

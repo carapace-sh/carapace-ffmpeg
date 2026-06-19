@@ -9,9 +9,9 @@ import (
 //
 // Syntax: [-]input_file_id[:stream_specifier][:view_specifier][:?] | [linklabel]
 type MapValue struct {
-	Negate      bool   // true if prefixed with '-'
+	Negate       bool   // true if prefixed with '-'
 	FileIndex    int    // input file index (0-based)
-	HasSpecifier bool  // true if stream specifier is present
+	HasSpecifier bool   // true if stream specifier is present
 	Specifier    string // raw stream specifier string (e.g. "a:1", "v")
 	HasView      bool   // true if view specifier is present
 	ViewSpec     string // raw view specifier

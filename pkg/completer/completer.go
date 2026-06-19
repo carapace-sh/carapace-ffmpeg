@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/carapace-sh/carapace"
-	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
 	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
+	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
 )
 
 // ContextToArgs converts carapace.Context to the args and trailingSpace

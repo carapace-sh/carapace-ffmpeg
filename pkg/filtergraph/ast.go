@@ -11,7 +11,7 @@ type Chain struct {
 	InputLabels  []string // [input_label]* before the chain
 	Filters      []*Filter
 	OutputLabels []string // [output_label]* after the chain
-	Span        Span
+	Span         Span
 }
 
 // InputLabel returns the first input label (common case), or empty string.

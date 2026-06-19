@@ -8,11 +8,11 @@ import (
 type OptionScope int
 
 const (
-	ScopeGlobalOpt    OptionScope = iota
-	ScopePerFileOpt               // applies to next input or output
-	ScopeInputOnlyOpt             // applies to next input only
-	ScopeOutputOnlyOpt            // applies to next output only
-	ScopePerStreamOpt             // applies to specific streams with specifier
+	ScopeGlobalOpt     OptionScope = iota
+	ScopePerFileOpt                // applies to next input or output
+	ScopeInputOnlyOpt              // applies to next input only
+	ScopeOutputOnlyOpt             // applies to next output only
+	ScopePerStreamOpt              // applies to specific streams with specifier
 )
 
 func (s OptionScope) String() string {
@@ -35,7 +35,7 @@ func (s OptionScope) String() string {
 type OptionType int
 
 const (
-	TypeBoolean  OptionType = iota
+	TypeBoolean OptionType = iota
 	TypeValue              // takes a value argument
 )
 
@@ -43,58 +43,58 @@ const (
 type ValueType string
 
 const (
-	ValueString        ValueType = "string"
-	ValueInt           ValueType = "int"
+	ValueString         ValueType = "string"
+	ValueInt            ValueType = "int"
 	ValueInt64          ValueType = "int64"
-	ValueFloat         ValueType = "float"
-	ValueDuration      ValueType = "duration"
-	ValueTimestamp     ValueType = "timestamp"
-	ValueRatio         ValueType = "ratio"
-	ValueVideoSize     ValueType = "video_size"
-	ValueVideoRate     ValueType = "video_rate"
-	ValuePixelFormat   ValueType = "pixel_format"
-	ValueSampleFmt     ValueType = "sample_format"
-	ValueChannelLayout ValueType = "channel_layout"
-	ValueCodec         ValueType = "codec"
-	ValueFormat        ValueType = "format"
-	ValueBoolean       ValueType = "boolean"
-	ValueMapSpec       ValueType = "map_spec"
-	ValueFilter        ValueType = "filter"
-	ValueMetadata      ValueType = "metadata"
-	ValueDisposition   ValueType = "disposition"
-	ValueBitrate       ValueType = "bitrate"
-	ValueFileURL       ValueType = "file_url"
-	ValueHWAccel       ValueType = "hwaccel"
-	ValueLogLevel      ValueType = "loglevel"
-	ValueFPSMode       ValueType = "fps_mode"
-	ValueCopyTB        ValueType = "copytb"
-	ValueAbortOn       ValueType = "abort_on"
-	ValueDiscard       ValueType = "discard"
-	ValueBSF           ValueType = "bsf"
-	ValuePrintGraphFmt ValueType = "print_graphs_format"
-	ValueTarget        ValueType = "target"
+	ValueFloat          ValueType = "float"
+	ValueDuration       ValueType = "duration"
+	ValueTimestamp      ValueType = "timestamp"
+	ValueRatio          ValueType = "ratio"
+	ValueVideoSize      ValueType = "video_size"
+	ValueVideoRate      ValueType = "video_rate"
+	ValuePixelFormat    ValueType = "pixel_format"
+	ValueSampleFmt      ValueType = "sample_format"
+	ValueChannelLayout  ValueType = "channel_layout"
+	ValueCodec          ValueType = "codec"
+	ValueFormat         ValueType = "format"
+	ValueBoolean        ValueType = "boolean"
+	ValueMapSpec        ValueType = "map_spec"
+	ValueFilter         ValueType = "filter"
+	ValueMetadata       ValueType = "metadata"
+	ValueDisposition    ValueType = "disposition"
+	ValueBitrate        ValueType = "bitrate"
+	ValueFileURL        ValueType = "file_url"
+	ValueHWAccel        ValueType = "hwaccel"
+	ValueLogLevel       ValueType = "loglevel"
+	ValueFPSMode        ValueType = "fps_mode"
+	ValueCopyTB         ValueType = "copytb"
+	ValueAbortOn        ValueType = "abort_on"
+	ValueDiscard        ValueType = "discard"
+	ValueBSF            ValueType = "bsf"
+	ValuePrintGraphFmt  ValueType = "print_graphs_format"
+	ValueTarget         ValueType = "target"
 	ValueSwsFlags       ValueType = "sws_flags"
-	ValueDevice        ValueType = "device"
-	ValueShowMode      ValueType = "show_mode"
-	ValueSyncType      ValueType = "sync_type"
-	ValueStreamSpec    ValueType = "stream_spec"
+	ValueDevice         ValueType = "device"
+	ValueShowMode       ValueType = "show_mode"
+	ValueSyncType       ValueType = "sync_type"
+	ValueStreamSpec     ValueType = "stream_spec"
 	ValueProbeOutputFmt ValueType = "probe_output_format"
-	ValueDataDumpFmt   ValueType = "data_dump_format"
-	ValueShowOptFields ValueType = "show_optional_fields"
-	ValueVulkanParams  ValueType = "vulkan_params"
+	ValueDataDumpFmt    ValueType = "data_dump_format"
+	ValueShowOptFields  ValueType = "show_optional_fields"
+	ValueVulkanParams   ValueType = "vulkan_params"
 )
 
 // OptionDef defines a single ffmpeg option.
 type OptionDef struct {
-	CanonicalName string      // primary name (e.g. "codec")
-	ShortName     string      // short name (e.g. "c")
-	Aliases       []string    // other aliases
-	Description   string      // short help text
+	CanonicalName string   // primary name (e.g. "codec")
+	ShortName     string   // short name (e.g. "c")
+	Aliases       []string // other aliases
+	Description   string   // short help text
 	Scope         OptionScope
-	Type          OptionType  // boolean or value-taking
-	ValueType     ValueType   // type of value
-	AcceptsSpec   bool        // whether stream specifier suffix is valid
-	ImplicitSpec  string      // implied stream specifier for aliases (e.g. "v" for vcodec)
+	Type          OptionType // boolean or value-taking
+	ValueType     ValueType  // type of value
+	AcceptsSpec   bool       // whether stream specifier suffix is valid
+	ImplicitSpec  string     // implied stream specifier for aliases (e.g. "v" for vcodec)
 }
 
 // OptionIndex maps option names (including aliases) to their definitions.

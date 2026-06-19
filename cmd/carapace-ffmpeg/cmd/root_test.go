@@ -11,11 +11,11 @@ import (
 
 func TestContextToArgs(t *testing.T) {
 	tests := []struct {
-		name           string
-		args           []string
-		value          string
-		expectedArgs   []string
-		expectedTrail  bool
+		name          string
+		args          []string
+		value         string
+		expectedArgs  []string
+		expectedTrail bool
 	}{
 		{
 			name:          "empty with trailing space",

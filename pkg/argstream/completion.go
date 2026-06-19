@@ -44,13 +44,13 @@ func (t ExpectedToken) MarshalText() ([]byte, error) {
 
 // OptionContext provides details about the option being completed.
 type OptionContext struct {
-	Name           string    `json:"name"`
-	CanonicalName  string    `json:"canonicalName"`
-	StreamSpecifier string   `json:"streamSpecifier,omitempty"`
-	ValueType      ValueType `json:"valueType"`
-	AcceptsSpec    bool      `json:"acceptsSpec"`
-	IsBoolean      bool      `json:"isBoolean"`
-	Style          string    `json:"style"`
+	Name            string    `json:"name"`
+	CanonicalName   string    `json:"canonicalName"`
+	StreamSpecifier string    `json:"streamSpecifier,omitempty"`
+	ValueType       ValueType `json:"valueType"`
+	AcceptsSpec     bool      `json:"acceptsSpec"`
+	IsBoolean       bool      `json:"isBoolean"`
+	Style           string    `json:"style"`
 }
 
 // CompletionContext describes what is expected at the completion position.

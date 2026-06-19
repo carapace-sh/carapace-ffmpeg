@@ -256,7 +256,7 @@ func buildOptionContext(baseName, spec string, optDef *OptionDef) *OptionContext
 		return &OptionContext{
 			Name:        baseName,
 			AcceptsSpec: false,
-			IsBoolean:  false,
+			IsBoolean:   false,
 		}
 	}
 	effectiveSpec := spec

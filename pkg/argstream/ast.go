@@ -61,19 +61,19 @@ func (k TokenKind) MarshalText() ([]byte, error) {
 
 // Token represents a single parsed argument token.
 type Token struct {
-	Kind           TokenKind
-	OptionName     string // e.g. "c" for -c:v:1
+	Kind            TokenKind
+	OptionName      string // e.g. "c" for -c:v:1
 	StreamSpecifier string // e.g. "v:1" for -c:v:1
-	Value          string // option value (empty for boolean flags)
-	URL            string // for input/output URLs
-	Span           Span
+	Value           string // option value (empty for boolean flags)
+	URL             string // for input/output URLs
+	Span            Span
 }
 
 // InputFile tracks an input file declaration.
 type InputFile struct {
-	Index  int
-	URL    string
-	Span   Span
+	Index int
+	URL   string
+	Span  Span
 }
 
 // OutputFile tracks an output file declaration.

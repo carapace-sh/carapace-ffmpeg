@@ -81,8 +81,8 @@ func TestParseVideoType(t *testing.T) {
 
 func TestParseAllStreamTypes(t *testing.T) {
 	type test struct {
-		input   string
-		want    StreamType
+		input string
+		want  StreamType
 	}
 	tests := []test{
 		{"v", TypeVideo},

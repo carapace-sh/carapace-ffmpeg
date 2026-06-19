@@ -32,10 +32,10 @@ func (t ExpectedToken) MarshalText() ([]byte, error) {
 
 type CompletionContext struct {
 	ExpectedTokens []ExpectedToken `json:"expectedTokens"`
-	PartialIdent    string          `json:"partialIdent,omitempty"`
-	Negate          bool            `json:"negate"`
-	FileIndex       int             `json:"fileIndex"`
-	HasSpecifier    bool            `json:"hasSpecifier"`
-	Specifier       string          `json:"specifier,omitempty"`
-	IsLinkLabel     bool            `json:"isLinkLabel"`
+	PartialIdent   string          `json:"partialIdent,omitempty"`
+	Negate         bool            `json:"negate"`
+	FileIndex      int             `json:"fileIndex"`
+	HasSpecifier   bool            `json:"hasSpecifier"`
+	Specifier      string          `json:"specifier,omitempty"`
+	IsLinkLabel    bool            `json:"isLinkLabel"`
 }
