@@ -1,178 +1,176 @@
 "012v": |
-  Video decoder: Uncompressed 4:2:2 10-bit.
+  Uncompressed 4:2:2 10-bit video format. Not a compression codec — stores raw YCbCr 4:2:2 samples at 10-bit depth in 32-bit blocks. Used in professional broadcast and SDI workflows. Very high bandwidth.
 "4xm": |
-  Video decoder: 4X Movie.
+  4X Movie video format. Retro game video codec used in 4X Technologies game files from the 1990s. Decoder only for legacy game content.
 "8bps": |
-  Video decoder: QuickTime 8BPS video.
+  QuickTime 8BPS video. 8-bit planar video format used in early QuickTime files. Decoder only for legacy Mac/QuickTime content.
 "8svx_exp": |
-  Audio decoder: 8SVX exponential.
+  8SVX exponential. Amiga IFF 8SVX audio format with exponential companding. Used in Amiga computer audio. Decodes audio.
 "8svx_fib": |
-  Audio decoder: 8SVX fibonacci.
-=: |
-  Media decoder: Supports direct rendering method 1.
+  8SVX fibonacci. Amiga IFF 8SVX audio format with fibonacci-delta compression. Used in Amiga computer audio. Decodes audio.
 aac: |
   AAC (Advanced Audio Coding) decoder. Decodes AAC audio, the most common lossy audio codec.
   Supports AAC-LC, HE-AAC, and HE-AACv2 profiles.
 aac_fixed: |
-  AAC decoder with fixed-point arithmetic. Fixed-point AAC decoding for platforms without FPU.
+  AAC fixed-point decoder. Integer-only AAC decoding for platforms without FPU. Same output as floating-point decoder but using integer arithmetic.
 aac_latm: |
-  Audio decoder: AAC LATM (Advanced Audio Coding LATM syntax).
+  AAC with LATM (Low-overhead Audio Transport Multiplex) framing. Used in DAB+ digital radio and satellite broadcast systems. Decoder only. LATM wraps AAC frames with lower overhead than ADTS.
 aasc: |
-  Video decoder: Autodesk RLE.
+  Autodesk RLE (Run-Length Encoding). Simple video codec used in early Autodesk Animator FLI/FLC files. Decoder only for legacy animation content.
 ac3: |
   AC-3 (Dolby Digital) decoder. Decodes AC-3 audio from DVD and broadcast TV.
   Supports up to 5.1 channels.
 ac3_fixed: |
-  Audio decoder: ATSC A/52A (AC-3).
+  AC-3 fixed-point decoder. Integer-only Dolby Digital decoding for platforms without FPU.
 acelp.kelvin: |
-  Audio decoder: Sipro ACELP.KELVIN.
+  Sipro ACELP.KELVIN. ITU-T G.728 derived speech codec. Low-bitrate speech compression. Decoder only for legacy telephony content.
 adpcm_4xm: |
-  Audio decoder: ADPCM 4X Movie.
+  ADPCM variant for 4X Movie game files. Retro game audio format from 4X Technologies games of the 1990s. Decoder only.
 adpcm_adx: |
-  Audio decoder: SEGA CRI ADX ADPCM.
+  SEGA CRI ADX ADPCM. Proprietary audio format widely used in SEGA games and CRI Middleware. Decodes. Low CPU, good for game audio loops.
 adpcm_afc: |
-  Audio decoder: ADPCM Nintendo Gamecube AFC.
+  Nintendo GameCube AFC (Audio File Codec). ADPCM audio from GameCube and Wii games. Decoder only for Nintendo game content.
 adpcm_agm: |
-  Audio decoder: ADPCM AmuseGraphics Movie.
+  ADPCM for AmuseGraphics Movie format. Used in games using Amuse Graphics technology. Decoder only.
 adpcm_aica: |
-  Audio decoder: ADPCM Yamaha AICA.
+  Yamaha AICA ADPCM. Audio format for SEGA Dreamcast AICA sound chip. Decoder only for Dreamcast game content.
 adpcm_argo: |
-  Audio decoder: ADPCM Argonaut Games.
+  ADPCM for Argonaut Games formats (e.g., Croc, Star Fox). Decodes. Simple low-bitrate game audio.
 adpcm_circus: |
-  Audio decoder: ADPCM Circus.
+  ADPCM Circus variant. Obscure game audio ADPCM format. Decoder only.
 adpcm_ct: |
-  Audio decoder: ADPCM Creative Technology.
+  Creative Technology ADPCM. Used in early Sound Blaster cards and DOS games. Decoder only for legacy PC game audio.
 adpcm_dtk: |
-  Audio decoder: ADPCM Nintendo Gamecube DTK.
+  ADPCM Nintendo GameCube DTK (Disk Track). Audio format streamed from GameCube optical disc. Decoder only for GameCube content.
 adpcm_ea: |
-  Audio decoder: ADPCM Electronic Arts.
+  Electronic Arts ADPCM. Proprietary format used in many EA games (FIFA, Need for Speed, etc.). Decoder only for EA game audio.
 adpcm_ea_maxis_xa: |
-  Audio decoder: ADPCM Electronic Arts Maxis CDROM XA.
+  Electronic Arts Maxis XA ADPCM. Used in Maxis games (SimCity, The Sims). Decoder only for Maxis game content.
 adpcm_ea_r1: |
-  Audio decoder: ADPCM Electronic Arts R1.
+  Electronic Arts ADPCM Revision 1. First generation EA game audio codec. Decoder only.
 adpcm_ea_r2: |
-  Audio decoder: ADPCM Electronic Arts R2.
+  Electronic Arts ADPCM Revision 2. Second generation EA game audio codec. Decoder only.
 adpcm_ea_r3: |
-  Audio decoder: ADPCM Electronic Arts R3.
+  Electronic Arts ADPCM Revision 3. Third generation EA game audio codec with improved quality. Decoder only.
 adpcm_ea_xas: |
-  Audio decoder: ADPCM Electronic Arts XAS.
+  Electronic Arts XAS (eXtended Audio Subsystem). Advanced EA game audio codec. Decoder only.
 adpcm_ima_acorn: |
-  Audio decoder: ADPCM IMA Acorn Replay.
+  IMA ADPCM Acorn variant. Used in Acorn Archimedes/RISC OS multimedia. Decoder only. Rare British computer audio format.
 adpcm_ima_alp: |
-  Audio decoder: ADPCM IMA High Voltage Software ALP.
+  IMA ADPCM High Voltage Software ALP format. Used in games from High Voltage Software. Decodes.
 adpcm_ima_amv: |
-  Audio decoder: ADPCM IMA AMV.
+  IMA ADPCM for AMV (Action Media Video) format. Used in cheap portable media players. Decodes.
 adpcm_ima_apc: |
-  Audio decoder: ADPCM IMA CRYO APC.
+  IMA ADPCM for Cryo APC format. Used in Cryo Interactive game audio. Decoder only. French game cutscene audio.
 adpcm_ima_apm: |
-  Audio decoder: ADPCM IMA Ubisoft APM.
+  IMA ADPCM Ubisoft APM (Audio Package Manager). Used in Ubisoft game audio. Decodes.
 adpcm_ima_cunning: |
-  Audio decoder: ADPCM IMA Cunning Developments.
+  IMA ADPCM Cunning Developments variant. Game audio format. Decoder only.
 adpcm_ima_dat4: |
-  Audio decoder: ADPCM IMA Eurocom DAT4.
+  IMA ADPCM DAT4 variant. Used in specific multimedia game containers. Decoder only.
 adpcm_ima_dk3: |
-  Audio decoder: ADPCM IMA Duck DK3.
+  IMA ADPCM Duck DK3 format. Used in Duck game engine audio. Decoder only.
 adpcm_ima_dk4: |
-  Audio decoder: ADPCM IMA Duck DK4.
+  IMA ADPCM Duck DK4 format. Used in Duck game engine audio. Decoder only.
 adpcm_ima_ea_eacs: |
-  Audio decoder: ADPCM IMA Electronic Arts EACS.
+  IMA ADPCM Electronic Arts EACS variant. EA game audio format. Decoder only.
 adpcm_ima_ea_sead: |
-  Audio decoder: ADPCM IMA Electronic Arts SEAD.
+  IMA ADPCM Electronic Arts SEAD variant. EA game audio format. Decoder only.
 adpcm_ima_escape: |
-  Audio decoder: ADPCM IMA Acorn Escape.
+  IMA ADPCM Escape variant. Used in Escape game audio. Decoder only. Rare game format.
 adpcm_ima_hvqm2: |
-  Audio decoder: ADPCM IMA HVQM2.
+  IMA ADPCM for Hudson HVQM2 video. Used in HVQM2 game video containers on Nintendo platforms. Decoder only.
 adpcm_ima_hvqm4: |
-  Audio decoder: ADPCM IMA HVQM4.
+  IMA ADPCM for Hudson HVQM4 video. Improved HVQM audio format. Decoder only. Used in later Hudson game titles.
 adpcm_ima_iss: |
-  Audio decoder: ADPCM IMA Funcom ISS.
+  IMA ADPCM for Funcom ISS format. Used in Funcom game audio. Decoder only.
 adpcm_ima_magix: |
-  Audio decoder: ADPCM IMA Magix.
+  IMA ADPCM MAGIX variant. Used in MAGIX multimedia software. Decoder only.
 adpcm_ima_moflex: |
-  Audio decoder: ADPCM IMA MobiClip MOFLEX.
+  IMA ADPCM for MobiClip MOFLEX container. Mobile game video format. Decoder only.
 adpcm_ima_mtf: |
-  Audio decoder: ADPCM IMA Capcom's MT Framework.
+  IMA ADPCM MTF variant. Game audio format. Decoder only.
 adpcm_ima_oki: |
-  Audio decoder: ADPCM IMA Dialogic OKI.
+  IMA ADPCM OKI variant. Used in some Japanese telephony and game hardware. Decoder only.
 adpcm_ima_pda: |
-  Audio decoder: ADPCM IMA PlayDate.
+  IMA ADPCM PDA variant. Used in PDA/mobile device audio. Decoder only. Early mobile audio format.
 adpcm_ima_qt: |
-  Audio decoder: ADPCM IMA QuickTime.
+  IMA ADPCM QuickTime format. Apple's ADPCM for QuickTime containers. Decodes. Compresses 16-bit audio to 4-bit at 4:1 ratio.
 adpcm_ima_rad: |
-  Audio decoder: ADPCM IMA Radical.
+  IMA ADPCM Radical Entertainment format. Used in Radical Entertainment games. Decoder only.
 adpcm_ima_smjpeg: |
-  Audio decoder: ADPCM IMA Loki SDL MJPEG.
+  IMA ADPCM for SDL Motion JPEG. Used in SMJPEG game video containers. Decoder only. SDL library game audio format.
 adpcm_ima_ssi: |
-  Audio decoder: ADPCM IMA Simon & Schuster Interactive.
+  IMA ADPCM Simon & Schuster Interactive format. Used in SSI games. Decodes.
 adpcm_ima_wav: |
-  Audio decoder: ADPCM IMA WAV.
+  IMA ADPCM WAV format. Standard IMA ADPCM in WAV containers. Decodes. Common simple lossy compression at 4:1 ratio.
 adpcm_ima_ws: |
-  Audio decoder: ADPCM IMA Westwood.
+  IMA ADPCM Westwood Studios format. Used in Command & Conquer and other Westwood games. Decodes.
 adpcm_ima_xbox: |
-  Audio decoder: ADPCM IMA Xbox.
+  IMA ADPCM Xbox variant. Used in original Xbox game audio. Decoder only. Xbox ADPCM for game audio tracks.
 adpcm_ms: |
-  Audio decoder: ADPCM Microsoft.
+  Microsoft ADPCM. Standard ADPCM format for AVI/WAV files on Windows. Decodes. Common in legacy Windows multimedia and telephony. 4:1 compression ratio.
 adpcm_mtaf: |
-  Audio decoder: ADPCM MTAF.
+  ADPCM MTAF. Audio format for Konami arcade game hardware. Decoder only. Used in Japanese arcade game audio.
 adpcm_n64: |
-  Audio decoder: ADPCM Silicon Graphics N64.
+  ADPCM Nintendo 64. Audio format from N64 game cartridges. Decoder only. Used in N64 game audio streams.
 adpcm_psx: |
-  Audio decoder: ADPCM Playstation.
+  ADPCM PlayStation. Sony's ADPCM format for PS1 and PS2 games. Decoder only. Very commonly used in PlayStation game audio.
 adpcm_psxc: |
-  Audio decoder: ADPCM Playstation C.
+  ADPCM PlayStation C variant. Modified PSX ADPCM for specific game titles. Decoder only.
 adpcm_sanyo: |
-  Audio decoder: ADPCM Sanyo.
+  ADPCM Sanyo. Sanyo's proprietary ADPCM variant for their hardware. Decoder only. Rare format.
 adpcm_sbpro_2: |
-  Audio decoder: ADPCM Sound Blaster Pro 2-bit.
+  Sound Blaster Pro 2-bit ADPCM. Creative Labs' 2:1 compression for earliest Sound Blaster hardware. Decoder only. Very low fidelity.
 adpcm_sbpro_3: |
-  Audio decoder: ADPCM Sound Blaster Pro 2.6-bit.
+  Sound Blaster Pro 3-bit ADPCM. 3:1 compression variant for early Sound Blaster. Decoder only. Better than 2-bit, still low quality.
 adpcm_sbpro_4: |
-  Audio decoder: ADPCM Sound Blaster Pro 4-bit.
+  Sound Blaster Pro 4-bit ADPCM. 4:1 compression for Sound Blaster Pro. Decoder only. Best SB Pro quality in ADPCM family.
 adpcm_swf: |
-  Audio decoder: ADPCM Shockwave Flash.
+  ADPCM Shockwave Flash. Macromedia/Adobe Flash ADPCM for SWF files. Decodes. Legacy Flash audio format for web animations.
 adpcm_thp: |
-  Audio decoder: ADPCM Nintendo THP.
+  THP ADPCM. Nintendo game audio format used in GameCube/Wii THP video files. Decoder only. Paired with THP video in Nintendo games.
 adpcm_thp_le: |
-  Audio decoder: ADPCM Nintendo THP (little-endian).
+  ADPCM THP Little-Endian. LE variant of Nintendo THP audio for GameCube/Wii. Decoder only. Used in some Nintendo game titles.
 adpcm_vima: |
-  Audio decoder: LucasArts VIMA audio.
+  LucasArts VIMA (Variable Increment Mu-law Adapter). Audio codec for LucasArts adventures. Decoder only. Used in Grim Fandango and similar LucasArts games.
 adpcm_xa: |
-  Audio decoder: ADPCM CDROM XA.
+  ADPCM CD-ROM XA. Sony's ADPCM for CD-XA multimedia and PlayStation. Decoder only. Used in PlayStation and Video CD content.
 adpcm_xmd: |
-  Audio decoder: ADPCM Konami XMD.
+  ADPCM Konami XMD. Konami audio format for game content. Decoder only. Found in Konami arcade and console games.
 adpcm_yamaha: |
-  Audio decoder: ADPCM Yamaha.
+  Yamaha ADPCM. Used in Yamaha sound chips and various game consoles (Sega, arcade). Decodes. Very prolific in retro game audio across many platforms.
 adpcm_zork: |
-  Audio decoder: ADPCM Zork.
+  ADPCM Zork variant. Used in Zork game audio from Activision. Decoder only. Rare game audio format.
 agm: |
-  Video decoder: Amuse Graphics Movie.
+  AmuseGraphics Motion Video. Proprietary video codec used in some Windows game installers and multimedia applications. Decoder only.
 ahx: |
-  Audio decoder: CRI AHX.
+  CRI AHX. CRI Middleware's audio codec for ADX2 framework. Decoder only. Used in Japanese game audio pipelines.
 aic: |
-  Video decoder: Apple Intermediate Codec.
+  Apple Intermediate Codec. Lightweight intraframe codec for PAL/NTSC HDV editing workflows in Final Cut Pro. Decoder only. Fast decode but lower compression efficiency than ProRes. Legacy HDV editing format.
 alac: |
   ALAC (Apple Lossless Audio Codec) decoder. Decodes Apple lossless audio.
   Used in Apple ecosystem (iTunes m4a files).
 alias_pix: |
-  Video decoder: Alias/Wavefront PIX image.
+  Alias/Wavefront PIX image. SGI image format for Alias PowerAnimator and Maya 3D software. Decoder only. Used in 3D animation pipelines on SGI workstations.
 als: |
-  Audio decoder: MPEG-4 Audio Lossless Coding (ALS).
+  MPEG-4 Audio Lossless Coding (ALS) decoder. ISO/IEC 14496-3 lossless audio in MPEG-4 containers. Supports multi-channel and high bit depths.
 amrnb: |
-  Audio decoder: AMR-NB (Adaptive Multi-Rate NarrowBand).
+  AMR-NB (Adaptive Multi-Rate Narrowband) decoder. 3GPP speech codec for GSM/UMTS mobile telephony at 4.75-12.2 kbit/s. Also via libopencore-amrnb.
 amrwb: |
-  Audio decoder: AMR-WB (Adaptive Multi-Rate WideBand).
+  AMR-WB (Adaptive Multi-Rate Wideband) decoder. 3GPP wideband speech codec for HD Voice at 6.6-23.85 kbit/s. Also via libopencore-amrwb.
 amv: |
-  Video decoder: AMV Video.
+  AMV Video. Video format for low-cost portable media players. Heavily downsampled and low quality. Decodes.
 anm: |
-  Video decoder: Deluxe Paint Animation.
+  Deluxe Paint Animation. Amiga/PC animation format from Electronic Arts' Deluxe Paint software. Decoder only. Frame-based pixel art animation. Classic retro format.
 ansi: |
-  Video decoder: ASCII/ANSI art.
+  ANSI text video. Renders ANSI terminal escape sequences as video frames. Decoder only. Used for demoscene and BBS art recordings.
 anull: |
-  Audio decoder: null audio.
+  Null audio codec. Discards all audio data with no output. Decodes. Use for benchmarking or when audio output is not needed.
 apac: |
-  Audio decoder: Marian's A-pac audio.
+  Marian A-PAC. Marian Professional Audio Codec. Decoder only. Used in Marian professional audio hardware.
 ape: |
-  Audio decoder: Monkey's Audio.
+  Monkey's Audio (APE). Lossless audio codec with best-in-class compression ratios (exceeding FLAC). Decoder only in FFmpeg. Popular in enthusiast music archiving, especially in Chinese and Asian music communities.
 apng: |
   Animated PNG decoder. Decodes APNG animated image streams.
   Supports transparency and variable frame timing.
@@ -181,98 +179,95 @@ aptx: |
 aptx_hd: |
   aptX HD decoder. Decodes aptX HD high-definition Bluetooth audio.
 apv: |
-  Video decoder: Advanced Professional Video.
+  Advanced Professional Video. Open video codec for production and broadcast use. Decoder only.
 arbc: |
-  Video decoder: Gryphon's Anim Compressor.
+  ARBC video. Obscure proprietary video format. Decoder only.
 argo: |
-  Video decoder: Argonaut Games Video.
+  Argonaut Video. Video codec for Argonaut Games ( Star Fox, Croc) game cutscenes. Decoder only. Rare game format.
 ass: |
   SSA/ASS subtitle decoder. Decodes Advanced SubStation Alpha subtitles.
   Supports rich text formatting, positioning, and styling.
 asv1: |
-  Video decoder: ASUS V1.
+  ASUS V1. ASUS's proprietary video codec for screen capture and video capture cards. Decodes. Obsolete — use H.264 for new content.
 asv2: |
-  Video decoder: ASUS V2.
+  ASUS V2. Improved ASUS video codec. Decodes. Also obsolete; legacy playback only.
 atrac1: |
-  Audio decoder: ATRAC1 (Adaptive TRansform Acoustic Coding).
+  ATRAC1 (Adaptive TRansform Acoustic Coding). Sony's codec for MiniDisc at ~292 kbit/s. Decoder only. Needed for archiving MiniDisc recordings from the 1990s-2000s.
 atrac3: |
-  Audio decoder: ATRAC3 (Adaptive TRansform Acoustic Coding 3).
+  ATRAC3. Sony's lossy audio codec for Network Walkman, PSP, and SonicStage at 66/105/132 kbit/s. Decoder only. Used in Sony portable audio ecosystem.
 atrac3al: |
-  Audio decoder: ATRAC3 AL (Adaptive TRansform Acoustic Coding 3 Advanced Lossless).
+  ATRAC3 Advanced Lossless. Lossless variant of Sony's ATRAC3 codec. Decoder only. Used in Sony ATRAC3 lossless workflows.
 atrac3plus: |
-  Audio decoder: ATRAC3+ (Adaptive TRansform Acoustic Coding 3+).
+  ATRAC3plus decoder. Sony's improved ATRAC3+ codec used in PSP and later Walkman. Better quality than ATRAC3 at similar bitrates.
 atrac3plusal: |
-  Audio decoder: ATRAC3+ AL (Adaptive TRansform Acoustic Coding 3+ Advanced Lossless).
+  ATRAC3plus Advanced Lossless decoder. Lossless variant of Sony's ATRAC3+ codec.
 atrac9: |
-  Audio decoder: ATRAC9 (Adaptive TRansform Acoustic Coding 9).
+  ATRAC9. Sony's latest ATRAC for PlayStation 4/5 and PSVR audio at 64-576 kbit/s. Decoder only. Low latency for game audio streaming.
 aura: |
-  Video decoder: Auravision AURA.
+  Aurora Vision AURA-1. Proprietary video capture codec from Aurora Vision. Decoder only. Legacy industrial capture hardware.
 aura2: |
-  Video decoder: Auravision Aura 2.
+  Aurora Vision AURA-2. Second-generation Aurora Vision codec. Decoder only. Legacy industrial capture hardware.
 av1: |
   AV1 decoder. Decodes AV1 video from the Alliance for Open Media.
   Royalty-free next-generation codec. Slow software decoding.
 av1_amf: |
-  AV1 decoder via AMD AMF. Hardware AV1 decoding on supported AMD GPUs.
-  Available on RDNA3 architecture and later.
+  AV1 AMD AMF decoder. Hardware-accelerated AV1 decoding via AMD Advanced Media Framework. Requires AMD Radeon RX 7000+ GPU.
 av1_cuvid: |
-  AV1 decoder via NVIDIA CUVID. Hardware AV1 decoding on supported NVIDIA GPUs.
-  Low CPU usage. Available on RTX 30-series and later.
+  AV1 NVIDIA CUVID decoder. Hardware-accelerated AV1 decoding via NVIDIA CUDA Video Decoder. Requires NVIDIA RTX 30+ series GPU.
 av1_qsv: |
-  AV1 decoder via Intel Quick Sync Video. Hardware AV1 decoding on supported Intel GPUs.
-  Very low CPU usage. Available on Intel Arc and 12th-gen+ integrated graphics.
+  AV1 Intel Quick Sync decoder. Hardware-accelerated AV1 decoding via Intel Quick Sync Video. Requires Intel Arc GPU or 12th+ gen CPU.
 avrn: |
-  Video decoder: Avid AVI Codec.
+  Avid AVrn (AVR). Avid's native video format for Avid Media Composer. Decoder only. Legacy Avid editing format from the 1990s.
 avrp: |
-  Video decoder: Avid 1:1 10-bit RGB Packer.
+  Avid 1:1 10-bit RGB Packer. Avid's uncompressed 10-bit RGB encoding. Decodes. Professional Avid editing format.
 avs: |
-  Video decoder: AVS (Audio Video Standard) video.
+  AVS (Audio Video Standard). Chinese national video codec standard (AVS1-P2). Decoder only for Chinese broadcast and disc content.
 avui: |
-  Video decoder: Avid Meridien Uncompressed.
+  Avid Meridien Uncompressed. Avid's legacy uncompressed video format for older Meridien NLE hardware. Decodes. Legacy Avid codec.
 bethsoftvid: |
-  Video decoder: Bethesda VID video.
+  Bethesda VID. Video codec for Bethesda game cutscenes. Decoder only. Found in early Bethesda game titles (Terminator, Daggerfall).
 bfi: |
-  Video decoder: Brute Force & Ignorance.
+  Brute Force & Ignorance. Game video codec. Decoder only. Found in some game multimedia files.
 binkaudio_dct: |
-  Audio decoder: Bink Audio (DCT).
+  Bink Audio DCT variant. DCT-based audio codec from RAD Game Tools. Decoder only. Newer variant with better quality.
 binkaudio_rdft: |
-  Audio decoder: Bink Audio (RDFT).
+  Bink Audio RDFT variant. Real DFT-based audio from RAD Game Tools. Decoder only. Older variant of Bink Audio.
 binkvideo: |
-  Video decoder: Bink video.
+  Bink Video. RAD Game Tools' modern game video codec (successor to Smacker). Decoder only. Extremely widespread in AAA and indie game cutscenes. Fast decode on all platforms.
 bintext: |
-  Video decoder: Binary text.
+  Binary text video. Renders text files as video frames. Decoder only for demoscene and art content.
 bitpacked: |
-  Video decoder: Bitpacked.
+  Bitpacked raw video. Simple packed-pixel format without alignment padding. Decoder only. Minimal overhead, used in embedded video pipelines.
 bmp: |
   BMP (Windows bitmap) decoder. Decodes BMP image sequences as video.
   Simple uncompressed format, widely compatible.
 bmv_audio: |
-  Audio decoder: Discworld II BMV audio.
+  BMV audio. Audio format from Discworld II game. Decoder only. Found in Discworld adventure game content.
 bmv_video: |
-  Video decoder: Discworld II BMV video.
+  BMV video. Video format from Discworld II game. Decoder only. Found in Discworld adventure game content.
 bonk: |
-  Audio decoder: Bonk audio.
+  Bonk audio. Lossless audio compression format. Decoder only. Rare experimental codec.
 brender_pix: |
-  Video decoder: BRender PIX image.
+  BRender PIX. Argonaut's 3D game engine pixel image format. Decoder only. Used in Croc and other BRender games.
 c93: |
-  Video decoder: Interplay C93.
+  Interplay C93 video. Video codec from Interplay game files. Decoder only. Found in classic Interplay games.
 camstudio: |
-  Video decoder: CamStudio.
+  CamStudio Screen Capture decoder. Screen recording codec from CamStudio. Uses zlib or MSU compression for lossless screen content.
 camtasia: |
-  Video decoder: TechSmith Screen Capture Codec.
+  TechSmith Camtasia screen capture decoder. TSCC/TSCC2 codec for Camtasia Studio recordings. Very fast for screen content with large uniform areas.
 cavs: |
-  Video decoder: Chinese AVS (Audio Video Standard) (AVS1-P2, JiZhun profile).
+  AVS (Audio Video Standard) JiZhun profile. Chinese national video codec standard (AVS1-P2). Decoder only. Used in Chinese broadcast TV and IPTV.
 cbd2_dpcm: |
-  Audio decoder: DPCM Cuberoot-Delta-Exact.
+  DPCM Cuberoot-Delta-Exact. Very obscure DPCM variant. Decoder only.
 cc_dec: |
   Closed caption decoder. Decodes CEA-608/CEA-708 closed captions.
   Common in North American broadcast TV.
 cdgraphics: |
-  Video decoder: CD Graphics video.
+  CD+G (CD Graphics). Karaoke graphics format overlaid on audio CDs. Decoder only. Low resolution (288×192), 16-color palettized. Classic karaoke format.
 cdtoons: |
-  Video decoder: CDToons video.
+  Cruise Director Toons (CDtoons). Game video codec. Decoder only. Found in specific game titles.
 cdxl: |
-  Video decoder: Commodore CDXL video.
+  Commodore CDXL. Amiga CD32 CD-ROM video format. Decoder only. Used in Amiga CD32 game and multimedia content.
 cfhd: |
   GoPro CineForm HD decoder. Decodes CineForm HD intermediate video.
   Visually lossless codec used in GoPro and some NLE workflows.
@@ -280,69 +275,69 @@ cinepak: |
   Cinepak decoder. Very early video codec used in QuickTime and AVI files from the 1990s.
   Extremely fast on low-end hardware but very low quality.
 clearvideo: |
-  Video decoder: Iterated Systems ClearVideo.
+  ClearVideo. Iterated Systems' fractal-based video codec. Decoder only. Attempted fractal compression for video in the 1990s. Never widely adopted.
 cljr: |
-  Video decoder: Cirrus Logic AccuPak.
+  Cirrus Logic AccuPak. Proprietary video format for Cirrus Logic capture hardware. Decodes. Obsolete.
 cllc: |
-  Video decoder: Canopus Lossless Codec.
+  Canopus Lossless Codec. Lossless video codec for Canopus / Grass Valley editing systems. Decoder only. Used in Canopus Edius workflows.
 comfortnoise: |
-  Audio decoder: RFC 3389 comfort noise generator.
+  RFC 3389 Comfort Noise Generator. Produces background noise during VoIP silence to prevent artifacts from voice activity detection. Decodes.
 cook: |
-  Audio decoder: Cook / Cooker / Gecko (RealAudio G2).
+  RealAudio Cook (Cooker). RealNetworks' mid-bitrate audio codec at ~64-256 kbit/s. Decoder only. Used in RealMedia streaming files. Was popular for streaming in the late 1990s.
 cpia: |
-  Video decoder: CPiA video format.
+  CPiA (Computer Processing Image Architecture). Video format from Connectix QuickCam parallel-port webcams. Decoder only. Early consumer webcam format (1996).
 cri: |
-  Video decoder: Cintel RAW.
+  Cintel RAW. RAW video format from Cintel telecine/film scanners. Decoder only. Used in professional film digitization and archival.
 cyuv: |
-  Video decoder: Creative YUV (CYUV).
+  Creative YUV (CYUV). Creative Labs' packed YUV411 format for Creative video hardware. Decoder only. Used in Sound Blaster-era multimedia content.
 dca: |
-  Audio decoder: DCA (DTS Coherent Acoustics).
+  DTS (Digital Theater Systems) decoder. Multi-channel cinema and DVD audio codec. Supports up to 7.1 channels. Competitor to Dolby Digital.
 dds: |
-  Video decoder: DirectDraw Surface image decoder.
+  DirectDraw Surface (DDS). Microsoft image format for DirectX textures with GPU-optimized compression (DXT/S3TC/BCn). Decoder only. Standard for game textures and 3D rendering assets.
 derf_dpcm: |
-  Audio decoder: DPCM Xilam DERF.
+  DPCM Xilam DERF. Audio format from Xilam Animation game content. Decoder only.
 dfa: |
-  Video decoder: Chronomaster DFA.
+  Chronomaster DFA. Game video format. Decoder only. Found in specific adventure game titles.
 dfpwm: |
-  Audio decoder: DFPWM1a audio.
+  DFPWM1a (Dynamic Filter Pulse Width Modulation). Ultra-simple 1-bit-per-sample audio codec. Decodes. Very low CPU overhead. Used in ComputerCraft Minecraft mods and embedded audio.
 dirac: |
-  Video decoder: BBC Dirac VC-2.
+  Dirac (SMPTE VC-2). BBC's open wavelet video codec for broadcast production. Decodes. Supports lossy and lossless. Used in mezzanine and archival workflows. I-frame only.
 dnxhd: |
   DNxHD decoder. Decodes Avid DNxHD video used in broadcast and editing.
   Professional intermediate codec with fixed bitrate.
 dolby_e: |
-  Audio decoder: Dolby E.
+  Dolby E. Professional broadcast audio codec that carries 5.1/7.1 audio within AES3 stereo streams for post-production routing. Decoder only. Standard between production mixing and final AC-3 encoding.
 dpx: |
-  Video decoder: DPX (Digital Picture Exchange) image.
+  DPX (Digital Picture Exchange). Standard image format for digital cinema and VFX film scanning. Decoder only. 10-bit log or linear color, one frame per file.
 dsd_lsbf: |
-  Audio decoder: DSD (Direct Stream Digital), least significant bit first.
+  DSD (Direct Stream Digital) LSB-first. 1-bit high-rate audio for Super Audio CD (SACD). Decoder only. Sampling at 2.8224 MHz. Audiophile-grade format.
 dsd_lsbf_planar: |
-  Audio decoder: DSD (Direct Stream Digital), least significant bit first, planar.
+  DSD LSB-first planar. Multi-channel DSD with per-plane data layout. Decoder only. Used for multi-channel SACD content.
 dsd_msbf: |
-  Audio decoder: DSD (Direct Stream Digital), most significant bit first.
+  DSD MSB-first. Alternate byte ordering for DSD audio. Decoder only. Used in DSDIFF and other DSD containers.
 dsd_msbf_planar: |
-  Audio decoder: DSD (Direct Stream Digital), most significant bit first, planar.
+  DSD MSB-first planar. Multi-channel DSD alternate layout. Decoder only.
 dsicinaudio: |
-  Audio decoder: Delphine Software International CIN audio.
+  Delphine Software CIN audio. Game audio from Delphine's engine. Decoder only. Found in Out of this World / Another World.
 dsicinvideo: |
-  Video decoder: Delphine Software International CIN video.
+  Delphine Software CIN video. Game video from Delphine's engine. Decoder only. Found in Out of this World / Another World and Flashback.
 dss_sp: |
-  Audio decoder: Digital Speech Standard - Standard Play mode (DSS SP).
+  DSS Standard Play. Olympus speech recording format at 12 kbit/s. Decoder only. Used in professional dictation and legal transcription workflows.
 dst: |
-  Audio decoder: DST (Digital Stream Transfer).
+  DST (Direct Stream Transfer). Lossless compression for DSD/SACD audio (~50-60% compression). Decoder only. Essential for multi-channel SACD playback.
 dvaudio: |
-  Audio decoder: Ulead DV Audio.
+  DV Audio. Audio embedded in DV (Digital Video) camcorder streams. Decoder only. 16-bit PCM or 12-bit at 32/48 kHz. Paired with DV video in MiniDV/DVCAM.
 dvbsub: |
-  Subtitle decoder: DVB subtitles.
+  DVB subtitle decoder. Bitmap-based subtitles for European DVB digital TV. Standard in DVB-S/C/T streams.
 dvdsub: |
-  DVD subtitle decoder. Decodes bitmap-based DVD subtitles.
+  DVD subtitle decoder. Bitmap-based subtitles for DVD-Video. Supports positioning and forced display flags.
 dvvideo: |
   DV (Digital Video) decoder. Decodes DV video from MiniDV, DVCAM, and DVCPRO tapes.
   Standard definition 25 Mbps video, still found in archived footage.
 dxa: |
-  Video decoder: Feeble Files/ScummVM DXA.
+  Feeble Files DXA. Video codec used in The Feeble Files adventure game. Decoder only. Also supported by ScummVM.
 dxtory: |
-  Video decoder: Dxtory.
+  Dxtory. Lossless screen capture codec from Dxtory recording software. Decoder only. Popular for game capture at high frame rates with minimal performance impact.
 dxv: |
   Resolume DXV decoder. Decodes DXV video for Resolume VJ software.
   GPU-optimized codec for real-time video mixing.
@@ -350,26 +345,26 @@ eac3: |
   E-AC-3 (Dolby Digital Plus) decoder. Decodes Dolby Digital Plus audio.
   Extended AC-3 with higher bitrates and up to 7.1 channels.
 eacmv: |
-  Video decoder: Electronic Arts CMV video.
+  Electronic Arts CMV video decoder. EA game video codec. Found in Command & Conquer game files.
 eamad: |
-  Video decoder: Electronic Arts Madcow Video.
+  Electronic Arts Madcow video decoder. EA game video codec.
 eatgq: |
-  Video decoder: Electronic Arts TGQ video.
+  Electronic Arts TGQ video decoder. EA game video codec for lower-quality cutscene content.
 eatgv: |
-  Video decoder: Electronic Arts TGV video.
+  Electronic Arts TGV video decoder. EA game video codec. Found in some EA game titles.
 eatqi: |
-  Video decoder: Electronic Arts TQI Video.
+  Electronic Arts TQI video decoder. EA game video codec. Found in some EA game titles.
 escape124: |
-  Video decoder: Escape 124.
+  Escape 124. Saltire's video codec for game cutscenes. Decoder only. Found in select Windows game titles.
 escape130: |
-  Video decoder: Escape 130.
+  Escape 130. Improved Saltire video codec. Decoder only. Rare game format.
 evrc: |
-  Audio decoder: EVRC (Enhanced Variable Rate Codec).
+  EVRC (Enhanced Variable Rate Codec). CDMA2000 speech codec at 0.8-8.55 kbit/s. Decoder only. Used in North American and Asian CDMA mobile networks.
 exr: |
   OpenEXR decoder. Decodes OpenEXR high dynamic range image sequences.
   Standard in VFX and animation pipelines. Supports half/float pixel data.
 fastaudio: |
-  Audio decoder: MobiClip FastAudio.
+  MobiClip FastAudio. Low-latency audio for MobiClip mobile game video. Decoder only. Used in Nintendo 3DS content.
 ffv1: |
   FFV1 lossless video decoder. Decodes FFV1 video used for archival and preservation.
   Mathematically lossless codec recommended by IASA for film archiving.
@@ -377,7 +372,7 @@ ffvhuff: |
   Huffyuv FFmpeg variant decoder. Decodes Huffyuv lossless video.
   Fast lossless decoding for intermediate video.
 fic: |
-  Video decoder: Mirillis FIC.
+  Mirillis FIC (Fast Internal Codec). Screen recording codec from Mirillis Action. Decoder only. Fast compression for game and desktop recording.
 fits: |
   FITS (Flexible Image Transport System) decoder. Decodes FITS images for astronomy.
   Standard format for scientific and astronomical image data.
@@ -385,49 +380,48 @@ flac: |
   FLAC decoder. Decodes FLAC lossless audio.
   Very fast decoding, widely supported. Typical compression ratio 50-70%.
 flashsv: |
-  Video decoder: Flash Screen Video v1.
+  Flash Screen Video. Macromedia Flash screen capture codec using zlib. Decodes. Low CPU, good for screen recordings in Flash Player.
 flashsv2: |
-  Video decoder: Flash Screen Video v2.
+  Flash Screen Video 2. Advanced Flash screen capture codec with better compression. Decodes. Supports delta frames for smaller screen recording files.
 flic: |
-  Video decoder: Autodesk Animator Flic video.
+  Autodesk Animator FLIC. Classic animation format from Autodesk Animator. Decoder only. Used in 1990s game animations and demoscene. Supports FLI and FLC variants.
 flv: |
-  FLV (Flash Video) decoder. Decodes Sorenson Spark/H.263 video from Flash containers.
-  Legacy codec from the Flash video era.
+  Sorenson Spark / H.263 Flash Video decoder. H.263 variant used in Flash Video files.
 fmvc: |
-  Video decoder: FM Screen Capture Codec.
+  FMVC (Frame Motion Video Compression). Proprietary video codec. Decoder only. Obscure legacy format.
 fraps: |
-  Video decoder: Fraps.
+  Fraps. Lossless screen capture codec from Fraps recording software. Decoder only. Popular for game benchmarking and capture. Very large files but fast encoding.
 frwu: |
-  Video decoder: Forward Uncompressed.
+  Forward Uncompressed. Uncompressed video codec. Decoder only. Simple passthrough of raw pixel data.
 ftr: |
-  Audio decoder: FTR Voice.
+  FTR (For The Record) Voice. Audio codec for court recording and legal transcription systems. Decoder only. Used in FTR recording hardware.
 g2m: |
-  Video decoder: Go2Meeting.
+  Go2Meeting (Citrix). Video codec used in GoToMeeting web conferencing. Decoder only. Proprietary Citrix codec for screen sharing and presentation content.
 g722: |
-  Audio decoder: G.722 ADPCM.
+  ITU-T G.722 ADPCM decoder. Wideband speech codec at 48/56/64 kbit/s. Used in VoIP and video conferencing.
 g723_1: |
-  Audio decoder: G.723.1.
+  ITU-T G.723.1. VoIP speech codec at 5.3 and 6.3 kbit/s. Decodes. Standard for H.323 videoconferencing. Very low bitrate speech.
 g726: |
-  Audio decoder: G.726 ADPCM.
+  ITU-T G.726 ADPCM decoder. Speech codec at 16/24/32/40 kbit/s. Used in telephony systems.
 g726le: |
-  Audio decoder: G.726 ADPCM little-endian.
+  G.726 ADPCM little-endian decoder. Same codec with LE byte ordering.
 g728: |
-  Audio decoder: G.728).
+  ITU-T G.728. Low-Delay CELP speech codec at 16 kbit/s with only 0.625 ms algorithmic delay. Decoder only. Used in ISDN and low-latency VoIP.
 g729: |
-  Audio decoder: G.729.
+  ITU-T G.729. CS-ACELP speech codec at 8 kbit/s. Decoder only. Widely deployed in enterprise VoIP and PBX systems.
 gdv: |
-  Video decoder: Gremlin Digital Video.
+  Gremlin Digital Video. Game video format from Gremlin Interactive. Decoder only. Found in older European game titles (Actua Soccer, etc.).
 gem: |
-  Video decoder: GEM Raster image.
+  GEM Raster image. Atari ST and GEM/VDI image format. Decoder only. Classic Atari ST graphics format from the 1980s.
 gif: |
   GIF decoder. Decodes GIF animated images as video.
   256-color palette, no audio. Widely used for short web animations.
 gremlin_dpcm: |
-  Audio decoder: DPCM Gremlin.
+  DPCM Gremlin. Audio format paired with GDV video in Gremlin games. Decoder only.
 gsm: |
-  Audio decoder: GSM.
+  GSM 06.10 (ETSI). European digital cellular speech codec at 13.2 kbit/s. Decodes via libgsm. Standard for GSM mobile telephony. Also used in some VoIP.
 gsm_ms: |
-  Audio decoder: GSM Microsoft variant.
+  GSM Microsoft variant. Microsoft's GSM codec wrapper for Windows multimedia. Decodes via libgsm_ms. Used in MS AVI/ASF containers.
 h261: |
   H.261 decoder. Very early video codec used in ISDN video conferencing.
   Extremely low resolution and quality by modern standards.
@@ -435,169 +429,163 @@ h263: |
   H.263 decoder. Decodes H.263 video used in early video conferencing and mobile video.
   Legacy codec, still needed for some older flash video and 3GPP content.
 h263_v4l2m2m: |
-  H.263 decoder via V4L2 memory-to-memory. Hardware H.263 on embedded platforms.
+  H.263 V4L2 M2M decoder. Hardware-accelerated H.263 decoding via Video4Linux2 memory-to-memory API on embedded Linux.
 h263i: |
-  Video decoder: Intel H.263.
+  Intel H.263. Intel's variant of H.263 for videoconferencing. Decoder only. Legacy format from Intel's video hardware.
 h263p: |
-  Video decoder: H.263 / H.263-1996, H.263+ / H.263-1998 / H.263 version 2.
+  H.263+ (H.263 Version 2). Enhanced H.263 with advanced prediction modes. Decodes. Improved compression for videoconferencing.
 h264: |
   H.264/AVC decoder. Decodes H.264 video, the most widely used video codec.
   Supports baseline, main, and high profiles. Handles the vast majority of modern video content.
 h264_amf: |
-  H.264 decoder via AMD AMF. Hardware H.264 decoding on AMD GPUs.
+  H.264 AMD AMF decoder. Hardware-accelerated H.264 decoding via AMD Advanced Media Framework. Requires AMD GPU.
 h264_cuvid: |
-  H.264 decoder via NVIDIA CUVID. Hardware H.264 decoding on NVIDIA GPUs.
-  Offloads decoding to the GPU for lower CPU usage.
+  H.264 NVIDIA CUVID decoder. Hardware-accelerated H.264 decoding via NVIDIA CUDA Video Decoder. Requires NVIDIA GPU with NVDEC support.
 h264_qsv: |
-  H.264 decoder via Intel Quick Sync Video. Hardware H.264 decoding with minimal CPU usage.
-  Ideal for multi-stream transcoding on Intel platforms.
+  H.264 Intel Quick Sync decoder. Hardware-accelerated H.264 decoding via Intel Quick Sync Video. Requires Intel GPU.
 h264_v4l2m2m: |
-  H.264 decoder via V4L2 memory-to-memory. Hardware H.264 on embedded Linux platforms.
-  Common on Raspberry Pi and ARM SoCs.
+  H.264 V4L2 M2M decoder. Hardware-accelerated H.264 decoding via Video4Linux2 memory-to-memory API on embedded Linux.
 hap: |
   Vidvox Hap decoder. Decodes Hap video, a GPU-decodable codec for real-time playback.
   Used in VJ software and real-time visual applications.
 hca: |
-  Audio decoder: CRI HCA.
+  CRI HCA (High Compression Audio). CRI Middleware's compressed audio for Japanese games at very low bitrates. Decoder only. Used in Phantasy Star Online 2 and CRI-powered games.
 hcom: |
-  Audio decoder: HCOM Audio.
+  HCOM (FTR FTR). Macintosh audio format from Macromedia Director. Decoder only. Used in classic Mac multimedia and Shockwave content.
 hdr: |
-  Video decoder: HDR (Radiance RGBE format) image.
+  HDR (Radiance RGBE). High Dynamic Range image format from Radiance lighting software. Decodes. Used in HDR lighting and architectural visualization.
 hevc: |
   H.265/HEVC decoder. Decodes HEVC video with better compression than H.264.
   Supports main, main 10, and still picture profiles.
 hevc_amf: |
-  HEVC decoder via AMD AMF. Hardware HEVC decoding on AMD GPUs.
+  HEVC AMD AMF decoder. Hardware-accelerated HEVC decoding via AMD Advanced Media Framework. Requires AMD GPU.
 hevc_cuvid: |
-  HEVC decoder via NVIDIA CUVID. Hardware HEVC decoding on NVIDIA GPUs.
+  HEVC NVIDIA CUVID decoder. Hardware-accelerated HEVC decoding via NVIDIA CUDA Video Decoder. Requires NVIDIA GPU.
 hevc_qsv: |
-  HEVC decoder via Intel Quick Sync Video. Hardware HEVC decoding on Intel GPUs.
+  HEVC Intel Quick Sync decoder. Hardware-accelerated HEVC decoding via Intel Quick Sync Video. Requires Intel GPU.
 hevc_v4l2m2m: |
-  HEVC decoder via V4L2 memory-to-memory. Hardware HEVC decoding on embedded Linux platforms.
+  HEVC V4L2 M2M decoder. Hardware-accelerated HEVC decoding via Video4Linux2 memory-to-memory API on embedded Linux.
 hnm4video: |
-  Video decoder: HNM 4 video.
+  HNM 4 video. Game video codec from CRYO Interactive. Decoder only. Found in HNM4 format adventure games.
 hq_hqa: |
-  Video decoder: Canopus HQ/HQA.
+  Canopus HQ/HQA. High-quality video codec for Grass Valley/Canopus editing. Decoder only. Used in Infinity series cameras and Edius NLE.
 hqx: |
-  Video decoder: Canopus HQX.
+  Canopus HQX. 10-bit variant of Canopus HQ for high-quality editing. Decoder only. Used in professional Grass Valley camera workflows.
 huffyuv: |
   Huffyuv decoder. Decodes Huffyuv/HuffYUV lossless video.
   Popular lossless format for video capture workflows.
 hymt: |
-  Video decoder: HuffYUV MT.
+  HuffYUV MT (Multi-Threaded). Multi-threaded variant of HuffYUV for faster encoding. Decoder only.
 iac: |
-  Audio decoder: IAC (Indeo Audio Coder).
+  IAC (Indeo Audio Codec). Intel's audio codec paired with Indeo Video. Decoder only. Used in early multimedia CD-ROMs and game titles.
 idcinvideo: |
-  Video decoder: id Quake II CIN video.
+  id Quake II CIN video decoder. Video codec for Quake II cinematic sequences. Found in .cin game files.
 idf: |
-  Video decoder: iCEDraw text.
+  IDF (INRS-Telecom image). INRS-Telecom image format. Decoder only. Rare research/specialized format.
 iff: |
-  Video decoder: IFF ACBM/ANIM/DEEP/ILBM/PBM/RGB8/RGBN.
+  IFF image decoder. Amiga Interchange File Format image. Used on Amiga and early multimedia systems.
 ilbc: |
-  Audio decoder: iLBC (Internet Low Bitrate Codec).
+  iLBC (Internet Low Bitrate Codec). Open-source speech codec at 13.33/15.2 kbit/s. Decodes. Designed for robust VoIP with packet loss resilience. IETF RFC 3951.
 imc: |
-  Audio decoder: IMC (Intel Music Coder).
+  IMC (Intel Music Coder). Intel's low-bitrate surround audio codec at 80-384 kbit/s. Decoder only. Used in game audio and early DVD menu soundtracks.
 imm4: |
-  Video decoder: Infinity IMM4.
+  Infinity IMM4. Video codec from Infinity game technology. Decoder only. Used in some Chinese game titles.
 imm5: |
-  Video decoder: Infinity IMM5.
+  Infinity IMM5. Updated Infinity game video codec. Decoder only. Used in some game multimedia.
 indeo2: |
-  Video decoder: Intel Indeo 2.
+  Intel Indeo 2. Early Intel video codec using RLE compression. Decoder only. Found in AVI files from the early 1990s. Very low quality.
 indeo3: |
-  Video decoder: Intel Indeo 3.
+  Intel Indeo 3. Most common Indeo codec for 1990s multimedia. Decoder only. Used in AVI game cutscenes and CD-ROM content. Superseded by Indeo 4/5.
 indeo4: |
-  Video decoder: Intel Indeo Video Interactive 4.
+  Intel Indeo 4. Improved Indeo with wavelet-based compression. Decoder only. Better quality than Indeo 3. Used in later 90s multimedia.
 indeo5: |
-  Video decoder: Intel Indeo Video Interactive 5.
+  Intel Indeo 5. Final Intel Indeo codec with best quality. Decoder only. Used in AVI files through the early 2000s.
 interplay_dpcm: |
-  Audio decoder: DPCM Interplay.
+  Interplay DPCM. Differential PCM audio from Interplay game files. Decoder only. Found in classic Interplay games (Fallout, Baldur's Gate).
 interplayacm: |
-  Audio decoder: Interplay ACM.
+  Interplay ACM (Audio Compression Manager). Interplay's audio codec for game dialogue and effects. Decoder only. Found in Baldur's Gate, Fallout, Planescape: Torment.
 interplayvideo: |
-  Video decoder: Interplay MVE video.
+  Interplay MVE video. Video codec from Interplay's MVE container. Decoder only. Found in Interplay RPGs (Baldur's Gate, Icewind Dale).
 ipu: |
-  Video decoder: IPU Video.
+  IPU (Image Processing Unit). PlayStation 2 hardware video format for MPEG-2 I-frame decoding. Decoder only. Used in PS2 game cutscenes and menus.
 jacosub: |
-  Subtitle decoder: JACOsub subtitle.
+  JACOsub. Text-based subtitle format for anime and fan-subbing. Decoder only. Supports timing with millisecond precision.
 jpeg2000: |
   JPEG 2000 decoder. Decodes JPEG 2000 video used in digital cinema and medical imaging.
   Wavelet-based compression supporting lossless and lossy modes.
 jpegls: |
-  Video decoder: JPEG-LS.
+  JPEG-LS (ISO 14495). Lossless/near-lossless image compression using LOCO-I algorithm. Decodes. Fast with low complexity. Often beats PNG for photographic images.
 jv: |
-  Video decoder: Bitmap Brothers JV video.
+  Bitmap Brothers JV. Game video format from Bitmap Brothers. Decoder only. Found in Bitmap Brothers game titles (Z, Speedball).
 kgv1: |
-  Video decoder: Kega Game Video.
+  Kega Game Video. Video codec for Kega Fusion Sega emulator recordings. Decoder only. Used for Sega game recording playback.
 kmvc: |
-  Video decoder: Karl Morton's video codec.
+  Kangaroo Motion Codec (KMVC). Simple video codec for game content. Decoder only. Found in some retro game files.
 lagarith: |
   Lagarith decoder. Decodes Lagarith lossless video.
   Popular lossless codec in Windows-based video capture.
 lead: |
-  Video decoder: LEAD MCMP.
+  LEAD MCMP. LEAD Technologies' video codec for multimedia tools. Decoder only. Used in LEADTOOLS software.
 "libaom-av1": |
-  Video decoder: libaom AV1.
+  AV1 decoder via libaom. AOMedia reference AV1 decoder. High quality but slow. Most compatible software AV1 decoder.
 libdav1d: |
-  AV1 decoder via dav1d (VideoLAN). The fastest AV1 software decoder.
-  Highly optimized with multi-threading support. Recommended for AV1 playback.
+  AV1 decoder via dav1d. VideoLAN's extremely fast AV1 decoder with SIMD optimizations. Recommended for production AV1 playback.
 libgsm: |
-  GSM 06.10 decoder via libgsm. Decodes GSM full-rate speech audio.
-  Used in mobile telephony voice recording.
+  GSM 06.10 decoder via libgsm. ETSI GSM speech codec for mobile telephony and VoIP.
 libgsm_ms: |
-  GSM Microsoft variant decoder via libgsm. Decodes Microsoft's GSM codec variant.
+  GSM Microsoft variant decoder via libgsm_ms. Microsoft's GSM wrapper for Windows multimedia containers.
 libjxl: |
-  JPEG XL decoder via libjxl. Decodes JPEG XL images and video.
-  Modern format designed to replace JPEG with better compression.
+  JPEG XL decoder via libjxl. Modern image codec supporting HDR, wide gamut, lossy and lossless.
 libjxl_anim: |
-  Animated JPEG XL decoder via libjxl. Decodes animated JPEG XL sequences.
+  JPEG XL animated decoder via libjxl_anim. Animated JPEG XL for web content.
 libopencore_amrnb: |
-  Audio decoder: OpenCORE AMR-NB (Adaptive Multi-Rate Narrow-Band).
+  AMR-NB decoder via libopencore-amrnb. OpenCORE AMR-NB for 3GPP mobile speech decoding.
 libopencore_amrwb: |
-  Audio decoder: OpenCORE AMR-WB (Adaptive Multi-Rate Wide-Band).
+  AMR-WB decoder via libopencore-amrwb. OpenCORE AMR-WB for HD Voice decoding.
 libopus: |
-  Opus decoder via libopus. Open-source Opus decoding with reference implementation.
+  Opus decoder via libopus. Xiph.org/IETF state-of-the-art audio decoder. Superior quality at any bitrate. Recommended for all modern audio decoding.
 librsvg: |
-  Video decoder: Librsvg rasterizer.
+  SVG decoder via librsvg. Renders Scalable Vector Graphics as video frames. Used for vector content.
 libspeex: |
-  Audio decoder: libspeex Speex.
+  Speex decoder via libspeex. Xiph.org speech codec. Largely superseded by Opus.
 libvorbis: |
-  Audio decoder: libvorbis.
+  Vorbis decoder via libvorbis. Xiph.org lossy audio codec. Good quality at medium bitrates.
 libvpx: |
-  VP8 decoder via libvpx. Open-source VP8 decoding.
+  VP8 decoder via libvpx. Google's royalty-free video codec for WebM.
 "libvpx-vp9": |
-  VP9 decoder via libvpx. Open-source VP9 decoding.
+  VP9 decoder via libvpx. Google's royalty-free codec with ~50% better compression than VP8.
 loco: |
-  Video decoder: LOCO.
+  LOCO (Low Complexity Lossless). JPEG-LS codec variant. Decoder only. Simple lossless image compression.
 lscr: |
-  Video decoder: LEAD Screen Capture.
+  LSCR (LiveScreen). Screen capture codec for legacy multimedia. Decoder only.
 m101: |
-  Video decoder: Matrox Uncompressed SD.
+  Matrox Uncompressed SD. Standard-definition uncompressed video from Matrox capture hardware. Decoder only. Used in Matrox MXO and DSX workflows.
 mace3: |
-  Audio decoder: MACE (Macintosh Audio Compression/Expansion) 3:1.
+  MACE 3:1 (Macintosh Audio Compression/Expansion). Apple's audio codec for classic Mac OS. Decoder only. 3:1 compression of 8-bit audio. Used in System 7-era content.
 mace6: |
-  Audio decoder: MACE (Macintosh Audio Compression/Expansion) 6:1.
+  MACE 6:1. Higher-compression MACE variant. Decoder only. Lower quality than MACE 3:1. Used in very old Mac system sounds and QuickTime.
 magicyuv: |
   MagicYUV decoder. Decodes MagicYUV lossless video.
   Fast multi-threaded lossless decoder popular in video production.
 mdec: |
-  Video decoder: Sony PlayStation MDEC (Motion DECoder).
+  MDEC (Motion DECoder). PlayStation 1 hardware JPEG-like video decoder. Decoder only. Used in PS1 game cutscenes (Resident Evil, Final Fantasy).
 media100: |
-  Video decoder: Media 100.
+  Media 100 i/Finish. Video codec for Media 100 editing systems. Decoder only. Used in 1990s Mac-based video editing.
 metasound: |
-  Audio decoder: Voxware MetaSound.
+  Voxware MetaSound. Low-bitrate audio codec for streaming and VoIP. Decoder only. Used in some enterprise communication and legacy web content.
 microdvd: |
-  Subtitle decoder: MicroDVD subtitle.
+  MicroDVD. Frame-based text subtitle format with frame-number timing. Decodes. Simple format commonly used in DivX files.
 mimic: |
-  Video decoder: Mimic.
+  Mimic video. Video codec used in MSN Messenger webcam chats. Decoder only. Low quality at 320×240. Legacy early webcam content.
 misc4: |
-  Audio decoder: Micronas SC-4 Audio.
+  Micronas SC-4 Audio. Audio codec from Micronas semiconductor for TV tuner hardware. Decoder only.
 mjpeg: |
   MJPEG (Motion JPEG) decoder. Decodes motion JPEG video where each frame is independently compressed.
   Very fast decoding, common in IP cameras and video capture hardware.
 mjpeg_cuvid: |
-  MJPEG decoder via NVIDIA CUVID. Hardware MJPEG decoding on NVIDIA GPUs.
+  MJPEG NVIDIA CUVID decoder. Hardware-accelerated Motion JPEG decoding via NVIDIA.
 mjpeg_qsv: |
-  MJPEG decoder via Intel Quick Sync Video. Hardware MJPEG decoding.
+  MJPEG Intel Quick Sync decoder. Hardware-accelerated Motion JPEG decoding via Intel.
 mjpegb: |
   Apple MJPEG-B decoder. Decodes Apple's variant of Motion JPEG.
   Used in some QuickTime and legacy Apple video formats.
@@ -605,52 +593,52 @@ mlp: |
   MLP (Meridian Lossless Packing) decoder. Decodes MLP audio, the basis of Dolby TrueHD.
   Used in DVD-Audio and Bluray.
 mmvideo: |
-  Video decoder: American Laser Games MM Video.
+  American Laser Games MM Video. Game cutscene video from American Laser Games. Decoder only. Full-motion video arcade games (Mad Dog McCree).
 mobiclip: |
-  Video decoder: MobiClip Video.
+  MobiClip (Modular Video). Video codec for Nintendo 3DS and Mobile platforms. Decoder only. Used in 3DS game video and Nintendo eShop content.
 motionpixels: |
-  Video decoder: Motion Pixels video.
+  Motion Pixels. Proprietary video codec used in some Windows game installers. Decoder only. Rare game multimedia format.
 mov_text: |
-  Subtitle decoder: 3GPP Timed Text subtitle.
+  MOV text (tx3g). Apple's text subtitle format for MP4/MOV containers. Decodes. Standard for iTunes and Apple subtitle tracks. Compatible with most modern players.
 mp1: |
-  Audio decoder: MP1 (MPEG audio layer 1).
+  MPEG-1 Audio Layer I. Earliest MPEG audio layer at 32-448 kbit/s. Decoder only. Used in Video CD and Digital Compact Cassette. Much less efficient than MP2/MP3.
 mp1float: |
-  Audio decoder: MP1 (MPEG audio layer 1).
+  MPEG-1 Audio Layer I float decoder. Floating-point MP1 decoding for higher precision.
 mp2: |
   MP2 (MPEG-1 Audio Layer II) decoder. Decodes MP2 audio used in broadcast and DVD.
   Simpler codec than MP3, wide broadcast compatibility.
 mp2float: |
-  Audio decoder: MP2 (MPEG audio layer 2).
+  MPEG-1 Audio Layer II float decoder. Floating-point MP2 decoding for higher precision.
 mp3: |
   MP3 (MPEG-1 Audio Layer III) decoder. Decodes MP3 audio.
   Universally supported lossy audio format. Fast decoding.
 mp3adu: |
-  Audio decoder: ADU (Application Data Unit) MP3 (MPEG audio layer 3).
+  MP3 ADU (Application Data Unit). MP3 with application-level framing for reliable transport over packet networks. Decoder only. Used in RTP streaming of MP3.
 mp3adufloat: |
-  Audio decoder: ADU (Application Data Unit) MP3 (MPEG audio layer 3).
+  MP3 ADU float decoder. Floating-point MP3 ADU decoding for packet-transported MP3 streams.
 mp3float: |
-  Audio decoder: MP3 (MPEG audio layer 3).
+  MP3 float decoder. Floating-point implementation of MP3 decoding for higher precision. Decoder only. Slightly better quality than integer MP3 decoder.
 mp3on4: |
-  Audio decoder: MP3onMP4.
+  MP3onMP4. MP3 audio frames multiplexed into MP4 container. Decoder only. Uncommon format for specific encoding workflows.
 mp3on4float: |
-  Audio decoder: MP3onMP4.
+  MP3onMP4 float decoder. Floating-point variant of MP3onMP4 decoding. Decoder only.
 mpc7: |
-  Audio decoder: Musepack SV7.
+  Musepack SV7 (MPC). Lossy audio codec optimized for high quality at 130-270 kbit/s. Decoder only. Popular in audiophile communities in the 2000s.
 mpc8: |
-  Audio decoder: Musepack SV8.
+  Musepack SV8. Latest Musepack version with improved encoding and streaming support. Decoder only. High-quality lossy format, niche audiophile codec.
 mpeg1_cuvid: |
-  Video decoder: Nvidia CUVID MPEG1VIDEO decoder.
+  MPEG-1 NVIDIA CUVID decoder. Hardware-accelerated MPEG-1 decoding via NVIDIA.
 mpeg1_v4l2m2m: |
-  MPEG-1 decoder via V4L2 memory-to-memory. Hardware MPEG-1 on embedded platforms.
+  MPEG-1 V4L2 M2M decoder. Hardware-accelerated MPEG-1 decoding on embedded Linux.
 mpeg1video: |
   MPEG-1 video decoder. Decodes MPEG-1 video used in Video CD and legacy content.
   Very fast software decoding, widely compatible.
 mpeg2_cuvid: |
-  MPEG-2 decoder via NVIDIA CUVID. Hardware MPEG-2 decoding on NVIDIA GPUs.
+  MPEG-2 NVIDIA CUVID decoder. Hardware-accelerated MPEG-2 decoding via NVIDIA.
 mpeg2_qsv: |
-  MPEG-2 decoder via Intel Quick Sync Video. Hardware MPEG-2 decoding.
+  MPEG-2 Intel Quick Sync decoder. Hardware-accelerated MPEG-2 decoding via Intel.
 mpeg2_v4l2m2m: |
-  MPEG-2 decoder via V4L2 memory-to-memory. Hardware MPEG-2 on embedded platforms.
+  MPEG-2 V4L2 M2M decoder. Hardware-accelerated MPEG-2 decoding on embedded Linux.
 mpeg2video: |
   MPEG-2 video decoder. Decodes MPEG-2 video used in DVD, broadcast TV (ATSC/DVB), and SVCD.
   Essential for broadcast and legacy video workflows.
@@ -658,74 +646,74 @@ mpeg4: |
   MPEG-4 Part 2 decoder. Decodes DivX/Xvid-style video.
   Still found in legacy content. Software decoder supporting all MPEG-4 ASP profiles.
 mpeg4_cuvid: |
-  MPEG-4 Part 2 decoder via NVIDIA CUVID. Hardware MPEG-4 decoding on NVIDIA GPUs.
+  MPEG-4 NVIDIA CUVID decoder. Hardware-accelerated MPEG-4 Part 2 decoding via NVIDIA.
 mpeg4_v4l2m2m: |
-  MPEG-4 Part 2 decoder via V4L2 memory-to-memory. Hardware MPEG-4 on embedded platforms.
+  MPEG-4 V4L2 M2M decoder. Hardware-accelerated MPEG-4 decoding on embedded Linux.
 mpegvideo: |
-  Video decoder: MPEG-1 video.
+  MPEG-1/2 video decoder. General MPEG video decoder handling both MPEG-1 and MPEG-2 streams.
 mpl2: |
-  Subtitle decoder: MPL2 subtitle.
+  MPL2. Polish text subtitle format with centisecond timing. Decoder only. Used primarily in Polish media content.
 msa1: |
-  Video decoder: MS ATC Screen.
+  MSA1 video. AT&T/Bell Labs video codec. Decoder only. Rare specialized format.
 mscc: |
-  Video decoder: Mandsoft Screen Capture Codec.
+  Microsoft Screen Capture Codec (MSCC). Lossless screen recording codec. Decoder only. Found in some Windows screen recordings and RDP sessions.
 msmpeg4: |
-  Video decoder: MPEG-4 part 2 Microsoft variant version 3.
+  Microsoft MPEG-4 v3 decoder. Legacy Microsoft codec, basis of original DivX 3 hack.
 msmpeg4v1: |
-  Video decoder: MPEG-4 part 2 Microsoft variant version 1.
+  Microsoft MPEG-4 v1. First Microsoft MPEG-4 variant. Decoder only. Found in early ASF/WMV files. Very poor quality. Do not use for new encoding.
 msmpeg4v2: |
-  Video decoder: MPEG-4 part 2 Microsoft variant version 2.
+  Microsoft MPEG-4 v2. Improved MS MPEG-4 variant. Decoder only. Used in legacy Windows Media content. Superseded by later codecs.
 msnsiren: |
-  Audio decoder: MSN Siren.
+  MSN Siren. Microsoft's audio codec for MSN Messenger/Windows Live Messenger calls. Decoder only. Low-bitrate speech for instant messaging.
 msp2: |
-  Video decoder: Microsoft Paint (MSP) version 2.
+  Microsoft Paintbrush MSP v2 image format. Decoder only. Legacy Windows bitmap variant.
 msrle: |
-  Video decoder: Microsoft RLE.
+  Microsoft RLE (Run-Length Encoding). Simple palettized video codec for AVI files. Decodes. Used for screen capture with very low motion and limited colors.
 mss1: |
-  Video decoder: MS Screen 1.
+  Microsoft Screen 1. Lossless screen capture codec for Windows. Decoder only. Used in old remote desktop and screen recordings.
 mss2: |
-  Video decoder: MS Windows Media Video V9 Screen.
+  Microsoft Screen 2. Advanced screen capture with better compression than MSS1. Decoder only. Used in Windows Remote Desktop Protocol (RDP).
 msvideo1: |
-  Video decoder: Microsoft Video 1.
+  Microsoft Video 1. Early Microsoft video codec for AVI. Decodes. 8-bit palettized video. Used in 1990s PC games and multimedia.
 mszh: |
-  Video decoder: LCL (LossLess Codec Library) MSZH.
+  LCL MSZH (LossLess Codec Library). Lossless video codec using zlib. Decoder only. Used in some screen capture AVI files.
 mts2: |
-  Video decoder: MS Expression Encoder Screen.
+  Madcow Technologies video. Decoder only. Rare proprietary format.
 mv30: |
-  Video decoder: MidiVid 3.0.
+  MegaVelocity MV30 video codec. Decoder only. Rare hardware capture card format.
 mvc1: |
-  Video decoder: Silicon Graphics Motion Video Compressor 1.
+  MVC1 (Multi-View Codec 1). Sony's multi-view 3D video codec. Decoder only. Used in some 3D Blu-ray content.
 mvc2: |
-  Video decoder: Silicon Graphics Motion Video Compressor 2.
+  MVC2 (Multi-View Codec 2). Enhanced multi-view codec. Decoder only. Used in Sony 3D content.
 mvdv: |
-  Video decoder: MidiVid VQ.
+  MidiVid VQ. MidiVid vector-quantization video format. Decoder only. Used in some multimedia and game content.
 mvha: |
-  Video decoder: MidiVid Archive Codec.
+  MidiVid Archive Codec. Compressed video for MidiVid multimedia containers. Decoder only.
 mwsc: |
-  Video decoder: MatchWare Screen Capture Codec.
+  MatchWare Screen Capture. Screen recording codec from MatchWare software. Decoder only.
 mxpeg: |
-  Video decoder: Mobotix MxPEG video.
+  MxPEG (Mobotix MPEG). Mobotix IP camera video format with region-of-interest coding. Decoder only. Surveillance camera format with low bandwidth.
 nellymoser: |
-  Audio decoder: Nellymoser Asao.
+  Nellymoser Asao. Low-bitrate speech codec used in Adobe Flash for voice chat and recordings. Decodes. Found in old Flash/FLV files. Poor quality; use Opus instead.
 notchlc: |
-  Video decoder: NotchLC.
+  NotchLC. GPU-optimized video codec from Notch for live visual performances. Decoder only. Texture-compressed for real-time VJ and event visuals.
 nuv: |
-  Video decoder: NuppelVideo/RTJPEG.
+  NuppelVideo. Lost-and-found lossy video codec for MythTV PVR recordings. Decoder only. Used in Linux MythTV DVR systems.
 on2avc: |
-  Audio decoder: On2 Audio for Video Codec.
+  On2 Audio for Video Codec decoder. Audio paired with On2 VP video codecs. Legacy format.
 opus: |
   Opus decoder. Decodes Opus audio, a state-of-the-art lossy codec for speech and music.
   Superior quality at low bitrates. Used in WebRTC, streaming, and VoIP.
 osq: |
-  Audio decoder: OSQ (Original Sound Quality).
+  OSQ (Original Sound Quality). Lossless audio compression format. Decoder only. Rare audiophile format.
 paf_audio: |
-  Audio decoder: Amazing Studio Packed Animation File Audio.
+  Pulsar Advanced Format audio. Game audio codec. Decoder only. Found in some Korean game titles.
 paf_video: |
-  Video decoder: Amazing Studio Packed Animation File Video.
+  Pulsar Advanced Format video. Game video codec from Pulsar. Decoder only. Found in some Korean game titles.
 pam: |
-  Video decoder: PAM (Portable AnyMap) image.
+  PAM (Portable AnyMap). Generic raster image format. Decodes. Used in Unix imaging pipelines. Supports arbitrary bit depths and channels.
 pbm: |
-  Video decoder: PBM (Portable BitMap) image.
+  PBM (Portable BitMap). Simple 1-bit black/white Netpbm image format. Decodes. Minimal overhead for binary images.
 pcm_alaw: |
   PCM A-law decoder. Decodes G.711 A-law companded audio.
   Standard in European telephone networks.
@@ -734,103 +722,102 @@ pcm_bluray: |
 pcm_dvd: |
   PCM DVD decoder. Decodes PCM audio from DVD-Video.
 pcm_f16le: |
-  Audio decoder: PCM 16.8 floating point little-endian.
+  PCM 16.8 floating point little-endian. Unusual floating-point audio variant. Decoder only. Rare specialized format.
 pcm_f24le: |
-  Audio decoder: PCM 24.0 floating point little-endian.
+  PCM 24.0 floating point little-endian. Floating-point PCM at 24-bit. Decoder only. Used in professional audio gear.
 pcm_f32be: |
-  Audio decoder: PCM 32-bit floating point big-endian.
+  PCM 32-bit float big-endian. IEEE 754 single-precision floating-point audio. Decodes. Standard for audio processing pipelines with full dynamic range.
 pcm_f32le: |
   PCM 32-bit floating-point little-endian decoder. Floating-point audio for processing.
 pcm_f64be: |
-  Audio decoder: PCM 64-bit floating point big-endian.
+  PCM 64-bit float big-endian. IEEE 754 double-precision audio. Decodes. Maximum precision for professional mastering and analysis.
 pcm_f64le: |
   PCM 64-bit floating-point little-endian decoder. Double-precision floating-point audio.
 pcm_lxf: |
-  Audio decoder: PCM signed 20-bit little-endian planar.
+  PCM signed 20-bit LE planar. LEITCH/Harris broadcast server PCM format. Decoder only. Used in Harris broadcast video servers.
 pcm_mulaw: |
   PCM mu-law decoder. Decodes G.711 mu-law companded audio.
   Standard in North American telephone networks.
 pcm_s16be: |
-  Audio decoder: PCM signed 16-bit big-endian.
+  PCM signed 16-bit big-endian. Standard CD-quality audio. Decodes. Big-endian byte order (SPARC, PowerPC native).
 pcm_s16be_planar: |
-  Audio decoder: PCM signed 16-bit big-endian planar.
+  PCM signed 16-bit BE planar. Non-interleaved big-endian with per-channel data planes. Decodes. Used in some professional audio processing.
 pcm_s16le: |
   PCM signed 16-bit little-endian decoder. Decodes CD-quality uncompressed audio.
   The most common PCM format with zero quality loss.
 pcm_s16le_planar: |
-  Audio decoder: PCM signed 16-bit little-endian planar.
+  PCM signed 16-bit LE planar. Non-interleaved little-endian with separate channel planes. Decodes. Used in audio processing pipelines.
 pcm_s24be: |
-  Audio decoder: PCM signed 24-bit big-endian.
+  PCM signed 24-bit big-endian. High-resolution audio with better dynamic range than 16-bit. Decodes. Big-endian byte order.
 pcm_s24daud: |
-  Audio decoder: PCM D-Cinema audio signed 24-bit.
+  PCM D-Cinema signed 24-bit. Audio format for Digital Cinema (DCI). Decodes. Standard in DCP (Digital Cinema Package) presentations.
 pcm_s24le: |
   PCM signed 24-bit little-endian decoder. High-resolution uncompressed audio.
 pcm_s24le_planar: |
-  Audio decoder: PCM signed 24-bit little-endian planar.
+  PCM signed 24-bit LE planar. Non-interleaved high-resolution 24-bit audio. Decodes. Separate planes per channel.
 pcm_s32be: |
-  Audio decoder: PCM signed 32-bit big-endian.
+  PCM signed 32-bit big-endian. Integer PCM at 32-bit for very high dynamic range. Decodes. Big-endian byte order.
 pcm_s32le: |
   PCM signed 32-bit little-endian decoder. Uncompressed 32-bit integer audio.
 pcm_s32le_planar: |
-  Audio decoder: PCM signed 32-bit little-endian planar.
+  PCM signed 32-bit LE planar. Non-interleaved 32-bit audio. Decodes. Maximum integer depth with per-channel planes.
 pcm_s64be: |
-  Audio decoder: PCM signed 64-bit big-endian.
+  PCM signed 64-bit big-endian. Extremely high precision integer audio. Decodes. Used in specialized professional workflows.
 pcm_s64le: |
-  Audio decoder: PCM signed 64-bit little-endian.
+  PCM signed 64-bit little-endian. Extremely high precision integer audio. Decodes. x86 native byte order.
 pcm_s8: |
-  Audio decoder: PCM signed 8-bit.
+  PCM signed 8-bit. Low-quality uncompressed audio. Decodes. Very small dynamic range. Used for legacy formats.
 pcm_s8_planar: |
-  Audio decoder: PCM signed 8-bit planar.
+  PCM signed 8-bit planar. Non-interleaved 8-bit audio. Decodes. Used in audio processing pipelines.
 pcm_sga: |
-  Audio decoder: PCM SGA.
+  PCM SGA. Sega game audio PCM format. Decoder only. Used in some Sega game content.
 pcm_u16be: |
-  Audio decoder: PCM unsigned 16-bit big-endian.
+  PCM unsigned 16-bit big-endian. Unsigned audio at CD quality. Decodes. Less common than signed. Big-endian byte order.
 pcm_u16le: |
-  Audio decoder: PCM unsigned 16-bit little-endian.
+  PCM unsigned 16-bit little-endian. Unsigned audio at CD quality. Decodes. Used in some Windows APIs. x86 native.
 pcm_u24be: |
-  Audio decoder: PCM unsigned 24-bit big-endian.
+  PCM unsigned 24-bit big-endian. Uncommon unsigned high-resolution format. Decodes.
 pcm_u24le: |
-  Audio decoder: PCM unsigned 24-bit little-endian.
+  PCM unsigned 24-bit little-endian. Uncommon unsigned format. Decodes.
 pcm_u32be: |
-  Audio decoder: PCM unsigned 32-bit big-endian.
+  PCM unsigned 32-bit big-endian. Uncommon unsigned high-dynamic-range format. Decodes.
 pcm_u32le: |
-  Audio decoder: PCM unsigned 32-bit little-endian.
+  PCM unsigned 32-bit little-endian. Uncommon unsigned format. Decodes.
 pcm_u8: |
-  Audio decoder: PCM unsigned 8-bit.
+  PCM unsigned 8-bit. Basic 8-bit audio with 48 dB dynamic range. Decodes. Common in legacy Windows multimedia.
 pcm_vidc: |
-  Audio decoder: PCM Archimedes VIDC.
+  PCM Archimedes VIDC. Acorn Archimedes/RISC OS audio format. Decodes. Legacy British computer audio.
 pcx: |
-  Video decoder: PC Paintbrush PCX image.
+  PCX (PC Paintbrush). ZSoft's image format popular in 1990s Windows software. Decodes. Simple RLE compression. Used in game textures and clip art.
 pdv: |
-  Video decoder: PDV (PlayDate Video).
+  Playdate Video (PDV). Video format for Panic Playdate handheld console. Decoder only. Low-resolution mono video for indie games.
 pfm: |
-  Video decoder: PFM (Portable FloatMap) image.
+  PFM (Portable FloatMap). HDR floating-point image format. Decodes. Used in computer graphics rendering and HDR photography pipelines.
 pgm: |
-  Video decoder: PGM (Portable GrayMap) image.
+  PGM (Portable GrayMap). Simple grayscale Netpbm image format. Decodes. Uncompressed or very simple encoding.
 pgmyuv: |
-  Video decoder: PGMYUV (Portable GrayMap YUV) image.
+  PGMYUV. YUV variant of PGM for raw video frames. Decodes. Simple format for video processing test data.
 pgssub: |
-  PGS subtitle decoder. Decodes Presentation Graphic Stream subtitles from Blu-ray.
-  Bitmap-based subtitles with high resolution.
+  HDMV Presentation Graphic Stream decoder. Bitmap subtitles for Blu-ray Disc.
 pgx: |
-  Video decoder: PGX (JPEG2000 Test Format).
+  PGX (JPEG 2000 Test Format). JPEG 2000 conformance testing image format. Decoder only. Used in JPEG 2000 standard validation.
 phm: |
-  Video decoder: PHM (Portable HalfFloatMap) image.
+  PHM (Portable HalfFloatMap). 16-bit half-precision float image format. Decodes. Used for HDR content in graphics pipelines.
 photocd: |
   Kodak Photo CD decoder. Decodes Photo CD image format.
   Legacy format for digitized photographic images.
 pictor: |
-  Video decoder: Pictor/PC Paint.
+  Pictor/PC Paint. PC Paint image format. Decoder only. Used in legacy DOS/PC graphics content.
 pixlet: |
   Apple Pixlet decoder. Decodes Apple's Pixlet video codec.
   Used in some Apple production workflows.
 pjs: |
-  Subtitle decoder: PJS subtitle.
+  Phoenix Subtitle. Text-based subtitle format. Decoder only. Found in some Asian media content.
 png: |
   PNG video decoder. Decodes PNG image sequences as video.
   Supports alpha channel. Lossless, used for compositing and image sequences.
 ppm: |
-  Video decoder: PPM (Portable PixelMap) image.
+  PPM (Portable PixelMap). Simple RGB Netpbm image format. Decodes. Common in Unix image processing pipelines.
 prores: |
   Apple ProRes decoder. Decodes ProRes video, widely used in professional video production.
   Supports ProRes 4444, 422 HQ, 422, 422 LT, and 422 Proxy.
@@ -838,347 +825,347 @@ prores_raw: |
   Apple ProRes RAW decoder. Decodes ProRes RAW video with Bayer-pattern sensor data.
   Used in professional camera workflows (Atomos, Blackmagic).
 prosumer: |
-  Video decoder: Brooktree ProSumer Video.
+  Brooktree ProSumer Video. Video codec for Brooktree Bt848/Bt879 capture chips. Decoder only. Used in early consumer TV tuner cards.
 psd: |
   Photoshop PSD decoder. Decodes Adobe Photoshop files as flattened images.
   Supports CMYK and various bit depths.
 ptx: |
-  Video decoder: V.Flash PTX image.
+  V.Flash PTX. Proprietary image format. Decoder only. Rare.
 qcelp: |
-  Audio decoder: QCELP / PureVoice.
+  QCELP (Qualcomm PureVoice / 13k). CDMA speech codec at 0.8-8.5 kbit/s. Decoder only. Used in 2G/3G CDMA mobile networks and voicemail systems.
 qdm2: |
-  Audio decoder: QDesign Music Codec 2.
+  QDesign Music 2. Low-bitrate audio codec for QuickTime (version 2). Decoder only. Used in QuickTime web previews and early streaming at ~20 kbit/s.
 qdmc: |
-  Audio decoder: QDesign Music Codec 1.
+  QDesign Music. Predecessor to QDM2 for low-bitrate QuickTime audio. Decoder only. Used in early QuickTime streaming.
 qdraw: |
-  Video decoder: Apple QuickDraw.
+  Apple QuickDraw. Classic Mac OS graphics format. Decoder only. Used in legacy Mac PICT and clipboard content.
 qoa: |
-  Audio decoder: QOA (Quite OK Audio).
+  QOA (Quite OK Audio). Simple lossy audio codec with very fast encode/decode. Decoder only. Modern lightweight format for embedded systems and games.
 qoi: |
   QOI (Quite OK Image format) decoder. Decodes QOI compressed images.
   Simple, fast lossless image format.
 qpeg: |
-  Video decoder: Q-team QPEG.
+  Q-Team QPEG. Proprietary video codec from Q-Team. Decoder only. Found in some specialized surveillance/recording software.
 qtrle: |
-  Video decoder: QuickTime Animation (RLE) video.
+  QuickTime Animation RLE. Apple's lossless animation codec for QuickTime. Decodes. Good for screen recordings and 2D animations with large flat color areas.
 r10k: |
-  Video decoder: AJA Kona 10-bit RGB Codec.
+  AJA Kona 10-bit RGB. Professional 10-bit RGB video format for broadcast and post-production. Decodes. Used with AJA video I/O hardware.
 r210: |
-  Video decoder: Uncompressed RGB 10-bit.
+  10-bit RGB packed format. Professional video format for video I/O cards. Decodes. 10-bit per channel packed RGB. Used in Blackmagic and other broadcast hardware.
 ralf: |
-  Audio decoder: RealAudio Lossless.
+  RealAudio Lossless Format. RealNetworks' lossless audio codec. Decoder only. Used in RealMedia containers. Uncommon, mainly for legacy content.
 rasc: |
-  Video decoder: RemotelyAnywhere Screen Capture.
+  RASC (RenderWare Steaming Codec). Game video codec for RenderWare engine. Decoder only. Found in some game titles.
 rawvideo: |
   Raw video decoder. Decodes uncompressed raw video data.
   Requires the correct resolution, pixel format, and framerate parameters to be set.
 real_144: |
-  Audio decoder: RealAudio 1.0 (14.4K).
+  RealAudio 14.4k decoder. Original RealNetworks audio for 14.4 kbit/s modem streaming.
 real_288: |
-  Audio decoder: RealAudio 2.0 (28.8K).
+  RealAudio 28.8k decoder. Improved RealNetworks audio for 28.8 kbit/s modems.
 realtext: |
-  Subtitle decoder: RealText subtitle.
+  RealText. RealNetworks' text subtitle format for RealMedia containers. Decoder only. Used in RealPlayer/RealMedia content.
 rka: |
-  Audio decoder: RKA (RK Audio).
+  RK Audio. Lossless audio compression format. Decoder only. Rare experimental codec.
 rl2: |
-  Video decoder: RL2 video.
+  RL2 Video. Retro game video format. Decoder only. Found in some classic game content.
 roq_dpcm: |
-  Audio decoder: DPCM id RoQ.
+  id RoQ DPCM. Audio codec paired with id RoQ video in Quake III Arena game files. Decodes. Simple DPCM for game audio.
 roqvideo: |
-  Video decoder: id RoQ video.
+  id RoQ video decoder. Video codec for Quake III Arena and id Software games.
 rpza: |
-  Video decoder: QuickTime video (RPZA).
+  QuickTime Video (Road Pizza). Apple's early video codec for QuickTime. Decoder only. Palettized video compression. Found in mid-1990s .mov files.
 rscc: |
-  Video decoder: innoHeim/Rsupport Screen Capture Codec.
+  innoHeim/Rsupport Screen Capture Codec. Screen recording codec. Decoder only. Used in some Korean remote support and screen recording tools.
 rtv1: |
-  Video decoder: RTV1 (RivaTuner Video).
+  RTV1 (RivaTuner Video). Video format from RivaTuner hardware monitoring/overlay software. Decoder only.
 rv10: |
-  Video decoder: RealVideo 1.0.
+  RealVideo 1.0. First RealNetworks video codec for dial-up streaming. Decodes. Very poor quality at modem bitrates. Legacy 1990s format.
 rv20: |
-  Video decoder: RealVideo 2.0.
+  RealVideo G2. Second-generation RealVideo for early broadband. Decodes. Used in early 2000s RealMedia streaming. Low quality by modern standards.
 rv30: |
-  Video decoder: RealVideo 3.0.
+  RealVideo 8 / RV30. Substantially improved RealVideo. Decoder only. Better quality, used in mid-2000s RealMedia content.
 rv40: |
-  Video decoder: RealVideo 4.0.
+  RealVideo 9/10 / RV40. Latest RealVideo codec comparable to early H.264. Decoder only. Popular in RMVB files, especially for Asian media distribution.
 rv60: |
-  Video decoder: RealVideo 6.0.
+  RealVideo 6.0. Latest generation RealVideo codec. Decoder only. Used in newer RealMedia content. Improved over RV40.
 s302m: |
   SMPTE 302M decoder. Decodes AES3 digital audio embedded in SDI streams.
   Used in broadcast production workflows.
 sami: |
-  Subtitle decoder: SAMI subtitle.
+  SAMI (Synchronized Accessible Media Interchange). Microsoft's caption format for Windows Media. Decoder only. Used in Korean subtitles and accessibility captions.
 sanm: |
-  Video decoder: LucasArts SANM/Smush video.
+  Smush SANM (Smush Animation). LucasArts game video codec. Decoder only. Found in LucasArts adventure games (Grim Fandango, Full Throttle).
 sbc: |
-  Audio decoder: SBC (low-complexity subband codec).
+  SBC (Low-Complexity Subband Codec). Mandatory Bluetooth A2DP codec for wireless audio. Decodes. Moderate quality at very low CPU overhead. Universally supported by all Bluetooth audio devices.
 scpr: |
-  Video decoder: ScreenPressor.
+  SCPR (Screen Pressor). Lossless screen video codec. Decodes. Designed for screen recording with delta compression.
 screenpresso: |
-  Video decoder: Screenpresso.
+  Screenpresso. Screen recording codec from Screenpresso capture software. Decoder only. Good compression for desktop recording.
 sdx2_dpcm: |
-  Audio decoder: DPCM Squareroot-Delta-Exact.
+  SDX2 DPCM. Compressed audio for Nintendo game content. Decoder only. Used in some game audio.
 sga: |
-  Video decoder: Digital Pictures SGA Video.
+  Digital Pictures SGA Video. Game video from Digital Pictures (Sega CD/32X). Decoder only. Used in full-motion video Sega games (Night Trap, Sewer Shark).
 sgi: |
-  Video decoder: SGI image.
+  SGI (Silicon Graphics Image). Image format for SGI IRIX workstations. Decodes. Used in 3D graphics and VFX on SGI hardware.
 sgirle: |
-  Video decoder: Silicon Graphics RLE 8-bit video.
+  SGI RLE (Run-Length Encoding). RLE-compressed SGI image variant. Decoder only. Simple compression for SGI graphics content.
 sheervideo: |
-  Video decoder: BitJazz SheerVideo.
+  BitJazz SheerVideo. Lossless video codec for real-time post-production. Decoder only. Very fast encode/decode with good compression. Used in broadcast and VFX workflows.
 shorten: |
-  Audio decoder: Shorten.
+  Shorten (SHN). Early lossless audio codec from 1992. Decoder only. Predecessor to FLAC. Still used in some live concert trading communities (especially Grateful Dead recordings).
 simbiosis_imx: |
-  Video decoder: Simbiosis Interactive IMX Video.
+  Simbiosis Interactive IMX Video. Game video format. Decoder only. Used in specific game titles.
 sipr: |
-  Audio decoder: RealAudio SIPR / ACELP.NET.
+  RealAudio SIPR / ACELP.NET. Speech codec for low-bitrate RealMedia streaming. Decoder only. 6-15 kbit/s. Used in older RealMedia voice content.
 siren: |
-  Audio decoder: Siren.
+  Siren audio codec. Microsoft/Polycom codec for enterprise teleconferencing. Decoder only. Used in Lync/Skype for Business and Polycom systems.
 smackaud: |
-  Audio decoder: Smacker audio.
+  Smacker audio decoder. Audio from RAD Game Tools' Smacker game containers.
 smackvid: |
-  Video decoder: Smacker video.
+  Smacker video decoder. Video from RAD Game Tools' Smacker 1990s game containers.
 smc: |
-  Video decoder: QuickTime Graphics (SMC).
+  QuickTime Graphics (SMC). Apple's vector-quantization video codec. Decoder only. Found in old QuickTime .mov files.
 smvjpeg: |
-  Video decoder: SMV JPEG.
+  Sigmatel Motion Video. Video format for Sigmatel media player chips. Decoder only. Used in cheap portable media players.
 snow: |
-  Video decoder: Snow.
+  Snow. Experimental wavelet-based video codec developed in FFmpeg. Decodes. Supports lossless and lossy. Good compression but never widely adopted. Research/academic interest.
 sol_dpcm: |
-  Audio decoder: DPCM Sol.
+  DPCM Sol. Audio format for SiLver game containers. Decoder only. Used in some game content.
 sonic: |
-  Audio decoder: Sonic.
+  FFmpeg's experimental lossy audio codec using modified discrete cosine transform. Decodes. Experimental — not for production use.
 sp5x: |
-  Video decoder: Sunplus JPEG (SP5X).
+  Sunplus SP5x. Video codec from Sunplus technology for consumer devices. Decoder only. Found in some digital camera and DVD player content.
 speedhq: |
-  Video decoder: NewTek SpeedHQ.
+  SpeedHQ. NewTek's lossless/near-lossless video codec for TriCaster and LiveText. Decoder only. Used in NewTek live production systems.
 speex: |
-  Audio decoder: Speex.
+  Speex. Open-source speech codec from Xiph.org at 2.15-44.2 kbit/s. Decodes. Supports narrow/wide/ultra-wideband modes. Largely superseded by Opus.
 srgc: |
-  Video decoder: Screen Recorder Gold Codec.
+  Screen Recorder Game Codec. Game recording video format. Decoder only.
 srt: |
   SubRip subtitle decoder. Decodes SRT subtitle format.
   The most common text-based subtitle format.
 ssa: |
-  Subtitle decoder: ASS (Advanced SubStation Alpha) subtitle.
+  SSA (SubStation Alpha). Styled text subtitle format with typography and positioning. Decodes. Predecessor to ASS. Used in anime fan-subbing.
 stl: |
-  Subtitle decoder: Spruce subtitle format.
+  EBU STL (Spaced Teletext Limit). European Broadcast Union subtitle format for professional broadcast. Decoder only. Standard in European TV production workflows.
 subrip: |
-  Subtitle decoder: SubRip subtitle.
+  SubRip subtitle format. Same as SRT — the most common text subtitle format. Decodes. Simple time-coded text. Universally supported by media players.
 subviewer: |
-  Subtitle decoder: SubViewer subtitle.
+  SubViewer. Text-based subtitle format with additional metadata. Decoder only. Found in some DivX media files.
 subviewer1: |
-  Subtitle decoder: SubViewer1 subtitle.
+  SubViewer version 1. Earlier SubViewer format. Decoder only. Legacy subtitle format.
 sunrast: |
-  Video decoder: Sun Rasterfile image.
+  Sun Rasterfile. Sun Microsystems image format for Solaris workstations. Decodes. Simple header + pixel data. Used on Unix/Solaris systems.
 svq1: |
-  Video decoder: Sorenson Vector Quantizer 1 / Sorenson Video 1 / SVQ1.
+  Sorenson Video 1. Early QuickTime video codec for low-bitrate web video. Decoder only. Vector quantization compression. Found in late-1990s .mov files.
 svq3: |
-  Video decoder: Sorenson Vector Quantizer 3 / Sorenson Video 3 / SVQ3.
+  Sorenson Video 3. Advanced codec roughly equivalent to H.264 Baseline. Decoder only. Used in QuickTime 6+ and early iTunes video content.
 tak: |
-  Audio decoder: TAK (Tom's lossless Audio Kompressor).
+  TAK (Tom's lossless Audio Kompressor). Lossless audio codec with compression ratios between FLAC and APE. Decoder only. Popular in Asian audiophile communities.
 targa: |
-  Video decoder: Truevision Targa image.
+  TGA/Targa (Truevision TGA). Image format popular in game textures and demoscene. Decodes. Supports alpha and RLE compression. Still used in some game engines.
 targa_y216: |
-  Video decoder: Pinnacle TARGA CineWave YUV16.
+  Pinnacle TARGA CineWave YUV16. Video capture format for Pinnacle TARGA hardware. Decoder only. Legacy professional capture card format.
 tdsc: |
-  Video decoder: TDSC.
+  TDSC (TurboVNC Screen Codec). VNC screen capture codec. Decoder only. Used in TurboVNC remote desktop sessions.
 text: |
-  Subtitle decoder: Raw text subtitle.
+  Raw text subtitle. Plain text subtitle track without timing. Decodes. Each line displayed for a fixed duration. Simplest subtitle format.
 theora: |
-  Video decoder: Theora.
+  Theora. Open royalty-free codec from Xiph.org based on VP3. Decodes. Used in Ogg container. Quality comparable to early H.264. Superseded by VP9 and AV1.
 thp: |
-  Video decoder: Nintendo Gamecube THP video.
+  THP (Nintendo THP). Nintendo's video format for GameCube and Wii game cutscenes. Decoder only. Uses ADPCM audio and Motion JPEG-like video.
 tiertexseqvideo: |
-  Video decoder: Tiertex Limited SEQ video.
+  Tiertex SEQ video. Game video from Tiertex. Decoder only. Found in some retro game files.
 tiff: |
   TIFF video decoder. Decodes TIFF image sequences as video.
   Supports various bit depths, color spaces, and compression modes.
 tmv: |
-  Video decoder: 8088flex TMV.
+  TMV (Turbo Movie Video). Game video format. Decoder only. Found in specific game titles.
 truehd: |
   Dolby TrueHD decoder. Decodes Dolby TrueHD lossless audio from Blu-ray.
   Supports up to 7.1 channels at 24-bit/96 kHz.
 truemotion1: |
-  Video decoder: Duck TrueMotion 1.0.
+  Duck TrueMotion 1. Video codec from Duck Corporation for game cutscenes. Decoder only. Used in Sega Saturn and PC game FMV.
 truemotion2: |
-  Video decoder: Duck TrueMotion 2.0.
+  Duck TrueMotion 2. Improved TrueMotion codec for games. Decoder only. Used in PlayStation and PC game FMV.
 truemotion2rt: |
-  Video decoder: Duck TrueMotion 2.0 Real Time.
+  Duck TrueMotion 2 RT (Real-Time). Real-time variant of TrueMotion 2 for live encoding. Decoder only. Legacy game/capture format.
 truespeech: |
-  Audio decoder: DSP Group TrueSpeech.
+  DSP Group TrueSpeech. Low-bitrate speech codec at ~8.5 kbit/s. Decoder only. Used in early VoIP systems and voice modems. Narrowband, low quality.
 tscc2: |
-  Video decoder: TechSmith Screen Codec 2.
+  TechSmith Screen Capture Codec 2. Improved TSCC with better compression. Decoder only. Used in Camtasia Studio recordings.
 tta: |
-  Audio decoder: TTA (True Audio).
+  TTA (True Audio). Fast lossless audio codec with ~50% compression. Decodes. Very fast encoding/decoding. Supports multi-channel high-resolution audio.
 twinvq: |
-  Audio decoder: VQF TwinVQ.
+  TwinVQ (Transform Domain Weighted Interleave Vector Quantization). NTT's audio codec at low bitrates. Decoder only. Used in some Japanese portable audio players. Predecessor to Vorbis concepts.
 txd: |
-  Video decoder: Renderware TXD (TeXture Dictionary) image.
+  TXD (Texture Dictionary). RenderWare texture container format. Decoder only. Used in Grand Theft Auto and other RenderWare engine games.
 ultimotion: |
-  Video decoder: IBM UltiMotion.
+  IBM Ultimotion decoder. IBM's video codec for OS/2 multimedia.
 utvideo: |
   Ut Video decoder. Decodes Ut Video lossless video.
   Used in Japanese video production and editing workflows.
 v210: |
-  Video decoder: Uncompressed 4:2:2 10-bit.
+  V210. Packed YUV 4:2:2 10-bit broadcast format for SDI video I/O. Decodes. Standard for professional broadcast pipelines. High bandwidth, zero quality loss.
 v210x: |
-  Video decoder: Uncompressed 4:2:2 10-bit.
+  Uncompressed 4:2:2 10-bit. Raw 10-bit YUV 4:2:2 video similar to V210. Decoder only. Professional broadcast format variant.
 v308: |
-  Video decoder: Uncompressed packed 4:4:4.
+  V308. Unpacked YUV 4:4:4 8-bit component video. Decodes. Professional format for high-end video processing and compositing.
 v408: |
-  Video decoder: Uncompressed packed QT 4:4:4:4.
+  V408. Unpacked RGBA 4:4:4:4 8-bit with alpha channel. Decodes. Professional compositing format supporting transparency.
 v410: |
-  Video decoder: Uncompressed 4:4:4 10-bit.
+  V410. Packed YUV 4:4:4 10-bit component video. Decodes. Professional high bit depth video processing format.
 vb: |
-  Video decoder: Beam Software VB.
+  Beam Software VB. Game video codec from Beam Software (Melbourne House). Decoder only. Found in classic Australian game content.
 vble: |
-  Video decoder: VBLE Lossless Codec.
+  VBLE (Variable Bit Length Encoder). Extremely simple lossless video codec using variable-length codes. Decoder only. Minimal complexity.
 vbn: |
-  Video decoder: Vizrt Binary Image.
+  Vizrt Binary Image. Vizrt's image format for broadcast graphics and virtual studios. Decodes. Used in Vizrt broadcast graphics systems.
 vc1: |
-  Video decoder: SMPTE VC-1.
+  VC-1 (SMPTE 421M). Microsoft video codec used in HD DVD, some Blu-ray, and Xbox 360. Decoder only. Quality comparable to H.264. Also known as WMV3/AP.
 vc1_cuvid: |
-  Video decoder: Nvidia CUVID VC1 decoder.
+  VC-1 NVIDIA CUVID decoder. Hardware-accelerated VC-1 decoding via NVIDIA.
 vc1_qsv: |
-  Video decoder: VC1 video (Intel Quick Sync Video acceleration).
+  VC-1 Intel Quick Sync decoder. Hardware-accelerated VC-1 decoding via Intel.
 vc1_v4l2m2m: |
-  Video decoder: V4L2 mem2mem VC1 decoder wrapper.
+  VC-1 V4L2 M2M decoder. Hardware-accelerated VC-1 decoding on embedded Linux.
 vc1image: |
-  Video decoder: Windows Media Video 9 Image v2.
+  VC-1 Image. Still image variant of VC-1 for slideshow content. Decoder only. Used in some HD DVD and Windows Media slideshows.
 vcr1: |
-  Video decoder: ATI VCR1.
+  ATI VCR1. ATI's video capture codec for early ATI capture hardware. Decoder only. Found in old ATI capture AVI files.
 vmdaudio: |
-  Audio decoder: Sierra VMD audio.
+  VMD (Sierra) audio. Audio codec from Sierra On-Line game files. Decoder only. Found in classic Sierra adventure games.
 vmdvideo: |
-  Video decoder: Sierra VMD video.
+  VMD (Sierra VMD). Video codec from Sierra On-Line adventure games. Decoder only. Found in classic Sierra titles.
 vmix: |
-  Video decoder: vMix Video.
+  vMix Video. Video codec for vMix live production and streaming software. Decoder only. Used in vMix video production workflows.
 vmnc: |
-  Video decoder: VMware Screen Codec / VMware Video.
+  VMware Video Codec. Lossless screen capture format for VMware virtual machines. Decoder only. Used in VMware recording and remote display sessions.
 vnull: |
-  Video decoder: null video.
+  Null video codec. Discards all video data with no output. Decodes. Use for benchmarking or when video output is not needed.
 vorbis: |
   Vorbis decoder. Decodes Vorbis audio from OGG/WebM containers.
   Royalty-free lossy audio codec. Good quality at medium bitrates.
 vp3: |
-  Video decoder: On2 VP3.
+  On2 VP3. Basis for the Theora codec (donated to Xiph.org). Decoder only. Open-source after patent release. Historical significance as Theora's foundation.
 vp4: |
-  Video decoder: On2 VP4.
+  On2 VP4. Predecessor to VP5/6/7. Decoder only. Rare codec, limited deployment.
 vp5: |
-  Video decoder: On2 VP5.
+  On2 VP5. Google/On2 video codec. Decoder only. Used in some Flash Video content.
 vp6: |
-  Video decoder: On2 VP6.
+  On2 VP6. Video codec used in Flash Video 9 and some game cutscenes. Decoder only. Better quality than VP5/FLV1.
 vp6a: |
-  Video decoder: On2 VP6 (Flash version, with alpha channel).
+  On2 VP6 with Alpha. VP6 variant supporting alpha channel for transparent Flash Video overlays. Decoder only. Used in Flash Video with transparency.
 vp6f: |
-  Video decoder: On2 VP6 (Flash version).
+  On2 VP6 Flash. VP6 variant for Flash Video containers. Decoder only. Flash 8+ video format.
 vp7: |
-  Video decoder: On2 VP7.
+  On2 VP7. Later On2 codec with improved compression. Decoder only. Limited deployment.
 vp8: |
   VP8 video decoder. Decodes VP8 video used in WebM container.
   Royalty-free codec from Google/Theora lineage. Good software decoding speed.
 vp8_cuvid: |
-  Video decoder: Nvidia CUVID VP8 decoder.
+  VP8 NVIDIA CUVID decoder. Hardware-accelerated VP8 decoding via NVIDIA.
 vp8_qsv: |
-  Video decoder: VP8 video (Intel Quick Sync Video acceleration).
+  VP8 Intel Quick Sync decoder. Hardware-accelerated VP8 decoding via Intel.
 vp8_v4l2m2m: |
-  VP8 decoder via V4L2 memory-to-memory. Hardware VP8 on embedded platforms.
+  VP8 V4L2 M2M decoder. Hardware-accelerated VP8 decoding on embedded Linux.
 vp9: |
   VP9 video decoder. Decodes VP9 video used in WebM/YouTube.
   Better compression than VP8. Moderate software decoding speed.
 vp9_amf: |
-  Video decoder: VP9 AMD AMF video decoder.
+  VP9 AMD AMF decoder. Hardware-accelerated VP9 decoding via AMD Advanced Media Framework.
 vp9_cuvid: |
-  Video decoder: Nvidia CUVID VP9 decoder.
+  VP9 NVIDIA CUVID decoder. Hardware-accelerated VP9 decoding via NVIDIA.
 vp9_qsv: |
-  VP9 decoder via Intel Quick Sync Video. Hardware VP9 decoding.
+  VP9 Intel Quick Sync decoder. Hardware-accelerated VP9 decoding via Intel.
 vp9_v4l2m2m: |
-  Video decoder: V4L2 mem2mem VP9 decoder wrapper.
+  VP9 V4L2 M2M decoder. Hardware-accelerated VP9 decoding on embedded Linux.
 vplayer: |
-  Subtitle decoder: VPlayer subtitle.
+  VPlayer subtitle format. Text-based subtitle format. Decoder only. Found in some video player applications.
 vqavideo: |
-  Video decoder: Westwood Studios VQA (Vector Quantized Animation) video.
+  Westwood Studios VQA decoder. Vector Quantized Animation for Command & Conquer cutscenes.
 vqc: |
-  Video decoder: ViewQuest VQC.
+  VQC (Vector Quantization Codec). Game video format. Decoder only. Found in some game multimedia content.
 vvc: |
-  Video decoder: VVC (Versatile Video Coding).
+  H.266/VVC (Versatile Video Coding). Next-generation codec after HEVC with ~30-50% better compression. Decoder only. ISO/IEC 23090-3. Slower encoding but significantly improved efficiency. Emerging standard.
 vvc_qsv: |
-  Video decoder: VVC video (Intel Quick Sync Video acceleration).
+  VVC (H.266) Intel Quick Sync decoder. Hardware-accelerated VVC decoding via Intel Quick Sync Video. Emerging standard.
 wady_dpcm: |
-  Audio decoder: DPCM Marble WADY.
+  DPCM Marble WADY. Obscure game audio DPCM format. Decoder only.
 wavarc: |
-  Audio decoder: Waveform Archiver.
+  Waveform Archiver. Lossless audio compression format. Decoder only. Rare format.
 wavesynth: |
-  Audio decoder: Wave synthesis pseudo-codec.
+  Wave synthesis pseudo-codec. FFmpeg internal synthesizer for generating test waveforms. Decoder only. Testing/debugging use.
 wavpack: |
-  Audio decoder: WavPack.
+  WavPack. Hybrid lossless/lossy audio codec. Decodes. Unique hybrid mode creates lossy base + correction file for lossless. Supports multi-channel and high bit depths.
 wbmp: |
-  Video decoder: WBMP (Wireless Application Protocol Bitmap) image.
+  WBMP (Wireless Bitmap). 1-bit image format for WAP mobile devices. Decodes. Used in very old mobile web content.
 wcmv: |
-  Video decoder: WinCAM Motion Video.
+  WinCAM Motion Video. Video codec for WinCAM screen recording software. Decoder only.
 webp: |
-  Video decoder: WebP image.
+  WebP. Google's image format based on VP8 intra coding. Decodes via libwebp. Better compression than JPEG/PNG at similar quality. Supports lossy, lossless, alpha, and animation.
 webvtt: |
-  Subtitle decoder: WebVTT subtitle.
+  WebVTT (Web Video Text Tracks). W3C standard for HTML5 video captions and subtitles. Decodes. Supports styling, positioning, and cue identifiers. Standard for web video accessibility.
 wmalossless: |
-  Audio decoder: Windows Media Audio Lossless.
+  Windows Media Audio Lossless. Microsoft's lossless WMA variant for Windows Media. Decoder only. Used in Windows Media Lossless files (WMA Pro).
 wmapro: |
-  Audio decoder: Windows Media Audio 9 Professional.
+  Windows Media Audio Professional. Advanced WMA with multichannel and hi-res support up to 24-bit/96 kHz. Decoder only. Used in HD Windows Media content.
 wmav1: |
-  Audio decoder: Windows Media Audio 1.
+  Windows Media Audio 1. First-generation WMA codec. Decodes. Used in legacy Windows Media/ASF files. Comparable to early MP3 quality.
 wmav2: |
-  Audio decoder: Windows Media Audio 2.
+  Windows Media Audio 2. Improved standard WMA codec. Decodes. Most common Windows Media audio format. Compatible with most Windows media players.
 wmavoice: |
-  Audio decoder: Windows Media Audio Voice.
+  Windows Media Audio Voice. Microsoft's speech-optimized WMA at 4-20 kbit/s. Decoder only. Used in Windows speech apps and some VoIP.
 wmv1: |
-  Video decoder: Windows Media Video 7.
+  Windows Media Video 7 (WMV1). Microsoft's first WMV codec. Decoder only. Found in early ASF/WMV streaming. Superseded by WMV2/3.
 wmv2: |
-  Video decoder: Windows Media Video 8.
+  Windows Media Video 8 (WMV2). Improved WMV comparable to MPEG-4 ASP. Decoder only. Used in Windows Media 8 files. Still outdated.
 wmv3: |
-  Video decoder: Windows Media Video 9.
+  Windows Media Video 9 / VC-1 (SMPTE 421M). Most advanced WMV codec. Decoder only. Used in HD DVD, some Blu-ray, Xbox 360. Quality comparable to H.264.
 wmv3image: |
-  Video decoder: Windows Media Video 9 Image.
+  WMV3 Image. Still image variant of WMV3 for slideshow content. Decoder only.
 wnv1: |
-  Video decoder: Winnov WNV1.
+  Winnov WNV1. Video codec from Winnov video capture hardware. Decoder only. Used in early Windows video conferencing.
 wrapped_avframe: |
-  Video decoder: AVPacket to AVFrame passthrough.
+  Internal FFmpeg passthrough wrapping AVFrame as codec. Not a real codec — used internally in filter graphs and format negotiation. Do not use directly.
 ws_snd1: |
-  Audio decoder: Westwood Audio (SND1).
+  Westwood Audio SND1 decoder. Audio codec from Westwood Studios games. Found in Command & Conquer.
 xan_dpcm: |
-  Audio decoder: DPCM Xan.
+  Xan DPCM. Audio codec from Wing Commander game files. Decoder only. Found in Origin Systems game audio.
 xan_wc3: |
-  Video decoder: Wing Commander III / Xan.
+  Wing Commander III Xan. Origin Systems' game video codec. Decoder only. Found in Wing Commander III and IV cutscenes.
 xan_wc4: |
-  Video decoder: Wing Commander IV / Xxan.
+  Wing Commander IV Xan. Updated Xan codec. Decoder only. Found in Wing Commander IV game files.
 xbin: |
-  Video decoder: eXtended BINary text.
+  eXtended BINary text. Enhanced text/ANSI art video format. Decoder only. Used in demoscene and BBS art recordings.
 xbm: |
-  Video decoder: XBM (X BitMap) image.
+  XBM (X BitMap). X11 monochrome bitmap format for X Window System cursors and icons. Decodes. C source code representation.
 xface: |
-  Video decoder: X-face image.
+  X-Face. Tiny 48×48 monochrome image format for Usenet and email message headers. Decodes. Extremely compact. Nostalgic/demo format.
 xl: |
-  Video decoder: Miro VideoXL.
+  Miro VideoXL decoder. Video codec for miroVideo capture cards. Legacy capture hardware format.
 xma1: |
-  Audio decoder: Xbox Media Audio 1.
+  XMA1 (Xbox Media Audio 1). Microsoft's audio codec for original Xbox 360 games. Decoder only. Based on WMA Pro with modifications for game audio.
 xma2: |
-  Audio decoder: Xbox Media Audio 2.
+  XMA2 (Xbox Media Audio 2). Improved Xbox audio codec for Xbox 360 games. Decoder only. Better compression and quality than XMA1.
 xpm: |
-  Video decoder: XPM (X PixMap) image.
+  XPM (X PixMap). X11 color pixmap format. Decoder only. C source code representation of color images. Used in X11 applications.
 xsub: |
-  Subtitle decoder: XSUB.
+  XSUB. DivX bitmap subtitle format for AVI containers. Decoder only. Supports custom positioning and multiple bitmap frames per subtitle event.
 xwd: |
-  Video decoder: XWD (X Window Dump) image.
+  XWD (X Window Dump). Screen capture format for X Window System. Decodes. Simple pixel dump of X11 drawable content.
 y41p: |
-  Video decoder: Uncompressed YUV 4:1:1 12-bit.
+  Y41P. Packed YUV 4:1:1 8-bit video format. Decoder only. Used in some video capture hardware.
 ylc: |
-  Video decoder: YUY2 Lossless Codec.
+  YLC (YUV Lossless Codec). Lossless YUV video codec. Decoder only. Used in some capture/editing workflows.
 yop: |
-  Video decoder: Psygnosis YOP Video.
+  YOP video. Game video codec. Decoder only. Found in some game multimedia files.
 yuv4: |
-  Video decoder: Uncompressed packed 4:2:0.
+  YUV4 (YUV4MPEG2). Raw YUV 4:2:0 video pipe format. Decodes. Standard for video processing pipelines (mjpegtools, hvqm). Common intermediate format.
 zerocodec: |
-  Video decoder: ZeroCodec Lossless Video.
+  ZeroCodec. Very simple lossless screen capture codec. Unchanged pixels from the previous frame stored as zeros. Decoder only. Extremely fast but poor for dynamic content.
 zlib: |
-  Video decoder: LCL (LossLess Codec Library) ZLIB.
+  ZLIB (LCL Codec). Lossless video codec using zlib/DEFLATE compression. Decodes. Simple compression with moderate ratios. Used in some AVI files.
 zmbv: |
-  Video decoder: Zip Motion Blocks Video.
+  Zip Motion Blocks Video. Lossless screen capture codec using per-block zlib compression. Decodes. Good for DOSBox recordings and retro game captures.

@@ -1,9 +1,7 @@
-=: |
-  Media encoder: Supports direct rendering method 1.
 a64multi: |
-  Video encoder: Multicolor charset for Commodore 64.
+  Multicolor charset for Commodore 64. Encodes video as C64 character graphics. Very low resolution and color depth for retro computing.
 a64multi5: |
-  Video encoder: Multicolor charset for Commodore 64, extended with 5th color (colram).
+  Multicolor charset for Commodore 64 with 5th color (color RAM). Enhanced C64 encoding mode. Extremely niche retro format.
 aac: |
   AAC (Advanced Audio Coding) encoder. Widely used lossy audio codec.
   Native FFmpeg AAC encoder. Good quality, used in MP4, ADTS, and HLS.
@@ -14,36 +12,36 @@ ac3_fixed: |
   AC-3 encoder with fixed-point arithmetic. Integer-only AC-3 encoding.
   Use on platforms without floating-point hardware.
 adpcm_adx: |
-  Audio encoder: SEGA CRI ADX ADPCM.
+  SEGA CRI ADX ADPCM encoder. Proprietary audio format for SEGA games and CRI Middleware. Low CPU, good for game audio loops.
 adpcm_argo: |
-  Audio encoder: ADPCM Argonaut Games.
+  ADPCM Argonaut Games encoder. Audio format for Argonaut Games (Star Fox, Croc). Simple low-bitrate game audio.
 adpcm_ima_alp: |
-  Audio encoder: ADPCM IMA High Voltage Software ALP.
+  IMA ADPCM High Voltage Software ALP encoder. Used in High Voltage Software games.
 adpcm_ima_amv: |
-  Audio encoder: ADPCM IMA AMV.
+  IMA ADPCM for AMV (Action Media Video) format. Used in cheap portable media players.
 adpcm_ima_apm: |
-  Audio encoder: ADPCM IMA Ubisoft APM.
+  IMA ADPCM Ubisoft APM (Audio Package Manager). Ubisoft game audio.
 adpcm_ima_qt: |
-  Audio encoder: ADPCM IMA QuickTime.
+  IMA ADPCM QuickTime format. Apple's ADPCM for QuickTime containers. Compresses 16-bit audio to 4-bit at 4:1 ratio.
 adpcm_ima_ssi: |
-  Audio encoder: ADPCM IMA Simon & Schuster Interactive.
+  IMA ADPCM Simon & Schuster Interactive format. SSI game audio.
 adpcm_ima_wav: |
-  Audio encoder: ADPCM IMA WAV.
+  IMA ADPCM WAV format. Standard IMA ADPCM in WAV containers. Common simple lossy compression at 4:1.
 adpcm_ima_ws: |
-  Audio encoder: ADPCM IMA Westwood.
+  IMA ADPCM Westwood Studios format. Used in Command & Conquer and other Westwood games.
 adpcm_ms: |
-  Audio encoder: ADPCM Microsoft.
+  Microsoft ADPCM encoder. Standard ADPCM for AVI/WAV files. Common in legacy Windows game audio and telephony. 4:1 compression.
 adpcm_swf: |
-  Audio encoder: ADPCM Shockwave Flash.
+  ADPCM Shockwave Flash encoder. Macromedia/Adobe Flash ADPCM for SWF files. Legacy Flash audio.
 adpcm_yamaha: |
-  Audio encoder: ADPCM Yamaha.
+  Yamaha ADPCM encoder. Used in Yamaha sound chips and game consoles. Prolific in retro game audio.
 alac: |
   ALAC (Apple Lossless Audio Codec) encoder. Apple's lossless audio codec.
   Used in Apple ecosystem (iTunes, Apple Music). Similar compression to FLAC.
 alias_pix: |
-  Video encoder: Alias/Wavefront PIX image.
+  Alias/Wavefront PIX image encoder. SGI image format for Alias PowerAnimator and Maya 3D software.
 amv: |
-  Video encoder: AMV Video.
+  AMV Video encoder. Low-quality video for cheap portable media players. Heavily downsampled resolution.
 anull: |
   Null audio encoder. Discards all audio data. Use for benchmarking or when audio output is not needed.
 apng: |
@@ -59,9 +57,9 @@ ass: |
   SSA/ASS subtitle encoder. Advanced SubStation Alpha format with styling and positioning.
   Supports colors, fonts, animations, and screen positioning. Used in anime and fansubbing.
 asv1: |
-  Video encoder: ASUS V1.
+  ASUS V1 encoder. ASUS's proprietary video codec for screen capture and capture cards. Obsolete — use H.264 instead.
 asv2: |
-  Video encoder: ASUS V2.
+  ASUS V2 encoder. Improved ASUS video codec. Also obsolete; legacy playback only.
 av1_amf: |
   AMD GPU-accelerated AV1 encoder via AMF. Hardware AV1 encoding on supported AMD GPUs.
   Available on RDNA3 architecture and later.
@@ -75,42 +73,42 @@ av1_vaapi: |
   AV1 encoder via VAAPI. Linux hardware AV1 encoding on supported GPUs.
   Available on newer Intel and AMD GPUs with VAAPI support.
 av1_vulkan: |
-  Video encoder: AV1 (Vulkan).
+  AV1 Vulkan hardware encoder. Encodes AV1 using Vulkan compute shaders on compatible GPUs. Experimental. Requires Vulkan 1.3+ capable hardware.
 avrp: |
-  Video encoder: Avid 1:1 10-bit RGB Packer.
+  Avid 1:1 10-bit RGB Packer encoder. Professional uncompressed 10-bit RGB for Avid editing workflows.
 avui: |
-  Video encoder: Avid Meridien Uncompressed.
+  Avid Meridien Uncompressed encoder. Legacy Avid uncompressed video format for older Meridien NLE hardware.
 bitpacked: |
-  Video encoder: Bitpacked.
+  Bitpacked raw video encoder. Simple packed-pixel format without alignment padding. Minimal overhead for embedded video pipelines.
 bmp: |
   BMP (Windows bitmap) image encoder. Uncompressed or RLE-compressed image format.
   No alpha channel support. Simple and widely compatible.
 cfhd: |
-  Video encoder: GoPro CineForm HD.
+  CineForm HD encoder. GoPro's wavelet-based visually lossless intermediate codec for professional post-production. Supports high bit depths and alpha.
 cinepak: |
-  Video encoder: Cinepak.
+  Cinepak encoder. Early CD-ROM video codec using vector quantization at low bitrates. Very poor quality by modern standards.
 cljr: |
-  Video encoder: Cirrus Logic AccuPak.
+  Cirrus Logic AccuPak encoder. Proprietary format for Cirrus Logic capture hardware. Obsolete.
 comfortnoise: |
-  Audio encoder: RFC 3389 comfort noise generator.
+  RFC 3389 Comfort Noise encoder. Generates background noise during VoIP silence to prevent artifacts from voice activity detection.
 dca: |
-  Audio encoder: DCA (DTS Coherent Acoustics).
+  DTS (Digital Theater Systems) encoder. Multi-channel audio for cinema and DVD. Supports up to 7.1 channels. Competitor to Dolby Digital in surround sound.
 dfpwm: |
-  Audio encoder: DFPWM1a audio.
+  DFPWM1a encoder. Ultra-simple 1-bit-per-sample audio codec. Very low CPU. Used in ComputerCraft/Minecraft mods and embedded audio.
 dnxhd: |
   Avid DNxHD encoder. Professional intermediate codec used in Avid workflows and broadcast.
   Fixed bitrate codec designed for editing. Supports 1080p and 720p profiles.
 dpx: |
-  Video encoder: DPX (Digital Picture Exchange) image.
+  DPX (Digital Picture Exchange) encoder. Standard image format for digital cinema and VFX film scanning. 10-bit log or linear color.
 dvbsub: |
-  Subtitle encoder: DVB subtitles.
+  DVB subtitle encoder. Bitmap-based subtitles for European DVB broadcast TV.
 dvdsub: |
   DVD subtitle encoder. Bitmap-based subtitles for DVD-Video.
   Supports only basic positioning and timing.
 dvvideo: |
-  Video encoder: DV (Digital Video).
+  DV (Digital Video) encoder. Intraframe DCT codec for MiniDV/DVCAM at ~25 Mbit/s. Standard for DV tape archival.
 dxv: |
-  Video encoder: Resolume DXV.
+  Resolume DXV encoder. GPU-optimized codec for Resolume VJ software. Uses DXT texture compression for real-time video mixing.
 eac3: |
   E-AC-3 (Dolby Digital Plus) encoder. Extended AC-3 with higher bitrates and more channels.
   Used in streaming services and HD broadcast.
@@ -121,7 +119,7 @@ ffv1: |
   FFV1 lossless video codec. Mathematically lossless, used for archival and preservation.
   Supports multi-threading and error resilience. Recommended by IASA for film archiving.
 ffv1_vulkan: |
-  Video encoder: FFmpeg video codec #1 (Vulkan).
+  FFV1 Vulkan encoder. GPU-accelerated FFV1 lossless video encoding using Vulkan compute shaders. Experimental. Same mathematically lossless output as CPU FFV1.
 ffvhuff: |
   Huffyuv FFmpeg variant encoder. Lossless video codec, faster than FFV1 but less widely supported.
   Good for intermediate work where lossless is needed.
@@ -132,30 +130,30 @@ flac: |
   FLAC (Free Lossless Audio Codec) encoder. Lossless audio compression with fast decoding.
   Typically achieves 50-70% compression. Supported by most media players.
 flashsv: |
-  Video encoder: Flash Screen Video.
+  Flash Screen Video encoder. Macromedia Flash screen capture codec using zlib. Low CPU, good for screen recordings in Flash Player.
 flashsv2: |
-  Video encoder: Flash Screen Video Version 2.
+  Flash Screen Video 2 encoder. Advanced screen capture with delta frames for smaller screen recording files.
 flv: |
-  Video encoder: FLV / Sorenson Spark / Sorenson H.263 (Flash Video).
+  Sorenson Spark / H.263 Flash Video encoder. H.263 variant for Flash Video. Largely obsolete since Flash deprecation.
 g722: |
-  Audio encoder: G.722 ADPCM.
+  ITU-T G.722 ADPCM encoder. Wideband speech codec at 48/56/64 kbit/s with 7 kHz bandwidth. Superior to G.711 for VoIP and video conferencing.
 g723_1: |
-  Audio encoder: G.723.1.
+  ITU-T G.723.1 encoder. VoIP speech codec at 5.3/6.3 kbit/s. Standard for H.323 videoconferencing.
 g726: |
-  Audio encoder: G.726 ADPCM.
+  ITU-T G.726 ADPCM encoder. Speech codec at 16/24/32/40 kbit/s. Used in telephony and DECT. 32 kbit/s is most common mode.
 g726le: |
-  Audio encoder: G.726 little endian ADPCM ("right-justified").
+  G.726 ADPCM little-endian encoder. Same codec as G.726 but with LE byte ordering. Platform compatibility variant.
 gif: |
   GIF image encoder for video. Creates animated GIF output with 256-color palette.
   No audio support, limited color depth. Still widely used for short web animations.
 h261: |
-  Video encoder: H.261.
+  ITU-T H.261 encoder. Early video codec for ISDN videoconferencing. Historical interest only — extremely low quality.
 h263: |
-  Video encoder: H.263 / H.263-1996.
+  ITU-T H.263 encoder. Video codec for low-bitrate videoconferencing and mobile. Superseded by H.264.
 h263_v4l2m2m: |
-  Video encoder: V4L2 mem2mem H.263 encoder wrapper.
+  H.263 V4L2 M2M encoder. Hardware-accelerated H.263 encoding via Video4Linux2 memory-to-memory API on Linux. For embedded SoC platforms.
 h263p: |
-  Video encoder: H.263+ / H.263-1998 / H.263 version 2.
+  H.263+ (H.263 Version 2) encoder. Enhanced H.263 with advanced prediction modes. Improved compression for videoconferencing.
 h264_amf: |
   AMD GPU-accelerated H.264 encoder via AMF (Advanced Media Framework). For AMD GPUs.
   Faster than software encoding, slightly lower quality than libx264 at equivalent bitrate.
@@ -172,11 +170,11 @@ h264_vaapi: |
   H.264 encoder via VAAPI (Video Acceleration API). Linux hardware encoding using GPU drivers.
   Quality and performance depend on the GPU driver. Commonly used on Intel/AMD Linux systems.
 h264_vulkan: |
-  Video encoder: H.264/AVC (Vulkan).
+  H.264 Vulkan encoder. Hardware-accelerated H.264 encoding using Vulkan video encode API. Requires Vulkan 1.3+ with video encode support.
 hap: |
-  Video encoder: Vidvox Hap.
+  Vidvox Hap encoder. GPU-decoded video codec for VJ and live visual performance. Texture-compressed for fast GPU playback in Resolume, VDMX, TouchDesigner.
 hdr: |
-  Video encoder: HDR (Radiance RGBE format) image.
+  HDR (Radiance RGBE) encoder. High Dynamic Range image format from Radiance lighting software. Used in HDR lighting visualization.
 hevc_amf: |
   AMD GPU-accelerated H.265/HEVC encoder via AMF. GPU-accelerated HEVC for AMD GPUs.
   Faster than software HEVC with similar quality trade-offs as other hardware encoders.
@@ -187,12 +185,12 @@ hevc_qsv: |
   Intel Quick Sync Video HEVC encoder. Hardware HEVC via Intel integrated GPU.
   Lower CPU usage than software HEVC encoding.
 hevc_v4l2m2m: |
-  Video encoder: V4L2 mem2mem HEVC encoder wrapper.
+  HEVC V4L2 M2M encoder. Hardware-accelerated HEVC encoding via Video4Linux2 memory-to-memory API. For embedded Linux SoC platforms.
 hevc_vaapi: |
   H.265/HEVC encoder via VAAPI. Linux hardware HEVC encoding using VAAPI-compatible drivers.
   Similar to h264_vaapi but for HEVC output.
 hevc_vulkan: |
-  Video encoder: H.265/HEVC (Vulkan).
+  HEVC Vulkan encoder. Hardware-accelerated HEVC encoding using Vulkan video encode API. Requires Vulkan 1.3+ with video encode support.
 huffyuv: |
   Huffyuv lossless video codec. Popular lossless format for video capture and intermediate storage.
   Compresses better than raw video while preserving exact pixel values.
@@ -200,7 +198,7 @@ jpeg2000: |
   JPEG 2000 encoder. Wavelet-based image compression supporting lossless and lossy modes.
   Used in digital cinema (DCI) and medical imaging. Slower than JPEG.
 jpegls: |
-  Video encoder: JPEG-LS.
+  JPEG-LS (ISO 14495) encoder. Lossless/near-lossless image compression using LOCO-I algorithm. Fast with low complexity. Often beats PNG for photos.
 "libaom-av1": |
   Open-source AV1 encoder via libaom. Royalty-free codec with excellent compression but very slow encoding.
   Suitable for archival and distribution where file size matters more than encoding speed.
@@ -208,11 +206,11 @@ libgsm: |
   GSM encoder via libgsm. Full-rate GSM 06.10 speech codec at 13 kbit/s.
   Used in mobile telephony and voice recording applications.
 libgsm_ms: |
-  Audio encoder: libgsm GSM Microsoft variant.
+  GSM Microsoft variant encoder (via libgsm_ms). Microsoft's GSM codec wrapper for Windows multimedia. Used in AVI/ASF containers.
 libjxl: |
-  Video encoder: libjxl JPEG XL.
+  JPEG XL encoder (via libjxl). Modern image codec with ~20% better compression than JPEG 2000. Supports HDR, wide gamut, lossy and lossless.
 libjxl_anim: |
-  Video encoder: libjxl JPEG XL animated.
+  JPEG XL animated encoder (via libjxl_anim). Animated JPEG XL for web content with animation support.
 libmp3lame: |
   MP3 encoder via libmp3lame. The standard MP3 encoding library.
   Still the most widely supported lossy audio format. Use AAC or Opus for better quality at same bitrate.
@@ -226,16 +224,16 @@ libopus: |
   Opus encoder via libopus. State-of-the-art lossy audio codec for speech and music.
   Superior quality at any bitrate compared to MP3 or AAC. Recommended for streaming and VoIP.
 librav1e: |
-  Video encoder: librav1e AV1.
+  AV1 encoder via Rav1e (Rust). Community-developed AV1 encoder focused on safety and correctness. Slower than SVT-AV1 but competitive quality. Good for archival encoding.
 libspeex: |
-  Audio encoder: libspeex Speex.
+  Speex encoder (via libspeex). Xiph.org open-source speech codec at 2.15-44.2 kbit/s. Supports narrow/wide/ultra-wideband modes. Largely superseded by Opus.
 libsvtav1: |
-  Video encoder: SVT-AV1(Scalable Video Technology for AV1) encoder.
+  AV1 encoder via SVT-AV1 (Scalable Video Technology). Intel/Netflix's fast AV1 encoder. Significantly faster than libaom with competitive quality. Recommended for production AV1 encoding.
 libtheora: |
   Theora video encoder via libtheora. Open-source codec from the Xiph.org Foundation.
   Obsolete — use VP8/VP9 or AV1 for new content.
 libvorbis: |
-  Audio encoder: libvorbis.
+  Vorbis encoder (via libvorbis). Xiph.org's open-source lossy audio codec. Good quality at medium bitrates. Used in OGG and WebM containers.
 libvpx: |
   Open-source VP8 encoder via libvpx. Royalty-free WebM video codec with moderate quality and speed.
   Primarily used for WebM container output.
@@ -252,7 +250,7 @@ libx264: |
   Open-source H.264/AVC encoder via libx264. Produces high-quality video with wide compatibility.
   Supports constant quality (CRF), ABR, and lossless modes. The most commonly used encoder for H.264 output.
 libx264rgb: |
-  Video encoder: libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 RGB.
+  H.264 RGB encoder (via libx264). Encodes RGB video without YUV conversion. Preserves full color information for screen recording and GUI capture.
 libx265: |
   Open-source H.265/HEVC encoder via libx265. Better compression than H.264 at the cost of slower encoding.
   Supports CRF, ABR, and lossless modes. Use for smaller files at equivalent quality.
@@ -260,7 +258,7 @@ libxvid: |
   MPEG-4 Part 2 encoder via libxvid. Open-source Xvid codec for MPEG-4 ASP video.
   Largely superseded by H.264/HEVC.
 ljpeg: |
-  Video encoder: Lossless JPEG.
+  Lossless JPEG encoder. JPEG with Huffman-coded DCT for mathematically lossless compression. Moderate ratios. Used in medical imaging and legacy workflows.
 magicyuv: |
   MagicYUV lossless video codec. Fast lossless codec popular in video production.
   Better compression than Huffyuv with multi-threaded encoding.
@@ -273,7 +271,7 @@ mjpeg_qsv: |
 mjpeg_vaapi: |
   Motion JPEG encoder via VAAPI. Hardware-accelerated MJPEG on Linux.
 mlp: |
-  Audio encoder: MLP (Meridian Lossless Packing).
+  MLP (Meridian Lossless Packing) encoder. Lossless audio for DVD-Audio. Up to 6 channels at 24-bit/96 kHz. Basis of Dolby TrueHD.
 mov_text: |
   MOV text subtitle encoder. MP4 text subtitle track (tx3g format).
   The standard subtitle format for MP4 containers.
@@ -281,7 +279,7 @@ mp2: |
   Native MP2 (MPEG-1 Audio Layer II) encoder. Used in broadcast TV and DVD.
   Wide broadcast compatibility but lower quality than MP3/AAC at same bitrate.
 mp2fixed: |
-  Audio encoder: MP2 fixed point (MPEG audio layer 2).
+  MPEG-1 Audio Layer II fixed-point encoder. Integer-only MP2 encoding for platforms without FPU.
 mpeg1video: |
   MPEG-1 video encoder. Very old codec for Video CD and legacy content.
   Widely compatible but low quality by modern standards.
@@ -296,15 +294,15 @@ mpeg4: |
   MPEG-4 Part 2 video encoder. Older codec still used for legacy compatibility.
   Use libx264 or libx265 for new content unless targeting legacy devices.
 mpeg4_v4l2m2m: |
-  Video encoder: V4L2 mem2mem MPEG4 encoder wrapper.
+  MPEG-4 V4L2 M2M encoder. Hardware-accelerated MPEG-4 encoding via Video4Linux2 memory-to-memory API. For embedded Linux platforms.
 msmpeg4: |
-  Video encoder: MPEG-4 part 2 Microsoft variant version 3.
+  Microsoft MPEG-4 v3 encoder (DivX 3 compatible). Legacy format; use MPEG-4 ASP or H.264 instead.
 msmpeg4v2: |
-  Video encoder: MPEG-4 part 2 Microsoft variant version 2.
+  Microsoft MPEG-4 v2 encoder. Legacy codec found in old ASF/WMV files. Superseded by later codecs.
 msrle: |
-  Video encoder: Microsoft RLE.
+  Microsoft RLE encoder. Simple palettized video codec for AVI files. Very basic compression for screen capture with limited motion.
 msvideo1: |
-  Video encoder: Microsoft Video-1.
+  Microsoft Video 1 encoder. Early Microsoft 8-bit palettized video codec for AVI. Used in 1990s PC games.
 nellymoser: |
   Nellymoser Asao encoder. Proprietary speech codec formerly used in Flash.
   Legacy codec, prefer Opus for new speech encoding.
@@ -312,9 +310,9 @@ opus: |
   Native Opus encoder. FFmpeg's built-in Opus implementation (experimental).
   Prefer `libopus` for production use unless the native encoder is needed.
 pam: |
-  Video encoder: PAM (Portable AnyMap) image.
+  PAM (Portable AnyMap) encoder. Generic raster image container supporting arbitrary bit depths and channels. Unix imaging pipelines.
 pbm: |
-  Video encoder: PBM (Portable BitMap) image.
+  PBM (Portable BitMap) encoder. Simple 1-bit black/white Netpbm image format.
 pcm_alaw: |
   PCM A-law encoder. ITU-T G.711 A-law companded audio at 64 kbit/s.
   Standard in European telephone networks and ISDN.
@@ -325,12 +323,12 @@ pcm_dvd: |
   PCM signed 16/20/24-bit big-endian encoder for DVD media.
   Required format for uncompressed PCM audio on DVD-Video.
 pcm_f32be: |
-  Audio encoder: PCM 32-bit floating point big-endian.
+  PCM 32-bit float big-endian encoder. IEEE 754 single-precision floating-point audio. Standard for audio processing pipelines.
 pcm_f32le: |
   PCM 32-bit floating-point little-endian encoder. Floating-point audio for processing pipelines.
   Preserves full dynamic range during mixing and mastering.
 pcm_f64be: |
-  Audio encoder: PCM 64-bit floating point big-endian.
+  PCM 64-bit float big-endian encoder. IEEE 754 double-precision audio. Maximum precision for professional mastering.
 pcm_f64le: |
   PCM 64-bit floating-point little-endian encoder. Double-precision floating-point audio.
   Maximum precision for audio processing and analysis.
@@ -338,69 +336,69 @@ pcm_mulaw: |
   PCM mu-law encoder. ITU-T G.711 mu-law companded audio at 64 kbit/s.
   Standard in North American and Japanese telephone networks.
 pcm_s16be: |
-  Audio encoder: PCM signed 16-bit big-endian.
+  PCM signed 16-bit big-endian encoder. Standard CD-quality audio. Big-endian byte order (SPARC, PowerPC).
 pcm_s16be_planar: |
-  Audio encoder: PCM signed 16-bit big-endian planar.
+  PCM signed 16-bit BE planar encoder. Non-interleaved big-endian with per-channel data planes. Professional audio processing.
 pcm_s16le: |
   PCM signed 16-bit little-endian encoder. Uncompressed audio, CD quality (44.1 kHz, 16-bit).
   The most common PCM format. Large file sizes but zero quality loss.
 pcm_s16le_planar: |
-  Audio encoder: PCM signed 16-bit little-endian planar.
+  PCM signed 16-bit LE planar encoder. Non-interleaved little-endian with separate channel planes. Audio processing pipelines.
 pcm_s24be: |
-  Audio encoder: PCM signed 24-bit big-endian.
+  PCM signed 24-bit big-endian encoder. High-resolution audio with better dynamic range than 16-bit.
 pcm_s24daud: |
-  Audio encoder: PCM D-Cinema audio signed 24-bit.
+  PCM D-Cinema signed 24-bit encoder. Audio format for Digital Cinema (DCI). Standard in DCP presentations.
 pcm_s24le: |
   PCM signed 24-bit little-endian encoder. High-resolution uncompressed audio.
   Used in professional audio production and mastering.
 pcm_s24le_planar: |
-  Audio encoder: PCM signed 24-bit little-endian planar.
+  PCM signed 24-bit LE planar encoder. Non-interleaved high-resolution audio with separate planes per channel.
 pcm_s32be: |
-  Audio encoder: PCM signed 32-bit big-endian.
+  PCM signed 32-bit big-endian encoder. Very high dynamic range integer audio.
 pcm_s32le: |
   PCM signed 32-bit little-endian encoder. Uncompressed audio at 32-bit integer depth.
   Used in professional audio workflows requiring high dynamic range.
 pcm_s32le_planar: |
-  Audio encoder: PCM signed 32-bit little-endian planar.
+  PCM signed 32-bit LE planar encoder. Non-interleaved 32-bit audio with per-channel planes.
 pcm_s64be: |
-  Audio encoder: PCM signed 64-bit big-endian.
+  PCM signed 64-bit big-endian encoder. Extremely high precision integer audio.
 pcm_s64le: |
-  Audio encoder: PCM signed 64-bit little-endian.
+  PCM signed 64-bit little-endian encoder. Extremely high precision integer audio. x86 native byte order.
 pcm_s8: |
-  Audio encoder: PCM signed 8-bit.
+  PCM signed 8-bit encoder. Low-quality uncompressed audio. Very small dynamic range. Used for legacy formats.
 pcm_s8_planar: |
-  Audio encoder: PCM signed 8-bit planar.
+  PCM signed 8-bit planar encoder. Non-interleaved 8-bit audio with per-channel planes.
 pcm_u16be: |
-  Audio encoder: PCM unsigned 16-bit big-endian.
+  PCM unsigned 16-bit big-endian encoder. Unsigned CD-quality audio. Less common than signed.
 pcm_u16le: |
-  Audio encoder: PCM unsigned 16-bit little-endian.
+  PCM unsigned 16-bit little-endian encoder. Unsigned CD-quality audio. Used in some Windows APIs.
 pcm_u24be: |
-  Audio encoder: PCM unsigned 24-bit big-endian.
+  PCM unsigned 24-bit big-endian encoder. Uncommon unsigned high-resolution format.
 pcm_u24le: |
-  Audio encoder: PCM unsigned 24-bit little-endian.
+  PCM unsigned 24-bit little-endian encoder. Uncommon unsigned format.
 pcm_u32be: |
-  Audio encoder: PCM unsigned 32-bit big-endian.
+  PCM unsigned 32-bit big-endian encoder. Uncommon unsigned high-dynamic-range format.
 pcm_u32le: |
-  Audio encoder: PCM unsigned 32-bit little-endian.
+  PCM unsigned 32-bit little-endian encoder. Uncommon unsigned format.
 pcm_u8: |
-  Audio encoder: PCM unsigned 8-bit.
+  PCM unsigned 8-bit encoder. Basic 8-bit audio with 48 dB dynamic range. Common in legacy Windows multimedia.
 pcm_vidc: |
-  Audio encoder: PCM Archimedes VIDC.
+  PCM Archimedes VIDC encoder. Acorn Archimedes/RISC OS audio format. Legacy British computer audio.
 pcx: |
-  Video encoder: PC Paintbrush PCX image.
+  PCX (PC Paintbrush) encoder. ZSoft's image format popular in 1990s Windows software. Simple RLE compression.
 pfm: |
-  Video encoder: PFM (Portable FloatMap) image.
+  PFM (Portable FloatMap) encoder. HDR floating-point image format. Used in computer graphics rendering and HDR photography.
 pgm: |
-  Video encoder: PGM (Portable GrayMap) image.
+  PGM (Portable GrayMap) encoder. Simple grayscale Netpbm image format.
 pgmyuv: |
-  Video encoder: PGMYUV (Portable GrayMap YUV) image.
+  PGMYUV encoder. YUV variant of PGM for raw video frames. Simple format for video processing test data.
 phm: |
-  Video encoder: PHM (Portable HalfFloatMap) image.
+  PHM (Portable HalfFloatMap) encoder. 16-bit half-float image format for HDR content.
 png: |
   PNG image encoder for video. Encodes each frame as a PNG image.
   Lossless, supports alpha channel. Slow compression, large files. Good for image sequences.
 ppm: |
-  Video encoder: PPM (Portable PixelMap) image.
+  PPM (Portable PixelMap) encoder. Simple RGB Netpbm image format. Common in Unix imaging pipelines.
 prores: |
   Apple ProRes encoder. Visually lossless intermediate codec widely used in video production.
   Supports ProRes 4444, 422 HQ, 422, 422 LT, and 422 Proxy profiles. Large file sizes.
@@ -410,123 +408,123 @@ prores_ks: |
   Apple ProRes encoder (iCodec Pro variant). Alternative ProRes implementation with different quality profiles.
   Produces ProRes-compatible output with somewhat different quality characteristics.
 prores_ks_vulkan: |
-  Video encoder: Apple ProRes (iCodec Pro).
+  ProRes KS Vulkan encoder. GPU-accelerated Apple ProRes encoding using Vulkan compute shaders. Experimental.
 qoi: |
   QOI (Quite OK Image format) encoder. Simple, fast lossless image compression.
   Similar compression to PNG but significantly faster encoding/decoding.
 qtrle: |
-  Video encoder: QuickTime Animation (RLE) video.
+  QuickTime Animation RLE encoder. Apple's lossless animation codec for QuickTime. Good for screen recordings and 2D animations with flat colors.
 r10k: |
-  Video encoder: AJA Kona 10-bit RGB Codec.
+  AJA Kona 10-bit RGB encoder. Professional 10-bit RGB video format for broadcast and post-production. Used with AJA hardware.
 r210: |
-  Video encoder: Uncompressed RGB 10-bit.
+  10-bit RGB packed encoder. Professional 10-bit per channel packed RGB. Used in broadcast hardware (Blackmagic, etc.).
 rawvideo: |
   Raw video encoder. Outputs uncompressed video with no codec overhead.
   Extremely large files. Use only when uncompressed output is required (e.g., SDI output).
 real_144: |
-  Audio encoder: RealAudio 1.0 (14.4K).
+  RealAudio 14.4k encoder. Original RealNetworks audio for 14.4 kbit/s modem streaming. Legacy early-internet format.
 roq_dpcm: |
-  Audio encoder: id RoQ DPCM.
+  id RoQ DPCM encoder. Audio codec paired with id RoQ video in Quake III Arena game files. Simple DPCM for game audio.
 roqvideo: |
-  Video encoder: id RoQ video.
+  id RoQ video encoder. Video codec for Quake III Arena and id Software games. Uses vector quantization. Found in .roq game cinematic files.
 rpza: |
-  Video encoder: QuickTime video (RPZA).
+  QuickTime Video (Road Pizza) encoder. Apple's early video codec for QuickTime. Palettized video compression.
 rv10: |
-  Video encoder: RealVideo 1.0.
+  RealVideo 1.0 encoder. First RealNetworks video codec for dial-up streaming. Very poor quality. Legacy only.
 rv20: |
-  Video encoder: RealVideo 2.0.
+  RealVideo G2 encoder. Second-generation RealVideo for early broadband. Low quality by modern standards.
 s302m: |
-  Audio encoder: SMPTE 302M.
+  SMPTE 302M encoder. AES3 digital audio encapsulated in SDI broadcast streams. Professional broadcast standard.
 sbc: |
-  Audio encoder: SBC (low-complexity subband codec).
+  SBC (Low-Complexity Subband Codec) encoder. Mandatory Bluetooth A2DP codec. Moderate quality, very low CPU. Universally supported by Bluetooth audio devices.
 sgi: |
-  Video encoder: SGI image.
+  SGI (Silicon Graphics Image) encoder. Image format for SGI IRIX workstations. Used in 3D graphics and VFX.
 smc: |
-  Video encoder: QuickTime Graphics (SMC).
+  QuickTime Graphics (SMC) encoder. Apple's vector-quantization video codec for QuickTime. Found in old .mov files.
 snow: |
-  Video encoder: Snow.
+  Snow encoder. FFmpeg's experimental wavelet-based video codec. Supports lossless and lossy. Research/academic interest.
 speedhq: |
-  Video encoder: NewTek SpeedHQ.
+  SpeedHQ encoder. NewTek's near-lossless video codec for TriCaster and LiveText live production systems.
 srt: |
   SubRip subtitle encoder. The most common subtitle format (.srt).
   Simple text-based format with timing codes. Widely supported by media players.
 ssa: |
-  Subtitle encoder: ASS (Advanced SubStation Alpha) subtitle.
+  SSA (SubStation Alpha) encoder. Styled text subtitle format with typography and positioning. Used in anime fan-subbing.
 subrip: |
-  Subtitle encoder: SubRip subtitle.
+  SubRip (SRT) encoder. Most common text subtitle format. Simple timestamp + text. Universally supported.
 sunrast: |
-  Video encoder: Sun Rasterfile image.
+  Sun Rasterfile encoder. Sun Microsystems image format for Solaris workstations. Simple header + pixel data.
 svq1: |
-  Video encoder: Sorenson Vector Quantizer 1 / Sorenson Video 1 / SVQ1.
+  Sorenson Video 1 encoder. Early QuickTime video codec for low-bitrate web video. Vector quantization. Legacy format.
 targa: |
-  Video encoder: Truevision Targa image.
+  TGA/Targa encoder. Truevision image format popular in game textures and demoscene. Supports alpha and RLE.
 text: |
-  Subtitle encoder: Raw text subtitle.
+  Raw text subtitle encoder. Plain text subtitle track without timing. Each line displayed for a fixed duration.
 tiff: |
   TIFF image encoder for video. Encodes each frame as a TIFF image.
   Supports various bit depths and color spaces. Common in scientific/medical imaging.
 truehd: |
-  Audio encoder: TrueHD.
+  Dolby TrueHD encoder. Lossless audio for Blu-ray (based on MLP). Up to 7.1 channels at 24-bit/192 kHz.
 tta: |
-  Audio encoder: TTA (True Audio).
+  TTA (True Audio) encoder. Fast lossless audio codec with ~50% compression. Very fast encoding/decoding. Multi-channel.
 ttml: |
-  Subtitle encoder: TTML subtitle.
+  TTML (Timed Text Markup Language) encoder. W3C XML-based subtitle standard. Used in broadcast (EBU-TT-D) and streaming (IMSC1).
 utvideo: |
   Ut Video lossless codec. Lossless video codec used in Japanese video production workflows.
   Supports YUV and RGB formats.
 v210: |
-  Video encoder: Uncompressed 4:2:2 10-bit.
+  V210 encoder. Packed YUV 4:2:2 10-bit broadcast format for SDI. Standard for professional broadcast pipelines. High bandwidth.
 v308: |
-  Video encoder: Uncompressed packed 4:4:4.
+  V308 encoder. Unpacked YUV 4:4:4 8-bit component video. Professional format for high-end video processing.
 v408: |
-  Video encoder: Uncompressed packed QT 4:4:4:4.
+  V408 encoder. Unpacked RGBA 4:4:4:4 8-bit with alpha. Professional compositing format supporting transparency.
 v410: |
-  Video encoder: Uncompressed 4:4:4 10-bit.
+  V410 encoder. Packed YUV 4:4:4 10-bit component video. Professional high bit depth video processing format.
 vbn: |
-  Video encoder: Vizrt Binary Image.
+  Vizrt Binary Image encoder. Vizrt's image format for broadcast graphics and virtual studios.
 vc2: |
-  Video encoder: SMPTE VC-2.
+  VC-2 (SMPTE ST 2042) encoder. BBC Dirac Pro codec for broadcast contribution and mezzanine workflows. Wavelet-based. Supports lossless and lossy.
 vnull: |
   Null video encoder. Discards all video data. Use for benchmarking or when video output is not needed.
 vorbis: |
-  Audio encoder: Vorbis.
+  Vorbis encoder (FFmpeg native). Xiph.org's open-source lossy audio codec. For best quality use libvorbis encoder instead.
 vp8_v4l2m2m: |
-  Video encoder: V4L2 mem2mem VP8 encoder wrapper.
+  VP8 V4L2 M2M encoder. Hardware-accelerated VP8 encoding via Video4Linux2 memory-to-memory API. For embedded Linux SoC platforms.
 vp8_vaapi: |
-  Video encoder: VP8 (VAAPI).
+  VP8 VAAPI encoder. Hardware-accelerated VP8 encoding via Video Acceleration API on Linux. Requires VAAPI-capable GPU (Intel, AMD).
 vp9_qsv: |
-  Video encoder: VP9 video (Intel Quick Sync Video acceleration).
+  VP9 Intel Quick Sync encoder. Hardware VP9 encoding via Intel Quick Sync Video. Fast encoding on Intel GPUs.
 vp9_vaapi: |
-  Video encoder: VP9 (VAAPI).
+  VP9 VAAPI encoder. Hardware-accelerated VP9 encoding via Video Acceleration API. Requires VAAPI-capable GPU.
 wavpack: |
-  Audio encoder: WavPack.
+  WavPack encoder. Hybrid lossless/lossy audio codec. Unique hybrid mode creates lossy base + correction file for lossless.
 wbmp: |
-  Video encoder: WBMP (Wireless Application Protocol Bitmap) image.
+  WBMP (Wireless Bitmap) encoder. 1-bit image format for WAP mobile devices. Very old mobile web format.
 webvtt: |
-  Subtitle encoder: WebVTT subtitle.
+  WebVTT (Web Video Text Tracks) encoder. W3C standard for HTML5 video captions/subtitles. Supports styling and positioning.
 wmav1: |
-  Audio encoder: Windows Media Audio 1.
+  Windows Media Audio 1 encoder. First-generation WMA codec. Legacy Windows Media format.
 wmav2: |
-  Audio encoder: Windows Media Audio 2.
+  Windows Media Audio 2 encoder. Standard WMA codec. Most common Windows Media audio format.
 wmv1: |
-  Video encoder: Windows Media Video 7.
+  Windows Media Video 7 (WMV1) encoder. Microsoft's first WMV codec. Legacy format; use H.264 instead.
 wmv2: |
-  Video encoder: Windows Media Video 8.
+  Windows Media Video 8 (WMV2) encoder. Improved WMV comparable to MPEG-4 ASP. Legacy format.
 wrapped_avframe: |
-  Video encoder: AVFrame to AVPacket passthrough.
+  Internal FFmpeg passthrough. Passes AVFrame data to AVPacket without re-encoding. Used internally in filter graphs. Not for direct use.
 xbm: |
-  Video encoder: XBM (X BitMap) image.
+  XBM (X BitMap) encoder. X11 monochrome bitmap format. C source code representation for X Window System cursors and icons.
 xface: |
-  Video encoder: X-face image.
+  X-Face encoder. Tiny 48×48 monochrome image format. Extremely compact. Usenet message header format.
 xsub: |
-  Subtitle encoder: DivX subtitles (XSUB).
+  XSUB encoder. DivX bitmap subtitle format for AVI containers. Supports positioning and multiple bitmap frames.
 xwd: |
-  Video encoder: XWD (X Window Dump) image.
+  XWD (X Window Dump) encoder. Screen capture format for X Window System. Simple pixel dump of X11 drawable content.
 y41p: |
-  Video encoder: Uncompressed YUV 4:1:1 12-bit.
+  Y41P encoder. Packed YUV 4:1:1 8-bit video format. Used in some video capture hardware.
 yuv4: |
-  Video encoder: Uncompressed packed 4:2:0.
+  YUV4MPEG2 encoder. Raw YUV 4:2:0 pipe format for video processing pipelines. Common intermediate format in mjpegtools.
 zlib: |
-  Video encoder: LCL (LossLess Codec Library) ZLIB.
+  ZLIB encoder (LCL Codec). Lossless video codec using zlib/DEFLATE compression. Simple compression with moderate ratios.
 zmbv: |
-  Video encoder: Zip Motion Blocks Video.
+  Zip Motion Blocks Video encoder. Lossless screen capture codec using per-block zlib compression. Good for DOSBox and game captures.

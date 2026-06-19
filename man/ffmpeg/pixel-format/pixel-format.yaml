@@ -8,40 +8,40 @@ abgr: |
   Packed ABGR 8:8:8:8, 32-bit. Alpha channel first, then BGR.
   Used in some OpenGL and Android frameworks.
 amf: |
-  Pixel format, 0 bits/pixel. Internal format.
+  AMF hardware pixel format. Internal format for AMD Advanced Media Framework GPU processing. 0 bits/pixel (opaque).
 argb: |
   Packed ARGB 8:8:8:8, 32-bit. Alpha channel first, then RGB.
   Used in Apple QuickDraw and some macOS/Core Animation contexts.
 ayuv: |
-  Pixel format, 32 bits/pixel. Internal format.
+  Packed AYUV 4:4:4. Alpha-YUV interleaved at 32 bits/pixel. Used in some Windows video pipelines and DirectShow.
 ayuv64be: |
-  Pixel format, 64 bits/pixel. Internal format.
+  Packed AYUV 4:4:4 64-bit big-endian. 16-bit per channel AYUV for high bit depth professional compositing.
 ayuv64le: |
-  Pixel format, 64 bits/pixel. Internal format.
+  Packed AYUV 4:4:4 64-bit little-endian. 16-bit per channel AYUV for high bit depth compositing on x86.
 bayer_bggr16be: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer BGGR 16-bit big-endian. Raw sensor pattern (Blue-Green-Green-Red). 16-bit per pixel.
 bayer_bggr16le: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer BGGR 16-bit little-endian. Raw sensor pattern for camera sensor data.
 bayer_bggr8: |
-  Pixel format, 8 bits/pixel. Internal format.
+  Bayer BGGR 8-bit. Raw Bayer pattern from camera sensors. Requires demosaicing for full color.
 bayer_gbrg16be: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer GBRG 16-bit big-endian. Raw sensor pattern (Green-Blue-Red-Green). 16-bit.
 bayer_gbrg16le: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer GBRG 16-bit little-endian. Raw sensor pattern for camera data.
 bayer_gbrg8: |
-  Pixel format, 8 bits/pixel. Internal format.
+  Bayer GBRG 8-bit. Raw Bayer from camera sensors. Green row G-B, other R-G.
 bayer_grbg16be: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer GRBG 16-bit big-endian. Raw sensor pattern (Green-Red-Blue-Green). 16-bit.
 bayer_grbg16le: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer GRBG 16-bit little-endian. Raw sensor pattern for camera data.
 bayer_grbg8: |
-  Pixel format, 8 bits/pixel. Internal format.
+  Bayer GRBG 8-bit. Raw Bayer from camera sensors. Green row G-R, other B-G.
 bayer_rggb16be: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer RGGB 16-bit big-endian. Raw sensor pattern (Red-Green-Green-Blue). 16-bit.
 bayer_rggb16le: |
-  Pixel format, 16 bits/pixel. Internal format.
+  Bayer RGGB 16-bit little-endian. Raw sensor pattern for camera data.
 bayer_rggb8: |
-  Pixel format, 8 bits/pixel. Internal format.
+  Bayer RGGB 8-bit. Raw Bayer from camera sensors. Requires demosaicing.
 bgr0: |
   Packed BGR0 8:8:8:8, 32-bit. BGR with unused trailing byte.
   32 bits per pixel. Windows Direct3D surface format.
@@ -80,20 +80,17 @@ bgra64be: |
 bgra64le: |
   BGR packed, 64 bits/pixel. Internal format.
 cuda: |
-  Pixel format, 0 bits/pixel. Internal format.
+  CUDA hardware pixel format. Opaque format for NVIDIA CUDA GPU processing. Cannot be directly read from CPU.
 d3d11: |
-  Direct3D 11 hardware surface. Opaque GPU texture for DXGI/D3D11 operations.
-  Windows-only hardware decoding surface.
+  Direct3D 11 hardware pixel format. Opaque texture for D3D11 GPU processing on Windows.
 d3d11va_vld: |
-  Pixel format, 0 bits/pixel. Internal format.
+  Direct3D 11 VA VLD format. Hardware-decoded video surface for D3D11 GPU rendering.
 d3d12: |
   Pixel format, 0 bits/pixel. Internal format.
 drm_prime: |
-  DRM PRIME hardware surface. Opaque format for Linux DRM/DMA-BUF GPU memory.
-  Used for zero-copy GPU memory sharing on Linux.
+  DRM PRIME format. Linux kernel graphics subsystem for zero-copy GPU buffer sharing.
 dxva2_vld: |
-  DXVA2 hardware surface. Opaque format for GPU memory via DirectX Video Acceleration.
-  Windows-only hardware decoding surface.
+  DirectX Video Acceleration 2 VLD. Hardware video decoding surface for DXVA2 on Windows.
 gbrap: |
   Planar GBR, 32 bits/pixel. Internal format.
 gbrap10be: |
@@ -213,17 +210,15 @@ monow: |
   1-bit monochrome white. Single bit per pixel (white or black).
   Used in fax transmission and 1-bit image formats.
 nv12: |
-  Semi-planar YUV 4:2:0, 8-bit. Y plane separate, UV interleaved in one plane.
-  12 bits per pixel. Native format for many hardware encoders (Intel QSV, VAAPI).
+  NV12 (4:2:0). YUV planar with Y plane and interleaved UV. 12 bits/pixel. Most common video encoding format (H.264, HEVC). Hardware decode output.
 nv16: |
-  Semi-planar YUV 4:2:0, 16 bits/pixel. Internal format.
+  NV16 (4:2:2). YUV planar with Y plane and interleaved UV. 16 bits/pixel. Professional video capture.
 nv20be: |
-  Semi-planar YUV 4:2:0, 20 bits/pixel. Internal format.
+  NV20 10-bit big-endian (4:2:2). 10-bit Y and interleaved 10-bit UV. High bit depth professional.
 nv20le: |
-  Semi-planar YUV 4:2:0, 20 bits/pixel. Internal format.
+  NV20 10-bit little-endian (4:2:2). 10-bit Y and interleaved 10-bit UV. Professional 10-bit.
 nv21: |
-  Semi-planar YUV 4:2:0, 8-bit. Like NV12 with reversed U/V order.
-  12 bits per pixel. Common in Android camera APIs.
+  NV21 (4:2:0). Like NV12 but VU interleaved order. Android camera output. Y plane + VU plane.
 nv24: |
   Semi-planar YUV 4:2:0, 24 bits/pixel. Internal format.
 nv42: |
@@ -231,19 +226,19 @@ nv42: |
 ohcodec: |
   Pixel format, 0 bits/pixel. Internal format.
 opencl: |
-  Pixel format, 0 bits/pixel. Internal format.
+  OpenCL hardware pixel format. Opaque buffer for OpenCL GPU compute processing.
 p010be: |
-  Pixel format, 15 bits/pixel. Internal format.
+  P010 big-endian (4:2:0 10-bit). 10-bit planar YUV 4:2:0. HDR video (HLG/PQ) standard.
 p010le: |
-  Pixel format, 15 bits/pixel. Internal format.
+  P010 little-endian (4:2:0 10-bit). 10-bit planar YUV 4:2:0. Standard for 10-bit HDR encoding/decoding.
 p012be: |
-  Pixel format, 18 bits/pixel. Internal format.
+  P012 big-endian (4:2:0 12-bit). 12-bit planar YUV 4:2:0. High bit depth video.
 p012le: |
-  Pixel format, 18 bits/pixel. Internal format.
+  P012 little-endian (4:2:0 12-bit). 12-bit planar YUV 4:2:0. Higher precision professional video.
 p016be: |
-  Pixel format, 24 bits/pixel. Internal format.
+  P016 big-endian (4:2:0 16-bit). 16-bit planar YUV 4:2:0. Maximum precision 4:2:0.
 p016le: |
-  Pixel format, 24 bits/pixel. Internal format.
+  P016 little-endian (4:2:0 16-bit). 16-bit planar YUV 4:2:0. Highest quality video processing.
 p210be: |
   Pixel format, 20 bits/pixel. Internal format.
 p210le: |
@@ -253,9 +248,9 @@ p212be: |
 p212le: |
   Pixel format, 24 bits/pixel. Internal format.
 p216be: |
-  Pixel format, 32 bits/pixel. Internal format.
+  P216 big-endian (4:2:2 16-bit). 16-bit planar YUV 4:2:2. Maximum precision professional format.
 p216le: |
-  Pixel format, 32 bits/pixel. Internal format.
+  P216 little-endian (4:2:2 16-bit). 16-bit planar YUV 4:2:2. High-end video production.
 p410be: |
   Pixel format, 30 bits/pixel. Internal format.
 p410le: |
@@ -265,18 +260,16 @@ p412be: |
 p412le: |
   Pixel format, 36 bits/pixel. Internal format.
 p416be: |
-  Pixel format, 48 bits/pixel. Internal format.
+  P416 big-endian (4:4:4 16-bit). 16-bit planar YUV 4:4:4. Maximum precision 4:4:4.
 p416le: |
-  Pixel format, 48 bits/pixel. Internal format.
+  P416 little-endian (4:4:4 16-bit). 16-bit planar YUV 4:4:4. Highest quality compositing.
 pal8: |
   8-bit paletted format. Up to 256 colors in a palette lookup table.
   Bits per pixel varies. Used in GIF and some legacy image formats.
 qsv: |
-  Intel Quick Sync Video hardware surface. Opaque GPU memory for QSV operations.
-  Actual pixel format depends on the QSV session.
+  Intel Quick Sync Video hardware format. Opaque surface for Intel GPU video pipeline.
 rgb0: |
-  Packed RGB0 8:8:8:8, 32-bit. RGB with unused trailing byte.
-  32 bits per pixel. Display framework intermediate.
+  Packed RGB0 8:8:8:8. RGB with unused fourth byte. 32 bits/pixel. Some display frameworks with padding.
 rgb24: |
   Packed RGB 8:8:8, 24-bit. Three bytes per pixel in R-G-B order.
   No alpha channel. Common in image processing and display.
@@ -287,10 +280,9 @@ rgb444be: |
 rgb444le: |
   RGB packed, 12 bits/pixel. Internal format.
 rgb48be: |
-  RGB packed, 48 bits/pixel. Internal format.
+  Packed RGB 48-bit big-endian. 16-bit per channel for high bit depth image processing.
 rgb48le: |
-  Packed RGB 16:16:16, 48-bit little-endian. High-bit-depth packed RGB.
-  48 bits per pixel. Used in high-depth image workflows.
+  Packed RGB 48-bit little-endian. 16-bit per channel professional video format.
 rgb4_byte: |
   RGB packed, 4 bits/pixel. Internal format.
 rgb555be: |
@@ -299,12 +291,11 @@ rgb555le: |
   Packed RGB 5:5:5, 15-bit little-endian. 5 bits per channel, 1 bit unused.
   Legacy format from early Windows video.
 rgb565be: |
-  RGB packed, 16 bits/pixel. Internal format.
+  RGB 5:6:5 big-endian. 16-bit packed (5 red, 6 green, 5 blue). Embedded display format.
 rgb565le: |
-  Packed RGB 5:6:5, 16-bit little-endian. 5-bit R, 6-bit G, 5-bit B.
-  Compact format used in embedded displays and low-bandwidth applications.
+  RGB 5:6:5 little-endian. 16-bit packed RGB. Common embedded/ARM display format with 65536 colors.
 rgb8: |
-  RGB packed, 8 bits/pixel. Internal format.
+  Packed RGB 8-bit palettized. 8 bits/pixel with color lookup table. Legacy format.
 rgb96be: |
   RGB packed, 96 bits/pixel. Internal format.
 rgb96le: |
@@ -317,9 +308,9 @@ rgba128be: |
 rgba128le: |
   RGB packed, 128 bits/pixel. Internal format.
 rgba64be: |
-  RGB packed, 64 bits/pixel. Internal format.
+  Packed RGBA 64-bit big-endian. 16-bit per channel with alpha. High bit depth compositing.
 rgba64le: |
-  RGB packed, 64 bits/pixel. Internal format.
+  Packed RGBA 64-bit little-endian. 16-bit per channel with alpha. Professional compositing on x86.
 rgbaf16be: |
   RGB packed, 64 bits/pixel. Internal format.
 rgbaf16le: |
@@ -351,12 +342,11 @@ vaapi: |
   VAAPI hardware surface. Opaque format for GPU memory via VAAPI.
   Actual pixel format depends on the VAAPI driver. Zero bits reported.
 vdpau: |
-  Pixel format, 0 bits/pixel. Internal format.
+  VDPAU hardware format. Opaque surface for NVIDIA VDPAU GPU decoding on Linux.
 videotoolbox_vld: |
-  Pixel format, 0 bits/pixel. Internal format.
+  Apple VideoToolbox hardware format. Opaque surface for macOS/iOS hardware video decoding.
 vulkan: |
-  Vulkan hardware surface. Opaque format for GPU memory via Vulkan compute/graphics.
-  Used for GPU-accelerated video processing via Vulkan.
+  Vulkan hardware pixel format. Opaque format for Vulkan GPU compute and rendering.
 vuya: |
   Pixel format, 32 bits/pixel. Internal format.
 vuyx: |
@@ -364,13 +354,13 @@ vuyx: |
 vyu444: |
   Pixel format, 24 bits/pixel. Internal format.
 x2bgr10be: |
-  Pixel format, 30 bits/pixel. Internal format.
+  Packed X2BGR10 big-endian. 10-bit BGR with 2-bit padding. Professional 10-bit video I/O.
 x2bgr10le: |
-  Pixel format, 30 bits/pixel. Internal format.
+  Packed X2BGR10 little-endian. 10-bit BGR with 2-bit padding. Video capture hardware.
 x2rgb10be: |
-  Pixel format, 30 bits/pixel. Internal format.
+  Packed X2RGB10 big-endian. 10-bit RGB with 2-bit padding. Professional broadcast format.
 x2rgb10le: |
-  Pixel format, 30 bits/pixel. Internal format.
+  Packed X2RGB10 little-endian. 10-bit RGB with 2-bit padding. Common in video I/O hardware.
 xv30be: |
   Pixel format, 30 bits/pixel. Internal format.
 xv30le: |
@@ -384,13 +374,13 @@ xv48be: |
 xv48le: |
   Pixel format, 48 bits/pixel. Internal format.
 xyz12be: |
-  Pixel format, 36 bits/pixel. Internal format.
+  CIE XYZ 12-bit big-endian. Colorimetric XYZ for scientific color measurement and digital cinema mastering.
 xyz12le: |
-  Pixel format, 36 bits/pixel. Internal format.
+  CIE XYZ 12-bit little-endian. Colorimetric XYZ for DCI digital cinema and color science.
 y210be: |
-  Pixel format, 20 bits/pixel. Internal format.
+  Y210 big-endian (4:2:2 10-bit). Packed 10-bit YUV 4:2:2 in 16-bit containers. Professional broadcast.
 y210le: |
-  Pixel format, 20 bits/pixel. Internal format.
+  Y210 little-endian (4:2:2 10-bit). Packed 10-bit YUV 4:2:2. Standard for 10-bit broadcast pipelines.
 y212be: |
   Pixel format, 24 bits/pixel. Internal format.
 y212le: |
@@ -400,12 +390,11 @@ y216be: |
 y216le: |
   Pixel format, 32 bits/pixel. Internal format.
 ya16be: |
-  Pixel format, 32 bits/pixel. Internal format.
+  YA 16-bit big-endian. Grayscale with 16-bit alpha. Professional mask/key format.
 ya16le: |
-  Pixel format, 32 bits/pixel. Internal format.
+  YA 16-bit little-endian. Grayscale with 16-bit alpha. Key/mask channel format.
 ya8: |
-  Packed YA 8:8, 16-bit. Grayscale with alpha.
-  16 bits per pixel. Simple grayscale transparency format.
+  YA 8-bit. Grayscale with 8-bit alpha. 16 bits/pixel for simple mask/key formats.
 yaf16be: |
   Pixel format, 32 bits/pixel. Internal format.
 yaf16le: |

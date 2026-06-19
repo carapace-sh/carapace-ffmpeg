@@ -1,86 +1,88 @@
 "3dostr": |
-  Demuxer: 3DO STR.
+  3DO STR. Video/audio container for Panasonic 3DO game console. Demuxing only. Found on 3DO game discs from the mid-1990s.
 "3g2": |
-  Demuxer: QuickTime / MOV.
+  3GP2 (3GPP2). Multimedia container for 3GPP2 (CDMA) mobile phones.
+  Similar to 3GP but for CDMA2000 networks. Muxing name: `3g2`.
 "3gp": |
-  Demuxer: QuickTime / MOV.
+  3GP (3GPP). Multimedia container for 3G mobile phones.
+  Subset of MP4 with H.263/AMR-NB. Muxing name: `3gp`.
 "4xm": |
-  Demuxer: 4X Technologies.
+  4X Technologies. Game video/audio container from 4X Technologies. Demuxing only. Found in 1990s PC game files.
 aa: |
-  Demuxer: Audible AA format files.
+  Audible AA. Amazon Audible DRM-encrypted audiobook format. Demuxing only. Contains audiobook content from Amazon Audible store.
 aac: |
   Raw ADTS AAC demuxer. Reads AAC audio in ADTS frames.
   Each frame is self-contained with its own header.
 aax: |
-  Demuxer: CRI AAX.
+  CRI AAX. CRI Middleware encrypted audio container. Demuxing only. Used in some Japanese game audio archives.
 ac3: |
   Raw AC-3 demuxer. Reads Dolby Digital audio streams.
   Auto-detects sync words. Supports AC-3 frame parsing.
 ac4: |
-  Demuxer: raw AC-4.
+  raw AC-4.
 ace: |
-  Demuxer: tri-Ace Audio Container.
+  tri-Ace Audio Container. Audio from tri-Ace RPG games. Demuxing only. Found in Star Ocean and Valkyrie Profile.
 acm: |
-  Demuxer: Interplay ACM.
+  Interplay ACM. Audio container from Interplay games. Demuxing only. Found in Baldur's Gate, Fallout, and other Interplay RPGs.
 act: |
-  Demuxer: ACT Voice file format.
+  ACT Voice. Voice recording from Chinese digital voice recorders. Demuxing only. Low-bitrate speech recording format.
 adf: |
-  Demuxer: Artworx Data Format.
+  Artworx Data Format. Game data container from Artworx.
 adp: |
-  Demuxer: ADP.
+  ADP. Nintendo GameCube/Wii audio format. Demuxing only. Used in some Nintendo game audio.
 ads: |
-  Demuxer: Sony PS2 ADS.
+  Sony PS2 ADS. PlayStation 2 audio stream container. Demuxing only. Found in PS2 game audio.
 adx: |
-  Demuxer: CRI ADX.
+  CRI ADX.
 aea: |
-  Demuxer: MD STUDIO audio.
+  MD STUDIO audio.
 afc: |
-  Demuxer: AFC.
+  AFC. Nintendo GameCube audio format. Demuxing only. Rare game audio.
 aiff: |
   Audio IFF demuxer. Reads Apple AIFF format.
   Supports AIFF-C compressed variants and embedded metadata.
 aix: |
-  Demuxer: CRI AIX.
+  CRI AIX. CRI Middleware multi-stream audio container for interactive game music. Demuxing only. Supports layered/interruptible music in Japanese games.
 alaw: |
-  Demuxer: PCM A-law.
+  PCM A-law.
 alias_pix: |
-  Demuxer: Alias/Wavefront PIX image.
+  Alias/Wavefront PIX image sequence. SGI image format for Maya/Alias. Demuxing only. Used in VFX pipelines on SGI workstations.
 alp: |
-  Demuxer: LEGO Racers ALP.
+  LEGO Racers ALP.
 amr: |
-  Demuxer: 3GPP AMR.
+  3GPP AMR.
 amrnb: |
-  Demuxer: raw AMR-NB.
+  Raw AMR-NB. 3GPP narrowband speech at 4.75-12.2 kbit/s. Demuxing only. GSM/UMTS mobile telephony codec.
 amrwb: |
-  Demuxer: raw AMR-WB.
+  Raw AMR-WB. 3GPP wideband speech at 6.6-23.85 kbit/s. Demuxing only. HD Voice and VoLTE codec.
 anm: |
-  Demuxer: Deluxe Paint Animation.
+  Deluxe Paint Animation. Amiga/PC animation from EA's Deluxe Paint. Demuxing only. Classic pixel art format.
 apac: |
-  Demuxer: raw APAC.
+  Raw APAC audio. Demuxing only. Rare audio format.
 apc: |
-  Demuxer: CRYO APC.
+  CRYO APC. Video container from Cryo Interactive. Demuxing only. Found in French adventure games.
 ape: |
   Monkey's Audio demuxer. Reads APE lossless audio files.
   High compression ratio lossless codec popular in China.
 apm: |
-  Demuxer: Ubisoft Rayman 2 APM.
+  Ubisoft Rayman 2 APM.
 apng: |
   APNG demuxer. Reads Animated PNG files as video.
   Supports transparency and variable frame timing.
 aptx: |
-  Demuxer: raw aptX.
+  raw aptX.
 aptx_hd: |
-  Demuxer: raw aptX HD.
+  raw aptX HD.
 apv: |
-  Demuxer: APV raw bitstream.
+  APV raw bitstream.
 aqtitle: |
-  Demuxer: AQTitle subtitles.
+  AQTitle subtitles. Text-based subtitle format.
 argo_asf: |
-  Demuxer: Argonaut Games ASF.
+  Argonaut Games ASF.
 argo_brp: |
-  Demuxer: Argonaut Games BRP.
+  Argonaut Games BRP. Game video container. Demuxing only. Found in Star Fox and Croc game files.
 argo_cvg: |
-  Demuxer: Argonaut Games CVG.
+  Argonaut Games CVG.
 asf: |
   ASF (Advanced Streaming Format) demuxer. Reads Microsoft ASF/WMV/WMA container.
   Supports WMV video, WMA audio, and metadata.
@@ -91,9 +93,9 @@ ass: |
   SSA/ASS subtitle demuxer. Reads SubStation Alpha subtitle files.
   Supports rich formatting including fonts, colors, and positioning.
 ast: |
-  Demuxer: AST (Audio Stream).
+  AST (Audio Stream).
 au: |
-  Demuxer: Sun AU.
+  Sun AU.
 av1: |
   Raw AV1 Annex B demuxer. Reads AV1 bitstream without container.
   Parses OBU (Open Bitstream Units) directly.
@@ -104,65 +106,65 @@ avisynth: |
   AviSynth demuxer. Reads AviSynth script files (.avs) as video input.
   Windows-only. Provides frame-accurate access via AviSynth scripting.
 avr: |
-  Demuxer: AVR (Audio Visual Research).
+  AVR (Audio Visual Research). Scientific/research audio format. Demuxing only. Used in acoustic research.
 avs: |
-  Demuxer: Argonaut Games Creature Shock.
+  Argonaut Games Creature Shock. Game video container.
 avs2: |
-  Demuxer: raw AVS2-P2/IEEE1857.4.
+  raw AVS2-P2/IEEE1857.4.
 avs3: |
-  Demuxer: raw AVS3-P2/IEEE1857.10.
+  raw AVS3-P2/IEEE1857.10.
 bethsoftvid: |
-  Demuxer: Bethesda Softworks VID.
+  Bethesda VID. Game video from Bethesda titles. Demuxing only. Found in Terminator and Elder Scrolls: Daggerfall.
 bfi: |
-  Demuxer: Brute Force & Ignorance.
+  Brute Force & Ignorance. Game video container.
 bfstm: |
-  Demuxer: BFSTM (Binary Cafe Stream).
+  BFSTM (Binary Cafe Stream). Nintendo Wii U/Switch audio. Demuxing only. Game music and sound effects.
 bin: |
-  Demuxer: Binary text.
+  Binary text. Renders text/binary data as video frames. Demuxing only. For ANSI art and text file playback.
 bink: |
-  Demuxer: Bink.
+  Bink Video. RAD Game Tools game video container. Demuxing only. Extremely widespread in game cutscenes (1999-present). Fast decode on all platforms.
 binka: |
-  Demuxer: Bink Audio.
+  Bink Audio. RAD Game Tools audio container. Demuxing only. Paired with Bink Video in game files.
 bit: |
-  Demuxer: G.729 BIT file format.
+  G.729 BIT file format.
 bitpacked: |
-  Demuxer: Bitpacked.
+  Bitpacked video. Packed-pixel format without alignment. Demuxing only. Minimal overhead.
 bmp_pipe: |
-  Demuxer: piped bmp sequence.
+  Piped BMP image sequence. Reads BMP frames from stdin. Demuxing only. Image-to-video processing.
 bmv: |
-  Demuxer: Discworld II BMV.
+  Discworld II BMV. Game video/audio from Discworld II.
 boa: |
-  Demuxer: Black Ops Audio.
+  Black Ops Audio. Demuxing only. Rare audio format.
 bonk: |
-  Demuxer: raw Bonk.
+  Raw Bonk audio. Lossless audio. Demuxing only. Rare experimental format.
 brender_pix: |
-  Demuxer: BRender PIX image.
+  BRender PIX image. Argonaut's 3D game engine pixel format. Demuxing only. Used in Croc and other BRender games.
 brstm: |
-  Demuxer: BRSTM (Binary Revolution Stream).
+  BRSTM (Binary Revolution Stream). Nintendo Wii/GameCube looping audio. Demuxing only. Game background music format.
 c93: |
-  Demuxer: Interplay C93.
+  Interplay C93. Game video from Interplay.
 caf: |
   Apple CAF demuxer. Reads Core Audio Format.
   Supports many audio codecs in Apple's modern audio container.
 cavsvideo: |
-  Demuxer: raw Chinese AVS (Audio Video Standard).
+  raw Chinese AVS (Audio Video Standard).
 cdg: |
-  Demuxer: CD Graphics.
+  CD+G (CD Graphics). Karaoke graphics format for audio CDs. Demuxing only. 288x192, 16-color. Classic karaoke format.
 cdxl: |
-  Demuxer: Commodore CDXL video.
+  Commodore CDXL. Amiga CD32 CD-ROM video. Demuxing only. Amiga CD32 multimedia content.
 cine: |
-  Demuxer: Phantom Cine.
+  Phantom Cine. Vision Research high-speed camera raw video. Demuxing only. Scientific/industrial slow-motion capture at thousands of FPS.
 codec2: |
-  Demuxer: codec2 .c2 demuxer.
+  codec2 .c2 demuxer.
 codec2raw: |
-  Demuxer: raw codec2 demuxer.
+  raw codec2 demuxer.
 concat: |
   Concatenation demuxer. Reads a text file listing URLs to play sequentially.
   Each line is a file path or URL. Supports duration and in/out points.
 cri_pipe: |
-  Demuxer: piped cri sequence.
+  Piped CRI image sequence.
 d: |
-  Demuxer: x11grab         X11 screen capture, using XCB.
+  x11grab         X11 screen capture, using XCB.
 dash: |
   DASH demuxer. Reads DASH MPD manifests for adaptive streaming.
   Supports Dynamic Adaptive Streaming over HTTP.
@@ -170,133 +172,133 @@ data: |
   Raw data demuxer. Reads arbitrary data without interpretation.
   Generic format for unknown or custom data streams.
 daud: |
-  Demuxer: D-Cinema audio.
+  D-Cinema audio.
 dcstr: |
-  Demuxer: Sega DC STR.
+  Sega DC STR. Dreamcast audio/video. Demuxing only. Found in Dreamcast game content.
 dds_pipe: |
-  Demuxer: piped dds sequence.
+  Piped DDS (DirectDraw Surface) image sequence. DirectX texture images. Demuxing only. Game texture processing.
 derf: |
-  Demuxer: Xilam DERF.
+  Xilam DERF. Audio format from Xilam Animation.
 dfa: |
-  Demuxer: Chronomaster DFA.
+  Chronomaster DFA. Game video format. Demuxing only. Found in adventure game titles.
 dfpwm: |
-  Demuxer: raw DFPWM1a.
+  raw DFPWM1a.
 dhav: |
-  Demuxer: Video DAV.
+  DAV (Dahua). Video from Dahua surveillance DVRs. Demuxing only. Chinese security camera recordings.
 dirac: |
-  Demuxer: raw Dirac.
+  raw Dirac.
 dnxhd: |
   Raw DNxHD demuxer. Reads Avid DNxHD video elementary streams.
   Professional broadcast intermediate codec.
 dpx_pipe: |
-  Demuxer: piped dpx sequence.
+  Piped DPX image sequence. Digital Picture Exchange frames. Demuxing only. Cinema/VFX frame processing.
 dsf: |
   DSF demuxer. Reads DSD Stream Files (DSDIFF-based).
   Sony's DSD audio format for high-resolution audio.
 dsicin: |
-  Demuxer: Delphine Software International CIN.
+  Delphine Software CIN. Game video from Delphine's engine. Demuxing only. Found in Out of this World and Flashback.
 dss: |
-  Demuxer: Digital Speech Standard (DSS).
+  Digital Speech Standard (DSS). Olympus/Philips dictation format. Demuxing only. Professional legal/medical dictation at 8-16 kbit/s.
 dts: |
   Raw DTS demuxer. Reads DTS (DCA) audio streams.
   Supports DTS core, DTS-ES, and DTS-HD extensions.
 dtshd: |
-  Demuxer: raw DTS-HD.
+  Raw DTS-HD. Elementary DTS-HD audio bitstream. Demuxing only. For standalone DTS-HD stream processing.
 dv: |
   DV (Digital Video) demuxer. Reads DV25/DV50/DV100 from camcorder tapes.
   Common for capturing from MiniDV/DVCAM equipment.
 dvbsub: |
-  Demuxer: raw dvbsub.
+  Raw DVB subtitle data. Bitmap subtitle data from DVB streams.
 dvbtxt: |
-  Demuxer: dvbtxt.
+  DVB Teletext. European broadcast teletext from DVB streams. Demuxing only. News and info pages alongside TV.
 dvdvideo: |
   DVD-Video demuxer. Reads full DVD-Video structure (IFO/VOB).
   Supports DVD menus, angles, and chapter navigation.
 dxa: |
-  Demuxer: DXA.
+  DXA. Game video format from The Feeble Files. Demuxing only. Also supported by ScummVM.
 ea: |
-  Demuxer: Electronic Arts Multimedia.
+  Electronic Arts Multimedia. EA game video/audio container. Demuxing only. Found across many EA game titles.
 ea_cdata: |
-  Demuxer: Electronic Arts cdata.
+  Electronic Arts cdata. EA compressed audio data.
 eac3: |
   Raw E-AC-3 demuxer. Reads Dolby Digital Plus audio streams.
   Enhanced AC-3 with higher bitrates and more channels.
 epaf: |
-  Demuxer: Ensoniq Paris Audio File.
+  Ensoniq Paris Audio File. Professional audio workstation format. Demuxing only. Ensoniq recording equipment.
 evc: |
-  Demuxer: EVC Annex B.
+  EVC Annex B.
 exr_pipe: |
-  Demuxer: piped exr sequence.
+  Piped OpenEXR image sequence. ILM HDR image frames. Demuxing only. Standard for VFX and film post-production.
 f32be: |
-  Demuxer: PCM 32-bit floating-point big-endian.
+  PCM 32-bit floating-point big-endian.
 f32le: |
-  Demuxer: PCM 32-bit floating-point little-endian.
+  PCM 32-bit floating-point little-endian.
 f64be: |
-  Demuxer: PCM 64-bit floating-point big-endian.
+  PCM 64-bit floating-point big-endian.
 f64le: |
-  Demuxer: PCM 64-bit floating-point little-endian.
+  PCM 64-bit floating-point little-endian.
 ffmetadata: |
-  Demuxer: FFmpeg metadata in text.
+  FFmpeg metadata in text.
 film_cpk: |
-  Demuxer: Sega FILM / CPK.
+  Sega FILM / CPK.
 filmstrip: |
-  Demuxer: Adobe Filmstrip.
+  Adobe Filmstrip.
 fits: |
-  Demuxer: Flexible Image Transport System.
+  Flexible Image Transport System.
 flac: |
   Raw FLAC demuxer. Reads FLAC audio with metadata.
   Supports Vorbis comments, cover art, cue sheets, and seeking.
 flic: |
-  Demuxer: FLI/FLC/FLX animation.
+  FLI/FLC/FLX animation. Autodesk Animator animation format. Demuxing only. 1990s game and demoscene animation.
 flv: |
   FLV (Flash Video) demuxer. Reads Adobe Flash Video container.
   Supports H.264/AAC and VP6/MP3. Legacy but still found in old content.
 frm: |
-  Demuxer: Megalux Frame.
+  Megalux Frame. Game video format.
 fsb: |
-  Demuxer: FMOD Sample Bank.
+  FMOD Sample Bank. Firelight Technologies' FMOD game audio container. Demuxing only. Very widely used in game audio across many engines.
 fwse: |
-  Demuxer: Capcom's MT Framework sound.
+  Capcom MT Framework Sound. Audio from Capcom games. Demuxing only. Found in Resident Evil, Devil May Cry, Monster Hunter.
 g722: |
-  Demuxer: raw G.722.
+  raw G.722.
 g723_1: |
-  Demuxer: G.723.1.
+  G.723.1.
 g726: |
-  Demuxer: raw big-endian G.726 ("left aligned").
+  raw big-endian G.726 ("left aligned").
 g726le: |
-  Demuxer: raw little-endian G.726 ("right aligned").
+  raw little-endian G.726 ("right aligned").
 g728: |
-  Demuxer: raw G.728.
+  Raw ITU-T G.728. Low-delay CELP speech at 16 kbit/s. Demuxing only. ISDN and low-latency VoIP.
 g729: |
-  Demuxer: G.729 raw format demuxer.
+  Raw ITU-T G.729. CS-ACELP speech at 8 kbit/s. Demuxing only. Enterprise VoIP and PBX systems.
 gdv: |
-  Demuxer: Gremlin Digital Video.
+  Gremlin Digital Video. Game video from Gremlin Interactive. Demuxing only. European game titles.
 gem_pipe: |
-  Demuxer: piped gem sequence.
+  Piped GEM image sequence. Atari ST/VDI image frames. Demuxing only. Retro computing content.
 genh: |
-  Demuxer: GENeric Header.
+  GENeric Header. Audio container with codec params in header. Demuxing only. Popular in PlayStation/PSP game audio extraction.
 gif: |
   GIF demuxer. Reads animated GIF images as video.
   Limited to 256-color palette per frame. No audio.
 gif_pipe: |
-  Demuxer: piped gif sequence.
+  Piped GIF image sequence. Animated GIF frame extraction. Demuxing only. GIF-to-video conversion.
 gsm: |
-  Demuxer: raw GSM.
+  raw GSM.
 gxf: |
-  Demuxer: GXF (General eXchange Format).
+  GXF (General eXchange Format).
 h261: |
-  Demuxer: raw H.261.
+  raw H.261.
 h263: |
-  Demuxer: raw H.263.
+  raw H.263.
 h264: |
   Raw H.264 demuxer. Reads H.264 Annex B bitstream.
   No container — parses NAL units directly from the bitstream.
 hca: |
-  Demuxer: CRI HCA.
+  CRI HCA. CRI Middleware's low-bitrate game audio. Demuxing only. Used in Japanese games (Phantasy Star Online 2, etc.).
 hcom: |
-  Demuxer: Macintosh HCOM.
+  Macintosh HCOM. Mac audio from Macromedia Director. Demuxing only. Classic Mac multimedia.
 hdr_pipe: |
-  Demuxer: piped hdr sequence.
+  Piped HDR (Radiance RGBE) image sequence. Demuxing only. 3D rendering and lighting visualization.
 hevc: |
   Raw HEVC demuxer. Reads H.265 Annex B bitstream.
   No container — parses NAL units directly.
@@ -304,23 +306,23 @@ hls: |
   HLS (Apple HTTP Live Streaming) demuxer. Reads M3U8 playlists and segments.
   Supports live and VOD HLS streams with adaptive bitrate.
 hnm: |
-  Demuxer: Cryo HNM v4.
+  Cryo HNM v4. Game video from Cryo Interactive.
 hxvs: |
-  Demuxer: HXVF/HXVS IP camera format.
+  HXVF/HXVS. IP camera surveillance format. Demuxing only. Chinese CCTV systems.
 iamf: |
-  Demuxer: Raw Immersive Audio Model and Formats.
+  Raw Immersive Audio Model and Formats.
 ico: |
-  Demuxer: Microsoft Windows ICO.
+  Microsoft Windows ICO.
 idcin: |
-  Demuxer: id Cinematic.
+  id Cinematic. Quake II game cutscene video. Demuxing only. Found in .cin files from id Software games.
 idf: |
-  Demuxer: iCE Draw File.
+  iCE Draw File. Text/ANSI art format. Demuxing only. BBS and demoscene art.
 iff: |
-  Demuxer: IFF (Interchange File Format).
+  IFF (Interchange File Format). Amiga multimedia container. Demuxing only. Classic Amiga graphics and audio.
 ifv: |
-  Demuxer: IFV CCTV DVR.
+  IFV CCTV DVR. Surveillance DVR recording format. Demuxing only. Chinese CCTV format.
 ilbc: |
-  Demuxer: iLBC storage.
+  iLBC storage.
 image2: |
   Image sequence demuxer. Reads numbered image files as a video stream.
   Pattern: `img%03d.png`. Supports PNG, JPEG, BMP, TIFF, and many more.
@@ -328,99 +330,99 @@ image2pipe: |
   Piped image sequence demuxer. Reads image data from stdin/pipe.
   Used for streaming image input from other processes.
 imf: |
-  Demuxer: IMF (Interoperable Master Format).
+  IMF (Interoperable Master Format). SMPTE digital cinema mastering format. Demuxing only. Theatrical and streaming distribution.
 ingenient: |
-  Demuxer: raw Ingenient MJPEG.
+  Raw Ingenient MJPEG. Unframed MJPEG from Ingenient camera. Demuxing only. Streaming camera format.
 ipmovie: |
-  Demuxer: Interplay MVE.
+  Interplay MVE. Game video from Interplay's MVE container. Demuxing only. Found in Baldur's Gate, Icewind Dale.
 ipu: |
-  Demuxer: raw IPU Video.
+  Raw IPU Video. PlayStation 2 hardware-decoded video. Demuxing only. PS2 game cutscenes using IPU hardware unit.
 ircam: |
-  Demuxer: Berkeley/IRCAM/CARL Sound Format.
+  Berkeley/IRCAM/CARL Sound Format.
 iss: |
-  Demuxer: Funcom ISS.
+  Funcom ISS. Game audio from Funcom. Demuxing only. Found in Anarchy Online.
 iv8: |
-  Demuxer: IndigoVision 8000 video.
+  IndigoVision 8000. IP camera surveillance format. Demuxing only. IndigoVision CCTV systems.
 ivf: |
   IVF demuxer. Reads On2 IVF container for VP8/VP9/AV1.
   Simple container used in codec testing and development.
 ivr: |
-  Demuxer: IVR (Internet Video Recording).
+  IVR (Internet Video Recording). RealPlayer recording format. Demuxing only. Legacy RealNetworks content.
 j2k_pipe: |
-  Demuxer: piped j2k sequence.
+  Piped JPEG 2000 image sequence. J2K frame data. Demuxing only. Digital cinema and medical imaging.
 jacosub: |
-  Demuxer: JACOsub subtitle format.
+  JACOsub subtitle format.
 jpeg_pipe: |
-  Demuxer: piped jpeg sequence.
+  Piped JPEG image sequence. JPEG frames for image-to-video. Demuxing only. Timelapse and stop-motion workflows.
 jpegls_pipe: |
-  Demuxer: piped jpegls sequence.
+  Piped JPEG-LS image sequence. Lossless JPEG-LS frames. Demuxing only. Medical and scientific imaging.
 jpegxl_anim: |
-  Demuxer: Animated JPEG XL.
+  Animated JPEG XL. Animation in JPEG XL format. Demuxing only. Modern replacement for animated GIF/WebP.
 jpegxl_pipe: |
-  Demuxer: piped jpegxl sequence.
+  Piped JPEG XL image sequence. JXL frames. Demuxing only. Modern HDR image format.
 jpegxs_pipe: |
-  Demuxer: piped jpegxs sequence.
+  Piped JPEG XS image sequence. Low-latency JPEG XS frames. Demuxing only. Broadcast contribution and live production.
 jv: |
-  Demuxer: Bitmap Brothers JV.
+  Bitmap Brothers JV. Game video from Bitmap Brothers. Demuxing only. Found in Z, Speedball, and similar titles.
 kux: |
-  Demuxer: KUX (YouKu).
+  KUX (Youku). Chinese video platform container. Demuxing only. Youku video downloads.
 kvag: |
-  Demuxer: Simon & Schuster Interactive VAG.
+  Simon & Schuster Interactive VAG.
 laf: |
-  Demuxer: LAF (Limitless Audio Format).
+  LAF (Limitless Audio Format). Demuxing only. Rare audio format.
 lc3: |
-  Demuxer: LC3 (Low Complexity Communication Codec).
+  LC3 (Low Complexity Communication Codec).
 libmodplug: |
-  Demuxer: ModPlug demuxer.
+  ModPlug module player. Plays tracker music (MOD, S3M, IT, XM). Demuxing only. Retro computer music.
 libopenmpt: |
-  Demuxer: Tracker formats (libopenmpt).
+  OpenMPT tracker format player. Module tracker music with better accuracy. Demuxing only. Supports many tracker formats.
 live_flv: |
-  Demuxer: live RTMP FLV (Flash Video).
+  Live RTMP FLV. Flash Video received via RTMP live stream. Demuxing only. Capturing live streams from media servers.
 lmlm4: |
-  Demuxer: raw lmlm4.
+  Raw LMLM4. Video from LML capture hardware. Demuxing only. Legacy capture card.
 loas: |
-  Demuxer: LOAS AudioSyncStream.
+  LOAS (Low Overhead Audio Stream). AAC/LATM for DAB+ digital radio. Demuxing only. European digital radio standard.
 lrc: |
-  Demuxer: LRC lyrics.
+  LRC lyrics.
 luodat: |
-  Demuxer: Video CCTV DAT.
+  Video CCTV DAT. Surveillance DVR format. Demuxing only. Chinese CCTV.
 lvf: |
-  Demuxer: LVF.
+  LVF. Game video container.
 lxf: |
-  Demuxer: VR native stream (LXF).
+  LXF (VR Native Stream). Leitch/Harris broadcast video server format. Demuxing only. Used in playout servers.
 m4a: |
-  Demuxer: QuickTime / MOV.
+  QuickTime / MOV container for MPEG-4 audio. Demuxing only. Common audio format for iTunes and podcasts.
 m4v: |
-  Demuxer: raw MPEG-4 video.
+  raw MPEG-4 video.
 matroska: |
   Matroska (MKV) demuxer. Reads the open-standard multimedia container.
   Supports chapters, attachments, ordered chapters, and virtually all codec types.
 mca: |
-  Demuxer: MCA Audio Format.
+  MCA Audio. Game audio format.
 mcc: |
-  Demuxer: MacCaption.
+  MacCaption.
 mgsts: |
-  Demuxer: Metal Gear Solid: The Twin Snakes.
+  Metal Gear Solid: The Twin Snakes. Game audio from MGS GameCube.
 microdvd: |
-  Demuxer: MicroDVD subtitle format.
+  MicroDVD subtitle format.
 mj2: |
-  Demuxer: QuickTime / MOV.
+  Motion JPEG 2000 (MP4-based). JPEG 2000 video in ISO Base Media File Format. Demuxing only. Used in digital cinema (DCI) and archival workflows.
 mjpeg: |
-  Demuxer: raw MJPEG video.
+  raw MJPEG video.
 mjpeg_2000: |
-  Demuxer: raw MJPEG 2000 video.
+  Raw MJPEG 2000 video. JPEG 2000 frame sequence. Demuxing only. Scientific and camera video.
 mlp: |
-  Demuxer: raw MLP.
+  raw MLP.
 mlv: |
-  Demuxer: Magic Lantern Video (MLV).
+  Magic Lantern Video (MLV). Raw video from Canon cameras with Magic Lantern firmware. Demuxing only. Raw video on Canon DSLRs.
 mm: |
-  Demuxer: American Laser Games MM.
+  American Laser Games MM. Full-motion video arcade game video. Demuxing only. Found in Mad Dog McCree.
 mmf: |
-  Demuxer: Yamaha SMAF.
+  Yamaha SMAF.
 mods: |
-  Demuxer: MobiClip MODS.
+  MobiClip MODS. Nintendo 3DS MobiClip video. Demuxing only. 3DS game video.
 moflex: |
-  Demuxer: MobiClip MOFLEX.
+  MobiClip MOFLEX. Mobile video container for MobiClip. Demuxing only. Nintendo 3DS games.
 mov: |
   QuickTime / MOV demuxer. Reads Apple's multimedia container format.
   Very similar to MP4. Supports ProRes, timecode, chapters, and multiple tracks.
@@ -431,360 +433,361 @@ mp4: |
   MP4 (MPEG-4 Part 14) demuxer. Reads the most widely used multimedia container format.
   Supports H.264, HEVC, AAC, and many other codecs. Handles fragmented MP4 (fMP4) for DASH.
 mpc: |
-  Demuxer: Musepack.
+  Musepack SV7. Lossy audio container. Demuxing only. High-quality lossy, audiophile communities.
 mpc8: |
-  Demuxer: Musepack SV8.
+  Musepack SV8. Latest Musepack lossy audio. Demuxing only. Niche high-quality format.
 mpeg: |
-  Demuxer: MPEG-PS (MPEG-2 Program Stream).
+  MPEG-PS (MPEG-2 Program Stream).
 mpegts: |
   MPEG Transport Stream demuxer. Reads DVB, ATSC, IPTV, and HLS streams.
   Supports program selection, teletext, and DVB subtitles. Robust error recovery.
 mpegtsraw: |
-  Demuxer: raw MPEG-TS (MPEG-2 Transport Stream).
+  Raw MPEG-TS. MPEG-2 Transport Stream without standard framing. Demuxing only. Raw DVB/ATSC capture.
 mpegvideo: |
   MPEG-PS (Program Stream) demuxer. Reads MPEG-1/MPEG-2 program streams.
   Used for DVD-Video, SVCD, and VOB files.
 mpjpeg: |
-  Demuxer: MIME multipart JPEG.
+  MIME multipart JPEG.
 mpl2: |
-  Demuxer: MPL2 subtitles.
+  MPL2 subtitles. Polish text subtitle format.
 mpsub: |
-  Demuxer: MPlayer subtitles.
+  MPlayer subtitles. Text subtitle from MPlayer/MPV.
 msf: |
-  Demuxer: Sony PS3 MSF.
+  Sony PS3 MSF. PlayStation 3 game audio. Demuxing only. Found in PS3 games.
 msnwctcp: |
-  Demuxer: MSN TCP Webcam stream.
+  MSN TCP Webcam. MSN Messenger webcam stream. Demuxing only. Early 2000s webcam format.
 msp: |
-  Demuxer: Microsoft Paint (MSP)).
+  Microsoft Paint (MSP). Legacy monochrome image format. Demuxing only. Very old Windows bitmap.
 mtaf: |
-  Demuxer: Konami PS2 MTAF.
+  Konami PS2 MTAF. Audio from Konami PS2 games. Demuxing only. Metal Gear Solid, etc.
 mtv: |
-  Demuxer: MTV.
+  MTV. Low-quality video for Chinese portable media players.
 mulaw: |
-  Demuxer: PCM mu-law.
+  PCM mu-law.
 musx: |
-  Demuxer: Eurocom MUSX.
+  Eurocom MUSX. Game audio from Eurocom engine. Demuxing only. Multi-platform game titles.
 mv: |
-  Demuxer: Silicon Graphics Movie.
+  Silicon Graphics Movie. SGI video container. Demuxing only. IRIX workstation video.
 mvi: |
-  Demuxer: Motion Pixels MVI.
+  Motion Pixels MVI. Game video with Motion Pixels codec.
 mxf: |
-  Demuxer: MXF (Material eXchange Format).
+  MXF (Material eXchange Format).
 mxg: |
-  Demuxer: MxPEG clip.
+  MxPEG clip. Mobotix IP camera video. Demuxing only. Surveillance with region-of-interest coding.
 nc: |
-  Demuxer: NC camera feed.
+  NC camera feed. IP surveillance video.
 nistsphere: |
-  Demuxer: NIST SPeech HEader REsources.
+  NIST SPeech HEader REsources. Speech research audio format. Demuxing only. Speech recognition and phonetics.
 nsp: |
-  Demuxer: Computerized Speech Lab NSP.
+  CSL NSP. Computerized Speech Lab audio. Demuxing only. Speech pathology research.
 nsv: |
-  Demuxer: Nullsoft Streaming Video.
+  Nullsoft Streaming Video. Winamp/SHOUTcast streaming video. Demuxing only. Legacy internet streaming.
 nut: |
-  Demuxer: NUT.
+  NUT.
 nuv: |
-  Demuxer: NuppelVideo.
+  NuppelVideo. MythTV PVR recording container. Demuxing only. Linux DVR format.
 obu: |
-  Demuxer: AV1 low overhead OBU.
+  AV1 low overhead OBU.
 ogg: |
   OGG demuxer. Reads Xiph.org container format.
   Supports Vorbis, Opus, FLAC, Speex, and Theora codecs.
 oma: |
-  Demuxer: Sony OpenMG audio.
+  Sony OpenMG audio.
 osq: |
-  Demuxer: raw OSQ.
+  Raw OSQ (Original Sound Quality). Lossless audio. Demuxing only. Rare audiophile format.
 paf: |
-  Demuxer: Amazing Studio Packed Animation File.
+  Amazing Studio PAF. Game video container.
 pam_pipe: |
-  Demuxer: piped pam sequence.
+  Piped PAM image sequence. Portable AnyMap frames. Demuxing only. Unix imaging pipelines.
 pbm_pipe: |
-  Demuxer: piped pbm sequence.
+  Piped PBM image sequence. Portable BitMap frames. Demuxing only. 1-bit image processing.
 pcx_pipe: |
-  Demuxer: piped pcx sequence.
+  Piped PCX image sequence. PC Paintbrush frames.
 pdv: |
-  Demuxer: PlayDate Video.
+  PlayDate Video. Panic Playdate handheld console video. Demuxing only. Low-res mono video for indie games.
 pfm_pipe: |
-  Demuxer: piped pfm sequence.
+  Piped PFM image sequence. Portable FloatMap HDR frames. Demuxing only. HDR image processing.
 pgm_pipe: |
-  Demuxer: piped pgm sequence.
+  Piped PGM image sequence. Portable GrayMap frames. Demuxing only. Grayscale processing.
 pgmyuv_pipe: |
-  Demuxer: piped pgmyuv sequence.
+  Piped PGMYUV image sequence. YUV variant of PGM. Demuxing only. Video test data.
 pgx_pipe: |
-  Demuxer: piped pgx sequence.
+  Piped PGX image sequence. JPEG 2000 test format. Demuxing only. Conformance testing.
 phm_pipe: |
-  Demuxer: piped phm sequence.
+  Piped PHM image sequence. Half-float map HDR frames.
 photocd_pipe: |
-  Demuxer: piped photocd sequence.
+  Piped PhotoCD image sequence. Kodak Photo CD frames. Demuxing only. Legacy photo digitization.
 pictor_pipe: |
-  Demuxer: piped pictor sequence.
+  Piped Pictor image sequence. Pictor/PC Paint frames. Demuxing only. Legacy DOS format.
 pjs: |
-  Demuxer: PJS (Phoenix Japanimation Society) subtitles.
+  PJS (Phoenix Japanimation Society) subtitles. Anime subtitle format.
 pmp: |
-  Demuxer: Playstation Portable PMP.
+  PSP PMP. PlayStation Portable homebrew video. Demuxing only. Custom firmware video playback.
 png_pipe: |
-  Demuxer: piped png sequence.
+  Piped PNG image sequence. PNG frames for lossless image-to-video. Demuxing only. VFX and compositing.
 pp_bnk: |
-  Demuxer: Pro Pinball Series Soundbank.
+  Pro Pinball Soundbank. Audio for Pro Pinball games.
 ppm_pipe: |
-  Demuxer: piped ppm sequence.
+  Piped PPM image sequence. Portable PixelMap RGB frames. Demuxing only. Unix imaging.
 psd_pipe: |
-  Demuxer: piped psd sequence.
+  Piped PSD image sequence. Adobe Photoshop frames. Demuxing only. Compositing from layered sources.
 psxstr: |
-  Demuxer: Sony Playstation STR.
+  PlayStation STR. Sony PS1 game video. Demuxing only. PS1 game cutscenes.
 pva: |
-  Demuxer: TechnoTrend PVA.
+  TechnoTrend PVA. DVB PCI card recording format. Demuxing only. European DVB-S capture.
 pvf: |
-  Demuxer: PVF (Portable Voice Format).
+  PVF (Portable Voice Format). Creative Labs speech audio. Demuxing only. Telephony applications.
 qcp: |
-  Demuxer: QCP.
+  QCP (Qualcomm PureVoice). CDMA speech recordings. Demuxing only. Voicemail systems.
 qdraw_pipe: |
-  Demuxer: piped qdraw sequence.
+  Piped QuickDraw image sequence. Classic Mac graphics.
 qoa: |
-  Demuxer: QOA.
+  QOA (Quite OK Audio). Simple lossy audio with fast encode/decode. Demuxing only. Embedded systems.
 qoi_pipe: |
-  Demuxer: piped qoi sequence.
+  Piped QOI image sequence. Quite OK Image fast lossless frames.
 r3d: |
-  Demuxer: REDCODE R3D.
+  REDCODE R3D. RED Digital Cinema raw video from RED cameras. Demuxing only. Sensor data with metadata for professional film production.
 rawvideo: |
   Raw video demuxer. Reads uncompressed raw video data.
   Requires `video_size` and `pixel_format` to be set explicitly.
 rcwt: |
-  Demuxer: RCWT (Raw Captions With Time).
+  RCWT (Raw Captions With Time).
 realtext: |
-  Demuxer: RealText subtitle format.
+  RealText. RealNetworks subtitle format. Demuxing only. RealPlayer content.
 redspark: |
-  Demuxer: RedSpark.
+  RedSpark. Game audio container.
 rka: |
-  Demuxer: RKA (RK Audio).
+  RKA (RK Audio). Lossless audio. Demuxing only. Rare format.
 rl2: |
-  Demuxer: RL2.
+  RL2. Game video format. Demuxing only. Retro game content.
 rm: |
-  Demuxer: RealMedia.
+  RealMedia.
 roq: |
-  Demuxer: id RoQ.
+  id RoQ.
 rpl: |
-  Demuxer: RPL / ARMovie.
+  RPL / ARMovie. Eurocom game video. Demuxing only. Multi-platform game titles.
 rsd: |
-  Demuxer: GameCube RSD.
+  GameCube RSD. Game video/audio for GameCube.
 rso: |
-  Demuxer: Lego Mindstorms RSO.
+  Lego Mindstorms RSO.
 rtp: |
   RTP demuxer. Reads Real-Time Transport Protocol streams.
   UDP-based protocol for real-time media delivery.
 rtsp: |
-  Demuxer: RTSP input.
+  RTSP input.
 s16be: |
-  Demuxer: PCM signed 16-bit big-endian.
+  PCM signed 16-bit big-endian.
 s16le: |
-  Demuxer: PCM signed 16-bit little-endian.
+  PCM signed 16-bit little-endian.
 s24be: |
-  Demuxer: PCM signed 24-bit big-endian.
+  PCM signed 24-bit big-endian.
 s24le: |
-  Demuxer: PCM signed 24-bit little-endian.
+  PCM signed 24-bit little-endian.
 s32be: |
-  Demuxer: PCM signed 32-bit big-endian.
+  PCM signed 32-bit big-endian.
 s32le: |
-  Demuxer: PCM signed 32-bit little-endian.
+  PCM signed 32-bit little-endian.
 s337m: |
-  Demuxer: SMPTE 337M.
+  SMPTE 337M. AES3/SDI professional audio encapsulation. Demuxing only. Broadcast standard.
 s8: |
-  Demuxer: PCM signed 8-bit.
+  PCM signed 8-bit.
 sami: |
-  Demuxer: SAMI subtitle format.
+  SAMI (Synchronized Accessible Media Interchange). Microsoft caption format. Demuxing only. Korean subtitles and Windows Media accessibility.
 sap: |
-  Demuxer: SAP input.
+  SAP input.
 sbc: |
-  Demuxer: raw SBC (low-complexity subband codec).
+  raw SBC (low-complexity subband codec).
 sbg: |
-  Demuxer: SBaGen binaural beats script.
+  SBaGen binaural beats script. Audio for brainwave entrainment. Demuxing only. Meditation audio generation.
 scc: |
-  Demuxer: Scenarist Closed Captions.
+  Scenarist Closed Captions.
 scd: |
-  Demuxer: Square Enix SCD.
+  Square Enix SCD.ゲーム audio container. Demuxing only. Final Fantasy and Square Enix titles.
 sdns: |
-  Demuxer: Xbox SDNS.
+  Xbox SDNS. Xbox game audio.
 sdp: |
-  Demuxer: SDP.
+  SDP (Session Description Protocol). RTP session metadata. Demuxing only. Used to configure RTSP/RTP media sessions.
 sdr2: |
-  Demuxer: SDR2.
+  SDR2. Game audio format.
 sds: |
-  Demuxer: MIDI Sample Dump Standard.
+  MIDI Sample Dump Standard. MIDI sampler audio transfer. Demuxing only. Hardware sampler data exchange.
 sdx: |
-  Demuxer: Sample Dump eXchange.
+  Sample Dump eXchange. Enhanced MIDI sample dump.
 ser: |
-  Demuxer: SER (Simple uncompressed video format for astronomical capturing).
+  SER (Simple uncompressed video for astronomical capturing). Demuxing only. Used in astrophotography and planetary imaging.
 sga: |
-  Demuxer: Digital Pictures SGA.
+  Digital Pictures SGA. Sega CD/32X game video. Demuxing only. Full-motion video Sega games.
 sgi_pipe: |
-  Demuxer: piped sgi sequence.
+  Piped SGI image sequence. Silicon Graphics frames. Demuxing only. 3D/VFX content.
 shn: |
-  Demuxer: raw Shorten.
+  Raw Shorten (SHN). Early lossless audio format. Demuxing only. Predecessor to FLAC. Used in concert tape trading communities.
 siff: |
-  Demuxer: Beam Software SIFF.
+  Beam Software SIFF. Game video from Beam Software. Demuxing only. Australian game titles.
 simbiosis_imx: |
-  Demuxer: Simbiosis Interactive IMX.
+  Simbiosis Interactive IMX. Game video format.
 sln: |
-  Demuxer: Asterisk raw pcm.
+  Signed 16-bit PCM. Raw audio container with no header.
+  Both muxing and demuxing. Common in Asterisk PBX systems.
 smjpeg: |
-  Demuxer: Loki SDL MJPEG.
+  Loki SDL MJPEG.
 smk: |
-  Demuxer: Smacker.
+  Smacker. RAD Game Tools' earlier game video container. Demuxing only. Widespread in 1990s game cutscenes. Predecessor to Bink.
 smush: |
-  Demuxer: LucasArts Smush.
+  LucasArts Smush. Game video from LucasArts adventures. Demuxing only. Found in Grim Fandango, Full Throttle.
 sol: |
-  Demuxer: Sierra SOL.
+  Sierra SOL. Game audio from Sierra On-Line. Demuxing only. Classic Sierra game content.
 sox: |
-  Demuxer: SoX (Sound eXchange) native.
+  SoX (Sound eXchange) native.
 spdif: |
-  Demuxer: IEC 61937 (compressed data in S/PDIF).
+  IEC 61937 (compressed data in S/PDIF).
 srt: |
   SRT (Secure Reliable Transport) demuxer. Reads from SRT streaming sources.
   Open-source low-latency streaming with reliability features.
 stl: |
-  Demuxer: Spruce subtitle format.
+  Spruce subtitle format. Text subtitle format for DVD authoring.
 subviewer: |
-  Demuxer: SubViewer subtitle format.
+  SubViewer subtitle format. Text subtitles with metadata. Demuxing only. Found in some DivX files.
 subviewer1: |
-  Demuxer: SubViewer v1 subtitle format.
+  SubViewer v1 subtitle format. Earlier SubViewer variant.
 sunrast_pipe: |
-  Demuxer: piped sunrast sequence.
+  Piped Sun Rasterfile image sequence. Solaris/Unix frames.
 sup: |
-  Demuxer: raw HDMV Presentation Graphic Stream subtitles.
+  raw HDMV Presentation Graphic Stream subtitles.
 svag: |
-  Demuxer: Konami PS2 SVAG.
+  Konami PS2 SVAG. Game audio from Konami PS2 titles.
 svg_pipe: |
-  Demuxer: piped svg sequence.
+  Piped SVG image sequence. W3C vector graphics rendered as frames. Demuxing only. Librsvg-based rendering.
 svs: |
-  Demuxer: Square SVS.
+  Square SVS. Game audio from Square Enix.
 swf: |
-  Demuxer: SWF (ShockWave Flash).
+  SWF (ShockWave Flash).
 tak: |
-  Demuxer: raw TAK.
+  Raw TAK (Tom's lossless Audio Kompressor). Lossless audio. Demuxing only. Compression between FLAC and APE. Popular in Asian audiophile communities.
 tedcaptions: |
-  Demuxer: TED Talks captions.
+  TED Talks captions. JSON-based subtitle format from TED Talks.
 thp: |
-  Demuxer: THP.
+  THP. Nintendo GameCube/Wii game video with ADPCM audio. Demuxing only. Used in Wii game cutscenes.
 tiertexseq: |
-  Demuxer: Tiertex Limited SEQ.
+  Tiertex Limited SEQ. Game video from Tiertex.
 tiff_pipe: |
-  Demuxer: piped tiff sequence.
+  Piped TIFF image sequence. Tagged Image File Format frames. Demuxing only. Scientific and VFX imaging.
 tmv: |
-  Demuxer: 8088flex TMV.
+  8088flex TMV. Video format for 8088 CPU DOS systems. Demuxing only. Extremely low-resolution retro format.
 truehd: |
-  Demuxer: raw TrueHD.
+  raw TrueHD.
 tta: |
   True Audio demuxer. Reads TTA lossless audio files.
   Simple lossless audio codec with fast decoding.
 tty: |
-  Demuxer: Tele-typewriter.
+  Tele-typewriter. Text/subtitle data from teletext sources.
 txd: |
-  Demuxer: Renderware TeXture Dictionary.
+  Renderware TeXture Dictionary. Game texture container for Renderware engine. Demuxing only. Found in GTA and similar games.
 ty: |
-  Demuxer: TiVo TY Stream.
+  TiVo TY Stream. TiVo DVR recording format. Demuxing only. Used for extracting video from TiVo devices.
 u16be: |
-  Demuxer: PCM unsigned 16-bit big-endian.
+  PCM unsigned 16-bit big-endian.
 u16le: |
-  Demuxer: PCM unsigned 16-bit little-endian.
+  PCM unsigned 16-bit little-endian.
 u24be: |
-  Demuxer: PCM unsigned 24-bit big-endian.
+  PCM unsigned 24-bit big-endian.
 u24le: |
-  Demuxer: PCM unsigned 24-bit little-endian.
+  PCM unsigned 24-bit little-endian.
 u32be: |
-  Demuxer: PCM unsigned 32-bit big-endian.
+  PCM unsigned 32-bit big-endian.
 u32le: |
-  Demuxer: PCM unsigned 32-bit little-endian.
+  PCM unsigned 32-bit little-endian.
 u8: |
-  Demuxer: PCM unsigned 8-bit.
+  PCM unsigned 8-bit.
 usm: |
-  Demuxer: CRI USM.
+  CRI USM. CRI Middleware's game video container. Demuxing only. Used in Japanese game cutscenes (Yakuza, Persona series).
 v210: |
-  Demuxer: Uncompressed 4:2:2 10-bit.
+  Uncompressed 4:2:2 10-bit. Professional Broadcast video format. Demuxing only. SDI video I/O.
 v210x: |
-  Demuxer: Uncompressed 4:2:2 10-bit.
+  Uncompressed 4:2:2 10-bit variant. Broadcast video.
 vag: |
-  Demuxer: Sony PS2 VAG.
+  Sony PS2 VAG. PlayStation 2 audio format. Demuxing only. PS2 game audio.
 vapoursynth: |
-  Demuxer: VapourSynth demuxer.
+  VapourSynth script. Frameserve video from VapourSynth scripts. Demuxing only. Python-based video processing.
 vbn_pipe: |
-  Demuxer: piped vbn sequence.
+  Piped VBN (Vizrt Binary) image sequence. Broadcast graphics frames. Demuxing only. Vizrt systems.
 vc1: |
-  Demuxer: raw VC-1.
+  raw VC-1.
 vc1test: |
-  Demuxer: VC-1 test bitstream.
+  VC-1 test bitstream.
 vidc: |
-  Demuxer: PCM Archimedes VIDC.
+  PCM Archimedes VIDC.
 vividas: |
-  Demuxer: Vividas VIV.
+  Vividas VIV. Streaming video container.
 vivo: |
-  Demuxer: Vivo.
+  Vivo. Early internet streaming video format. Demuxing only. Legacy web video from the 1990s.
 vmd: |
-  Demuxer: Sierra VMD.
+  Sierra VMD. Game video from Sierra On-Line. Demuxing only. Classic Sierra adventure games.
 vobsub: |
   VobSub subtitle demuxer. Reads DVD bitmap subtitles (.idx+.sub).
   Paired format with index file and sub/VOB data.
 voc: |
-  Demuxer: Creative Voice.
+  Creative Voice.
 vpk: |
-  Demuxer: Sony PS2 VPK.
+  Sony PS2 VPK. PlayStation 2 audio format. Demuxing only. PS2 game audio.
 vplayer: |
-  Demuxer: VPlayer subtitles.
+  VPlayer subtitles. Text subtitle format.
 vqf: |
-  Demuxer: Nippon Telegraph and Telephone Corporation (NTT) TwinVQ.
+  NTT TwinVQ. Yamaha's audio format for low-bitrate compression. Demuxing only. Used in some Japanese portable audio players.
 vvc: |
-  Demuxer: raw H.266/VVC video.
+  raw H.266/VVC video.
 w64: |
-  Demuxer: Sony Wave64.
+  Sony Wave64.
 wady: |
-  Demuxer: Marble WADY.
+  Marble WADY. Game audio format.
 wav: |
   WAV demuxer. Reads Microsoft/IBM audio container.
   Supports PCM, ADPCM, MP3, AC-3, and many other audio codecs.
 wavarc: |
-  Demuxer: Waveform Archiver.
+  Waveform Archiver. Compressed audio format. Demuxing only. Rare format.
 wc3movie: |
-  Demuxer: Wing Commander III movie.
+  Wing Commander III movie. Origin Systems' game video. Demuxing only. Wing Commander III cutscenes.
 webm: |
   WebM demuxer. Reads Google's web video subset of Matroska.
   Supports VP8/VP9 video and Vorbis/Opus audio only.
 webm_dash_manifest: |
-  Demuxer: WebM DASH Manifest.
+  WebM DASH Manifest.
 webp_pipe: |
-  Demuxer: piped webp sequence.
+  Piped WebP image sequence. Google WebP frames.
 webvtt: |
   WebVTT demuxer. Reads Web Video Text Tracks subtitle files.
   W3C standard for HTML5 video subtitles.
 wsaud: |
-  Demuxer: Westwood Studios audio.
+  Westwood Studios audio.
 wsd: |
-  Demuxer: Wideband Single-bit Data (WSD).
+  WSD (Wideband Single-bit Data). Professional broadcast audio format.
 wsvqa: |
-  Demuxer: Westwood Studios VQA.
+  Westwood Studios VQA. Vector Quantized Animation for C&C cutscenes. Demuxing only. Command & Conquer, Red Alert.
 wtv: |
-  Demuxer: Windows Television (WTV).
+  Windows Television (WTV).
 wv: |
   WavPack demuxer. Reads WavPack lossless/hybrid audio files.
   Supports lossless, lossy, and hybrid modes.
 wve: |
-  Demuxer: Psion 3 audio.
+  Psion 3 audio. Audio from Psion Series 3 PDA. Demuxing only. Legacy handheld audio.
 xa: |
-  Demuxer: Maxis XA.
+  Maxis XA. Audio from Maxis games (SimCity, The Sims).
 xbin: |
-  Demuxer: eXtended BINary text (XBIN).
+  eXtended BINary text (XBIN). Enhanced ANSI/ASCII art format. Demuxing only. Demoscene and BBS art.
 xbm_pipe: |
-  Demuxer: piped xbm sequence.
+  Piped XBM image sequence. X11 BitMap frames.
 xmd: |
-  Demuxer: Konami XMD.
+  Konami XMD. Game audio from Konami.
 xmv: |
-  Demuxer: Microsoft XMV.
+  Microsoft XMV. Xbox game video container. Demuxing only. Original Xbox titles.
 xpm_pipe: |
-  Demuxer: piped xpm sequence.
+  Piped XPM image sequence. X11 PixMap frames.
 xvag: |
-  Demuxer: Sony PS3 XVAG.
+  Sony PS3 XVAG. PlayStation 3 audio. Demuxing only. PS3 game audio.
 xwd_pipe: |
-  Demuxer: piped xwd sequence.
+  Piped XWD image sequence. X Window Dump screen capture frames.
 xwma: |
-  Demuxer: Microsoft xWMA.
+  Microsoft xWMA. Compressed audio for XNA/Xbox games. Demuxing only. Used in some Xbox 360 game titles.
 yop: |
-  Demuxer: Psygnosis YOP.
+  Psygnosis YOP. Game video from Psygnosis. Demuxing only. Found in Lemmings and similar titles.
 yuv4mpegpipe: |
-  Demuxer: YUV4MPEG pipe.
+  YUV4MPEG pipe.
