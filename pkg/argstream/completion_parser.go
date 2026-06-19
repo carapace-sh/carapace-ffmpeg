@@ -16,9 +16,33 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 
 	i := 0
 	var pendingOption *OptionContext
+	var pendingSpecOption *OptionContext // option waiting for a stream specifier value
 
 	for i < len(args) {
 		arg := args[i]
+
+		// If we have a pending stream specifier and the current arg is not an option,
+		// consume it as the specifier then transition to pending value
+		if pendingSpecOption != nil {
+			if !isOption(arg) {
+				if i == len(args)-1 && !trailingSpace {
+					// Completing the stream specifier (mid-token)
+					ctx.CurrentOption = pendingSpecOption
+					ctx.PartialSpec = arg
+					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedStreamSpecifier)
+					return ctx
+				}
+				// Consume the stream specifier and mark value as pending
+				effectiveSpec := arg
+				pendingSpecOption.StreamSpecifier = effectiveSpec
+				pendingOption = pendingSpecOption
+				pendingSpecOption = nil
+				i++
+				continue
+			}
+			// Stream specifier was skipped — clear pending spec
+			pendingSpecOption = nil
+		}
 
 		// If we have a pending option value and the current arg is not an option,
 		// consume it as the value
@@ -92,6 +116,14 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 				continue
 			}
 
+			// If the option accepts a stream specifier and one wasn't provided,
+			// the next arg is the stream specifier (e.g. "-c:" "v" "libx264")
+			if optDef != nil && optDef.AcceptsSpec && spec == "" && optDef.ImplicitSpec == "" && optDef.Type == TypeValue {
+				pendingSpecOption = buildOptionContext(baseName, spec, optDef)
+				updateScope(ctx, optDef)
+				continue
+			}
+
 			// If the option takes a value, mark it as pending
 			if optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec || optDef.ImplicitSpec != "") {
 				pendingOption = buildOptionContext(baseName, spec, optDef)
@@ -105,6 +137,13 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 			ctx.Scope = ScopeOutputFile
 			i++
 		}
+	}
+
+	// If we have a pending stream specifier, that's what's expected next
+	if pendingSpecOption != nil {
+		ctx.CurrentOption = pendingSpecOption
+		ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedStreamSpecifier)
+		return ctx
 	}
 
 	// If we have a pending option value, that's what's expected next

@@ -64,21 +64,6 @@ func init() {
 }
 
 func actionOptions(ctx *argstream.CompletionContext) carapace.Action {
-	return carapace.ActionMultiPartsN(":", 2, func(c carapace.Context) carapace.Action {
-		switch len(c.Parts) {
-		case 0:
-			return actionOptionNames(ctx).NoSpace(':')
-		default:
-			optDef := argstream.LookupOption(c.Parts[0])
-			if optDef != nil && optDef.AcceptsSpec && optDef.ImplicitSpec == "" {
-				return actionStreamSpecifiers(ctx)
-			}
-			return carapace.ActionValues()
-		}
-	})
-}
-
-func actionOptionNames(ctx *argstream.CompletionContext) carapace.Action {
 	var vals []string
 	for name, def := range argstream.OptionIndex {
 		switch {
