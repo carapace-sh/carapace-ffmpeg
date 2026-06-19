@@ -69,7 +69,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 			optName := arg[1:] // strip '-'
 			optName = strings.TrimPrefix(optName, "-")
 
-			baseName, spec := ParseOptionName(optName)
+			baseName, spec, hasColon := ParseOptionName(optName)
 			optDef := LookupOption(baseName)
 
 			// Check if we're at the last argument and it's the one being completed
@@ -78,7 +78,7 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 				ctx.PartialSpec = spec
 				ctx.CurrentOption = buildOptionContext(baseName, spec, optDef)
 
-				if optDef != nil && optDef.AcceptsSpec && spec == "" && optDef.ImplicitSpec == "" {
+				if optDef != nil && optDef.AcceptsSpec && spec == "" && optDef.ImplicitSpec == "" && hasColon {
 					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedStreamSpecifier)
 				}
 
@@ -116,16 +116,18 @@ func ParseForCompletion(args []string, trailingSpace bool) *CompletionContext {
 				continue
 			}
 
-			// If the option accepts a stream specifier and one wasn't provided,
-			// the next arg is the stream specifier (e.g. "-c:" "v" "libx264")
-			if optDef != nil && optDef.AcceptsSpec && spec == "" && optDef.ImplicitSpec == "" && optDef.Type == TypeValue {
+			// If the option accepts a stream specifier and a colon was present
+			// but no spec was provided, the next arg is the stream specifier.
+			// (e.g. "-c:" "v" "libx264")
+			// Without a colon (e.g. "-c" "libx264"), the value comes directly.
+			if optDef != nil && optDef.AcceptsSpec && hasColon && spec == "" && optDef.ImplicitSpec == "" && optDef.Type == TypeValue {
 				pendingSpecOption = buildOptionContext(baseName, spec, optDef)
 				updateScope(ctx, optDef)
 				continue
 			}
 
 			// If the option takes a value, mark it as pending
-			if optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec || optDef.ImplicitSpec != "") {
+			if optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec || optDef.ImplicitSpec != "" || !hasColon) {
 				pendingOption = buildOptionContext(baseName, spec, optDef)
 			}
 

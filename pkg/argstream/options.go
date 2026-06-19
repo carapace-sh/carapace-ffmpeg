@@ -346,11 +346,13 @@ func LookupOption(name string) *OptionDef {
 
 // ParseOptionName splits a raw option token (e.g. "c:v:1") into the
 // base option name and the stream specifier.
-func ParseOptionName(raw string) (name string, specifier string) {
+// hasColon reports whether a colon was present in the token,
+// distinguishing "-c" (no colon, value expected) from "-c:" (colon, spec expected).
+func ParseOptionName(raw string) (name string, specifier string, hasColon bool) {
 	for i, ch := range raw {
 		if ch == ':' {
-			return raw[:i], raw[i+1:]
+			return raw[:i], raw[i+1:], true
 		}
 	}
-	return raw, ""
+	return raw, "", false
 }

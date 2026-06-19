@@ -67,7 +67,7 @@ func (p *parser) parseProgram() (*Program, error) {
 		// Option token: starts with '-' and is not just '-'
 		if isOption(arg) {
 			optName := arg[1:] // strip leading '-'
-			baseName, spec := ParseOptionName(optName)
+			baseName, spec, _ := ParseOptionName(optName)
 			optDef := LookupOption(baseName)
 
 			// Determine the option's effective scope based on position
