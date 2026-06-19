@@ -4,24 +4,22 @@ builds:
   - id: carapace-ffmpeg
     main: ./cmd/carapace-ffmpeg
     binary: carapace-ffmpeg
-    ldflags:
-      - -s -w
   - id: carapace-ffmpeg-debug
     main: ./cmd/carapace-ffmpeg-debug
     binary: carapace-ffmpeg-debug
-    ldflags:
-      - -s -w
+  - id: carapace-ffplay
+    main: ./cmd/carapace-ffplay
+    binary: carapace-ffplay
+  - id: carapace-ffprobe
+    main: ./cmd/carapace-ffprobe
+    binary: carapace-ffprobe
 
 archives:
   - id: carapace-ffmpeg
     builds:
       - carapace-ffmpeg
-      - carapace-ffmpeg-debug
+      - carapace-ffplay
+      - carapace-ffmprobe
     format_overrides:
       - goos: windows
         format: zip
-
-release:
-  github:
-    owner: carapace-sh
-    name: carapace-ffmpeg
