@@ -107,6 +107,34 @@ Testing/debug CLI exposing raw parser output as JSON. Each subcommand has a `-co
 
 YAML files providing extended descriptions for completion value types. Each subdirectory contains a single YAML file keyed by value name. Used by the carapace spec system to augment completion descriptions. Example: `man/ffmpeg/codec/codec.yaml` contains `copy: |` with extended help text.
 
+Descriptions are researched from online sources (Wikipedia, ffmpeg wiki, multimedia wiki, codec documentation) rather than raw ffmpeg output. Each description explains the value's purpose, history, and typical usage in under 200 words. Entries cover: codecs (580), decoders (557), encoders (228), formats (290), filters (561), muxers (182), demuxers (372), pixel formats (267), bitstream filters (49), protocols (40), channel layouts (38), sample formats (12), devices (13), and various static value types (booleans, dispositions, log levels, etc.).
+
+#### YAML format
+
+```yaml
+key: |
+  Multi-line description here. Can use `backticks` and **bold**.
+"numeric_key": |
+  Keys starting with digits must be quoted.
+special_chars: |
+  Keys with :{}[],&*#?|-@!%`'"\ must be quoted.
+```
+
+#### Key quoting rules
+
+- Keys starting with digits MUST be quoted (e.g., `"012v": |`, `"3gp": |`)
+- Keys with special characters (`:{}[],&*#?|-@!%`'"\`) must be quoted
+- Multi-line descriptions in block scalar (`|`) need each continuation line indented with 2 spaces
+
+#### When adding new man page entries
+
+- Research descriptions from online sources, not from `ffmpeg` command output
+- Keep descriptions under 200 words
+- Explain what the value is, what it's used for, and any relevant context
+- For hardware-accelerated variants (nvenc, qsv, vaapi, amf, v4l2m2m, cuda, vulkan), describe what hardware/GPU they target
+- Validate YAML: `python3 -c "import yaml; yaml.safe_load(open('path'))"`
+- Check for duplicate keys by round-tripping: the YAML parser silently drops duplicates
+
 ### Skills (`skills/ffmpeg/`)
 
 A compound skill with a `SKILL.md` routing table and `references/` directory containing deep reference documentation on ffmpeg's CLI model. Not part of the Go codebase — used by AI agents working on this repo. References cover: stream model, option syntax, option scopes, stream specifiers, filtergraphs, mapping, and value types.
