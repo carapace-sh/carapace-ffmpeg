@@ -1,199 +1,601 @@
+"3dostr": |
+  3DO STR. Supports demuxing.
+"3g2": |
+  3GP2 (3GPP2). Multimedia container for 3GPP2 (CDMA) mobile phones.
+  Similar to 3GP but for CDMA2000 networks. Muxing name: `3g2`.
+"3gp": |
+  3GP (3GPP). Multimedia container for 3G mobile phones.
+  Subset of MP4 with H.263/AMR-NB. Muxing name: `3gp`.
+"4xm": |
+  4X Technologies. Supports demuxing.
+a64: |
+  a64 - video for Commodore 64. Supports muxing.
+aa: |
+  Audible AA format files. Supports demuxing.
+aac: |
+  raw ADTS AAC (Advanced Audio Coding). Supports demuxing.
+aax: |
+  CRI AAX. Supports demuxing.
+ace: |
+  tri-Ace Audio Container. Supports demuxing.
+acm: |
+  Interplay ACM. Supports demuxing.
+act: |
+  ACT Voice file format. Supports demuxing.
+adf: |
+  Artworx Data Format. Supports demuxing.
+adp: |
+  ADP. Supports demuxing.
+ads: |
+  Sony PS2 ADS. Supports demuxing.
+adts: |
+  ADTS AAC (Advanced Audio Coding). Supports muxing.
+afc: |
+  AFC. Supports demuxing.
+aix: |
+  CRI AIX. Supports demuxing.
+alias_pix: |
+  Alias/Wavefront PIX image. Supports demuxing.
+amrnb: |
+  raw AMR-NB. Supports demuxing.
+amrwb: |
+  raw AMR-WB. Supports demuxing.
+amv: |
+  AMV. Supports muxing.
+anm: |
+  Deluxe Paint Animation. Supports demuxing.
+apac: |
+  raw APAC. Supports demuxing.
+apc: |
+  CRYO APC. Supports demuxing.
+ape: |
+  Monkey's Audio. Supports demuxing.
+aqtitle: |
+  AQTitle subtitles. Supports demuxing.
+argo_brp: |
+  Argonaut Games BRP. Supports demuxing.
+asf_o: |
+  ASF (Advanced / Active Streaming Format). Supports demuxing.
+asf_stream: |
+  ASF (Advanced / Active Streaming Format). Supports muxing.
+av1: |
+  Raw AV1 Annex B. Container for raw AV1 bitstream.
+  No container overhead. Demuxing only.
+avif: |
+  AVIF (AV1 Image File Format). Image format using AV1 compression.
+  Muxing only. Modern image format with excellent compression.
+avisynth: |
+  AviSynth script. Supports demuxing.
+avm2: |
+  SWF (ShockWave Flash) (AVM2). Supports muxing.
+avr: |
+  AVR (Audio Visual Research). Supports demuxing.
+avs: |
+  Argonaut Games Creature Shock. Supports demuxing.
+bethsoftvid: |
+  Bethesda Softworks VID. Supports demuxing.
+bfi: |
+  Brute Force & Ignorance. Supports demuxing.
+bfstm: |
+  BFSTM (Binary Cafe Stream). Supports demuxing.
+bin: |
+  Binary text. Supports demuxing.
+bink: |
+  Bink. Supports demuxing.
+binka: |
+  Bink Audio. Supports demuxing.
+bitpacked: |
+  Bitpacked. Supports demuxing.
+bmp_pipe: |
+  piped bmp sequence. Supports demuxing.
+bmv: |
+  Discworld II BMV. Supports demuxing.
+boa: |
+  Black Ops Audio. Supports demuxing.
+bonk: |
+  raw Bonk. Supports demuxing.
+brender_pix: |
+  BRender PIX image. Supports demuxing.
+brstm: |
+  BRSTM (Binary Revolution Stream). Supports demuxing.
+c93: |
+  Interplay C93. Supports demuxing.
+cdg: |
+  CD Graphics. Supports demuxing.
+cdxl: |
+  Commodore CDXL video. Supports demuxing.
+cine: |
+  Phantom Cine. Supports demuxing.
+concat: |
+  Concatenation script. Virtual format that concatenates multiple input files.
+  Reads a text file listing file paths. Demuxing only.
+crc: |
+  CRC testing. Pseudo-muxer that computes CRC checksums of encoded packets.
+  Muxing only. Used for regression testing and verification.
+cri_pipe: |
+  piped cri sequence. Supports demuxing.
+dcstr: |
+  Sega DC STR. Supports demuxing.
+dds_pipe: |
+  piped dds sequence. Supports demuxing.
+derf: |
+  Xilam DERF. Supports demuxing.
+dfa: |
+  Chronomaster DFA. Supports demuxing.
+dhav: |
+  Video DAV. Supports demuxing.
+dpx_pipe: |
+  piped dpx sequence. Supports demuxing.
+dsf: |
+  DSD Stream File (DSF). Supports demuxing.
+dsicin: |
+  Delphine Software International CIN. Supports demuxing.
+dss: |
+  Digital Speech Standard (DSS). Supports demuxing.
+dtshd: |
+  raw DTS-HD. Supports demuxing.
+dvbsub: |
+  raw dvbsub. Supports demuxing.
+dvbtxt: |
+  dvbtxt. Supports demuxing.
+dvd: |
+  DVD-VOB. MPEG-2 Program Stream for DVD-Video output.
+  Includes DVD IFO/VOB structure. Muxing name: `dvd`.
+dvdvideo: |
+  DVD-Video. Supports demuxing.
+dxa: |
+  DXA. Supports demuxing.
+ea: |
+  Electronic Arts Multimedia. Supports demuxing.
+ea_cdata: |
+  Electronic Arts cdata. Supports demuxing.
+epaf: |
+  Ensoniq Paris Audio File. Supports demuxing.
+exr_pipe: |
+  piped exr sequence. Supports demuxing.
+f4v: |
+  F4V (Adobe Flash Video). MP4 variant for Adobe Flash video delivery.
+  Muxing only. Largely obsolete since Flash discontinuation.
+fifo: |
+  FIFO queue. Pseudo-muxer that queues packets before writing.
+  Muxing only. Helps recover from encoder stalls and timestamp issues.
+flic: |
+  FLI/FLC/FLX animation. Supports demuxing.
+framecrc: |
+  Frame CRC. Pseudo-muxer that computes per-frame CRC checksums.
+  Muxing only. Used for regression testing.
+framehash: |
+  Per-frame hash testing. Supports muxing.
+framemd5: |
+  Per-frame MD5 testing. Supports muxing.
+frm: |
+  Megalux Frame. Supports demuxing.
+fsb: |
+  FMOD Sample Bank. Supports demuxing.
+fwse: |
+  Capcom's MT Framework sound. Supports demuxing.
+g728: |
+  raw G.728. Supports demuxing.
+g729: |
+  G.729 raw format demuxer. Supports demuxing.
+gdv: |
+  Gremlin Digital Video. Supports demuxing.
+gem_pipe: |
+  piped gem sequence. Supports demuxing.
+genh: |
+  GENeric Header. Supports demuxing.
+gif_pipe: |
+  piped gif sequence. Supports demuxing.
+hash: |
+  Hash testing. Supports muxing.
+hca: |
+  CRI HCA. Supports demuxing.
+hcom: |
+  Macintosh HCOM. Supports demuxing.
+hdr_pipe: |
+  piped hdr sequence. Supports demuxing.
+hds: |
+  HDS Muxer. Supports muxing.
+hnm: |
+  Cryo HNM v4. Supports demuxing.
+hxvs: |
+  HXVF/HXVS IP camera format. Supports demuxing.
+idcin: |
+  id Cinematic. Supports demuxing.
+idf: |
+  iCE Draw File. Supports demuxing.
+iec61883: |
+  libiec61883 (new DV1394) A/V input device. Supports demuxing.
+iff: |
+  IFF (Interchange File Format). Supports demuxing.
+ifv: |
+  IFV CCTV DVR. Supports demuxing.
+imf: |
+  IMF (Interoperable Master Format). Supports demuxing.
+ingenient: |
+  raw Ingenient MJPEG. Supports demuxing.
+ipmovie: |
+  Interplay MVE. Supports demuxing.
+ipod: |
+  iPod H.264 MP4. MP4 variant with iPod-compatible profile constraints.
+  Muxing only. Ensures playback compatibility with older Apple devices.
+ipu: |
+  raw IPU Video. Supports demuxing.
+ismv: |
+  ISMV/ISMA (Smooth Streaming). Microsoft's adaptive streaming format for IIS.
+  Muxing only. Creates fragmented MP4 for Smooth Streaming delivery.
+iss: |
+  Funcom ISS. Supports demuxing.
+iv8: |
+  IndigoVision 8000 video. Supports demuxing.
+ivr: |
+  IVR (Internet Video Recording). Supports demuxing.
+j2k_pipe: |
+  piped j2k sequence. Supports demuxing.
+jack: |
+  JACK Audio Connection Kit. Supports demuxing.
+jpeg_pipe: |
+  piped jpeg sequence. Supports demuxing.
+jpegls_pipe: |
+  piped jpegls sequence. Supports demuxing.
+jpegxl_anim: |
+  Animated JPEG XL. Supports demuxing.
+jpegxl_pipe: |
+  piped jpegxl sequence. Supports demuxing.
+jpegxs_pipe: |
+  piped jpegxs sequence. Supports demuxing.
+jv: |
+  Bitmap Brothers JV. Supports demuxing.
+kmsgrab: |
+  KMS screen capture. Supports demuxing.
+kux: |
+  KUX (YouKu). Supports demuxing.
+laf: |
+  LAF (Limitless Audio Format). Supports demuxing.
+latm: |
+  LOAS/LATM. Supports muxing.
+lavfi: |
+  Libavfilter virtual input device. Supports demuxing.
+libmodplug: |
+  ModPlug demuxer. Supports demuxing.
+libopenmpt: |
+  Tracker formats (libopenmpt). Supports demuxing.
+live_flv: |
+  live RTMP FLV (Flash Video). Supports demuxing.
+lmlm4: |
+  raw lmlm4. Supports demuxing.
+loas: |
+  LOAS AudioSyncStream. Supports demuxing.
+luodat: |
+  Video CCTV DAT. Supports demuxing.
+lvf: |
+  LVF. Supports demuxing.
+lxf: |
+  VR native stream (LXF). Supports demuxing.
+m4a: |
+  QuickTime / MOV. Supports demuxing.
+matroska: |
+  Matroska. Open-standard multimedia container supporting virtually all codecs.
+  Supports chapters, attachments, multiple tracks. Muxing name: `matroska`.
+mca: |
+  MCA Audio Format. Supports demuxing.
+md5: |
+  MD5 testing. Pseudo-muxer that computes MD5 hash of encoded output.
+  Muxing only. Used for regression testing.
+mgsts: |
+  Metal Gear Solid: The Twin Snakes. Supports demuxing.
+mj2: |
+  QuickTime / MOV. Supports demuxing.
+mjpeg_2000: |
+  raw MJPEG 2000 video. Supports demuxing.
+mkvtimestamp_v2: |
+  extract pts as timecode v2 format, as defined by mkvtoolnix. Supports muxing.
+mlv: |
+  Magic Lantern Video (MLV). Supports demuxing.
+mm: |
+  American Laser Games MM. Supports demuxing.
+mods: |
+  MobiClip MODS. Supports demuxing.
+moflex: |
+  MobiClip MOFLEX. Supports demuxing.
+mov: |
+  QuickTime / MOV (Apple). Apple's multimedia container format, predecessor to MP4.
+  Nearly identical to MP4 but with some Apple-specific extensions. Muxing name: `mov`.
+mp2: |
+  MP2 (MPEG audio layer 2). Supports muxing.
 mp4: |
   MP4 (MPEG-4 Part 14). The most widely used multimedia container format.
   Supports H.264, HEVC, AAC, and many other codecs. Used for web video, streaming, and mobile.
   Muxing name: `mp4`.
-mov: |
-  QuickTime / MOV (Apple). Apple's multimedia container format, predecessor to MP4.
-  Nearly identical to MP4 but with some Apple-specific extensions. Muxing name: `mov`.
-avi: |
-  AVI (Audio Video Interleaved). Microsoft's legacy multimedia container.
-  Widely supported but lacks modern features. Limited to 2 GB without workarounds. Muxing name: `avi`.
-mkv: |
-  Matroska. Open-standard multimedia container supporting virtually all audio and video codecs.
-  Supports chapters, menus, multiple subtitle/audio tracks, and attachments. Muxing name: `matroska`.
-webm: |
-  WebM. Google's subset of Matroska for web video, supporting VP8/VP9 video and Vorbis/Opus audio.
-  Optimized for HTML5 video delivery. Muxing name: `webm`.
-flv: |
-  FLV (Flash Video). Container format for Adobe Flash video streaming.
-  Largely obsolete since Flash was discontinued. Still used for RTMP streaming. Muxing name: `flv`.
-mpegts: |
-  MPEG Transport Stream. Container for broadcast and streaming (DVB, ATSC, IPTV).
-  Supports multiplexing multiple programs. Robust error recovery. Muxing name: `mpegts`.
-mpeg: |
-  MPEG-PS (Program Stream). Container for DVD-Video and SVCD.
-  Multiplexes video and audio PES packets. Muxing name: `mpeg` / `vob`.
-dvd: |
-  DVD-VOB. MPEG-2 Program Stream for DVD-Video output.
-  Includes DVD IFO/VOB structure. Muxing name: `dvd`.
-asf: |
-  ASF (Advanced Streaming Format). Microsoft container for WMV/WMA content.
-  Also the basis for RTSP streaming via `asf_stream`. Muxing name: `asf`.
-3gp: |
-  3GP (3GPP). Multimedia container for 3G mobile phones.
-  Subset of MP4 with H.263/AMR-NB. Muxing name: `3gp`.
-3g2: |
-  3GP2 (3GPP2). Multimedia container for 3GPP2 (CDMA) mobile phones.
-  Similar to 3GP but for CDMA2000 networks. Muxing name: `3g2`.
-ogg: |
-  OGG. Xiph.org container for Vorbis, FLAC, Opus, and Theora codecs.
-  Open and royalty-free. Muxing name: `ogg`.
-flac: |
-  Raw FLAC. Container for FLAC (Free Lossless Audio Codec) audio.
-  Lossless audio with metadata support. Both muxing and demuxing.
-wav: |
-  WAV (Waveform Audio File Format). Microsoft/IBM audio container for PCM and other codecs.
-  Very common for uncompressed and lossless audio. Muxing name: `wav`.
-aiff: |
-  Audio IFF (Audio Interchange File Format). Apple's audio container, similar to WAV but big-endian.
-  Common in professional audio production on macOS. Muxing name: `aiff`.
-ac3: |
-  Raw AC-3. Container for Dolby Digital audio streams.
-  Used when audio is not multiplexed with video.
-eac3: |
-  Raw E-AC-3. Container for Dolby Digital Plus audio streams.
-  Enhanced AC-3 with higher bitrate support.
-dts: |
-  Raw DTS. Container for DTS (DCA) audio streams.
-  Used for standalone DTS audio files.
-mp3: |
-  Raw MP3. Container for MPEG-1 Audio Layer III audio.
-  The most universal audio format. Both muxing and demuxing via `mp3`.
-h264: |
-  Raw H.264. Container for raw H.264/AVC Annex B bitstream.
-  No container overhead. Demuxing and muxing of raw NAL units.
-hevc: |
-  Raw HEVC. Container for raw H.265/HEVC Annex B bitstream.
-  No container overhead. Both muxing and demuxing of raw NAL units.
-av1: |
-  Raw AV1 Annex B. Container for raw AV1 bitstream.
-  No container overhead. Demuxing only.
-ivf: |
-  IVF (On2). Simple container for VP8/VP9/AV1 bitstreams.
-  Common in WebM testing and development. Both muxing and demuxing.
-hls: |
-  HLS (Apple HTTP Live Streaming). Segmented streaming format for adaptive bitrate delivery.
-  Creates M3U8 playlist and .ts segments. Muxing name: `hls`.
-dash: |
-  DASH (Dynamic Adaptive Streaming over HTTP). ISO standard for adaptive streaming.
-  Creates MPD manifest and segments. Both muxing and demuxing.
-rtmp: |
-  RTMP (Real-Time Messaging Protocol). Adobe's streaming protocol for Flash media server.
-  Both muxing and demuxing. Deprecated but still used for live ingest.
-gif: |
-  GIF (CompuServe Graphics Interchange Format). Animated image container with 256-color palette.
-  No audio support. Muxing name: `gif`.
-apng: |
-  APNG (Animated Portable Network Graphics). PNG with animation support and full color.
-  No audio support. Both muxing and demuxing.
-image2: |
-  Image sequence. Reads/writes individual image files as a video stream.
-  Supports PNG, JPEG, TIFF, BMP, and many other formats. Pattern: `img%03d.png`.
-image2pipe: |
-  Piped image sequence. Same as image2 but reads from/writes to a pipe.
-  Used for streaming image data through stdin/stdout.
-concat: |
-  Concatenation script. Virtual format that concatenates multiple input files.
-  Reads a text file listing file paths. Demuxing only.
-data: |
-  Raw data. Minimal container that passes data through without parsing.
-  Both muxing and demuxing. Useful for raw codec testing.
-matroska: |
-  Matroska. Open-standard multimedia container supporting virtually all codecs.
-  Supports chapters, attachments, multiple tracks. Muxing name: `matroska`.
-webvtt: |
-  WebVTT (Web Video Text Tracks). W3C standard for timed text tracks in HTML5 video.
-  Supports styling, positioning, and cue identifiers. Both muxing and demuxing.
-ass: |
-  SSA (SubStation Alpha). Text subtitle format with advanced styling.
-  Both muxing and demuxing. Supports colors, fonts, positioning.
-srt: |
-  SubRip. The most common text-based subtitle format with simple time codes.
-  Both muxing and demuxing.
-caf: |
-  Apple CAF (Core Audio Format). Apple's modern audio container supporting many codecs.
-  Both muxing and demuxing. Better than AIFF/WAV for large audio files.
-au: |
-  Sun AU. Sun Microsystems' audio format, common on Unix systems.
-  Both muxing and demuxing. Simple header, commonly uses μ-law encoding.
-amr: |
-  3GPP AMR. Container for Adaptive Multi-Rate speech codec.
-  Both muxing and demuxing. Used in mobile telephony voice recording.
-g722: |
-  Raw G.722. Container for ITU-T G.722 wideband speech audio.
-  Both muxing and demuxing. 7 kHz audio at 64 kbit/s.
-g726: |
-  Raw G.726. Container for ITU-T G.726 ADPCM audio.
-  Both muxing and demuxing. 16/24/32/40 kbit/s bitrates.
-alaw: |
-  PCM A-law. Container for G.711 A-law companded audio.
-  Both muxing and demuxing. Standard in European telephony.
-ilbc: |
-  iLBC (Internet Low Bitrate Codec). Container for narrowband speech codec.
-  Both muxing and demuxing. Designed for VoIP at 13.33/15.2 kbit/s.
+mpc: |
+  Musepack. Supports demuxing.
+mpc8: |
+  Musepack SV8. Supports demuxing.
+mpeg1video: |
+  raw MPEG-1 video. Supports muxing.
+mpeg2video: |
+  raw MPEG-2 video. Supports muxing.
+mpegtsraw: |
+  raw MPEG-TS (MPEG-2 Transport Stream). Supports demuxing.
+mpegvideo: |
+  raw MPEG video. Supports demuxing.
+mpl2: |
+  MPL2 subtitles. Supports demuxing.
+mpsub: |
+  MPlayer subtitles. Supports demuxing.
+msf: |
+  Sony PS3 MSF. Supports demuxing.
+msnwctcp: |
+  MSN TCP Webcam stream. Supports demuxing.
+msp: |
+  Microsoft Paint (MSP)). Supports demuxing.
+mtaf: |
+  Konami PS2 MTAF. Supports demuxing.
+mtv: |
+  MTV. Supports demuxing.
+musx: |
+  Eurocom MUSX. Supports demuxing.
+mv: |
+  Silicon Graphics Movie. Supports demuxing.
+mvi: |
+  Motion Pixels MVI. Supports demuxing.
+mxf_d10: |
+  MXF (Material eXchange Format) D-10 Mapping. Supports muxing.
+mxf_opatom: |
+  MXF (Material eXchange Format) Operational Pattern Atom. Supports muxing.
+mxg: |
+  MxPEG clip. Supports demuxing.
+nc: |
+  NC camera feed. Supports demuxing.
+nistsphere: |
+  NIST SPeech HEader REsources. Supports demuxing.
+nsp: |
+  Computerized Speech Lab NSP. Supports demuxing.
+nsv: |
+  Nullsoft Streaming Video. Supports demuxing.
+null: |
+  raw null video. Supports muxing.
+nuv: |
+  NuppelVideo. Supports demuxing.
+oga: |
+  Ogg Audio. Supports muxing.
+ogv: |
+  Ogg Video. Supports muxing.
+opus: |
+  Ogg Opus. Supports muxing.
+osq: |
+  raw OSQ. Supports demuxing.
+paf: |
+  Amazing Studio Packed Animation File. Supports demuxing.
+pam_pipe: |
+  piped pam sequence. Supports demuxing.
+pbm_pipe: |
+  piped pbm sequence. Supports demuxing.
+pcx_pipe: |
+  piped pcx sequence. Supports demuxing.
+pdv: |
+  PlayDate Video. Supports demuxing.
+pfm_pipe: |
+  piped pfm sequence. Supports demuxing.
+pgm_pipe: |
+  piped pgm sequence. Supports demuxing.
+pgmyuv_pipe: |
+  piped pgmyuv sequence. Supports demuxing.
+pgx_pipe: |
+  piped pgx sequence. Supports demuxing.
+phm_pipe: |
+  piped phm sequence. Supports demuxing.
+photocd_pipe: |
+  piped photocd sequence. Supports demuxing.
+pictor_pipe: |
+  piped pictor sequence. Supports demuxing.
+pjs: |
+  PJS (Phoenix Japanimation Society) subtitles. Supports demuxing.
+pmp: |
+  Playstation Portable PMP. Supports demuxing.
+png_pipe: |
+  piped png sequence. Supports demuxing.
+pp_bnk: |
+  Pro Pinball Series Soundbank. Supports demuxing.
+ppm_pipe: |
+  piped ppm sequence. Supports demuxing.
+psd_pipe: |
+  piped psd sequence. Supports demuxing.
+psp: |
+  PSP MP4 (MPEG-4 Part 14). Supports muxing.
+psxstr: |
+  Sony Playstation STR. Supports demuxing.
+pva: |
+  TechnoTrend PVA. Supports demuxing.
+pvf: |
+  PVF (Portable Voice Format). Supports demuxing.
+qcp: |
+  QCP. Supports demuxing.
+qdraw_pipe: |
+  piped qdraw sequence. Supports demuxing.
+qoa: |
+  QOA. Supports demuxing.
+qoi_pipe: |
+  piped qoi sequence. Supports demuxing.
+r3d: |
+  REDCODE R3D. Supports demuxing.
+realtext: |
+  RealText subtitle format. Supports demuxing.
+redspark: |
+  RedSpark. Supports demuxing.
+rka: |
+  RKA (RK Audio). Supports demuxing.
+rl2: |
+  RL2. Supports demuxing.
+rpl: |
+  RPL / ARMovie. Supports demuxing.
+rsd: |
+  GameCube RSD. Supports demuxing.
+rtp_mpegts: |
+  RTP/mpegts output format. Supports muxing.
+s337m: |
+  SMPTE 337M. Supports demuxing.
+sami: |
+  SAMI subtitle format. Supports demuxing.
+sbg: |
+  SBaGen binaural beats script. Supports demuxing.
+scd: |
+  Square Enix SCD. Supports demuxing.
+sdns: |
+  Xbox SDNS. Supports demuxing.
+sdp: |
+  SDP. Supports demuxing.
+sdr2: |
+  SDR2. Supports demuxing.
+sds: |
+  MIDI Sample Dump Standard. Supports demuxing.
+sdx: |
+  Sample Dump eXchange. Supports demuxing.
+segment: |
+  segment. Supports muxing.
+ser: |
+  SER (Simple uncompressed video format for astronomical capturing). Supports demuxing.
+sga: |
+  Digital Pictures SGA. Supports demuxing.
+sgi_pipe: |
+  piped sgi sequence. Supports demuxing.
+shn: |
+  raw Shorten. Supports demuxing.
+siff: |
+  Beam Software SIFF. Supports demuxing.
+simbiosis_imx: |
+  Simbiosis Interactive IMX. Supports demuxing.
 sln: |
   Signed 16-bit PCM. Raw audio container with no header.
   Both muxing and demuxing. Common in Asterisk PBX systems.
-f32be: |
-  PCM 32-bit floating-point big-endian. Raw PCM audio format.
-  Both muxing and demuxing. No header, big-endian byte order.
-f32le: |
-  PCM 32-bit floating-point little-endian. Raw PCM audio format.
-  Both muxing and demuxing. No header, little-endian byte order.
-f64be: |
-  PCM 64-bit floating-point big-endian. Raw PCM audio format.
-  Both muxing and demuxing. Double-precision, big-endian.
-f64le: |
-  PCM 64-bit floating-point little-endian. Raw PCM audio format.
-  Both muxing and demuxing. Double-precision, little-endian.
-dirac: |
-  Raw Dirac. Container for Dirac/VC-2 video bitstream.
-  Both muxing and demuxing. Used in broadcast production.
-dnxhd: |
-  Raw DNxHD. Container for Avid DNxHD video.
-  Both muxing and demuxing. Professional intermediates.
-dv: |
-  DV (Digital Video). Container for DV25/DV50/DV100 video from camcorders.
-  Both muxing and demuxing. Legacy but still found in archived footage.
-gsm: |
-  Raw GSM. Container for GSM 06.10 speech audio.
-  Both muxing and demuxing. Used in telephony voice recording.
-film_cpk: |
-  Sega FILM/CPK. Container for Sega CD and Saturn video games.
-  Both muxing and demuxing. Retro game media preservation.
-gxf: |
-  GXF (General eXchange Format). Container for broadcast video server interchange.
-  Both muxing and demuxing. Used in Grass Valley playout servers.
-lrc: |
-  LRC lyrics. Synchronized lyrics file format.
-  Muxing only. Used alongside audio for karaoke-style lyrics display.
-ismv: |
-  ISMV/ISMA (Smooth Streaming). Microsoft's adaptive streaming format for IIS.
-  Muxing only. Creates fragmented MP4 for Smooth Streaming delivery.
-ipod: |
-  iPod H.264 MP4. MP4 variant with iPod-compatible profile constraints.
-  Muxing only. Ensures playback compatibility with older Apple devices.
-f4v: |
-  F4V (Adobe Flash Video). MP4 variant for Adobe Flash video delivery.
-  Muxing only. Largely obsolete since Flash discontinuation.
-crc: |
-  CRC testing. Pseudo-muxer that computes CRC checksums of encoded packets.
-  Muxing only. Used for regression testing and verification.
-framecrc: |
-  Frame CRC. Pseudo-muxer that computes per-frame CRC checksums.
-  Muxing only. Used for regression testing.
-md5: |
-  MD5 testing. Pseudo-muxer that computes MD5 hash of encoded output.
-  Muxing only. Used for regression testing.
-null: |
-  Null format. Discards all output data.
-  Muxing only. Used for benchmarking and testing encoding speed.
-fifo: |
-  FIFO queue. Pseudo-muxer that queues packets before writing.
-  Muxing only. Helps recover from encoder stalls and timestamp issues.
-ffmetadata: |
-  FFmpeg metadata. Text format for writing/reading stream metadata.
-  Both muxing and demuxing. Used to inject per-frame or per-stream metadata.
-avif: |
-  AVIF (AV1 Image File Format). Image format using AV1 compression.
-  Muxing only. Modern image format with excellent compression.
+smk: |
+  Smacker. Supports demuxing.
+smoothstreaming: |
+  Smooth Streaming Muxer. Supports muxing.
+smush: |
+  LucasArts Smush. Supports demuxing.
+sol: |
+  Sierra SOL. Supports demuxing.
+spx: |
+  Ogg Speex. Supports muxing.
+ssegment: |
+  streaming segment muxer. Supports muxing.
+stl: |
+  Spruce subtitle format. Supports demuxing.
+stream_segment: |
+  streaming segment muxer. Supports muxing.
+streamhash: |
+  Per-stream hash testing. Supports muxing.
+subviewer: |
+  SubViewer subtitle format. Supports demuxing.
+subviewer1: |
+  SubViewer v1 subtitle format. Supports demuxing.
+sunrast_pipe: |
+  piped sunrast sequence. Supports demuxing.
+svag: |
+  Konami PS2 SVAG. Supports demuxing.
+svcd: |
+  MPEG-2 PS (SVCD). Supports muxing.
+svg_pipe: |
+  piped svg sequence. Supports demuxing.
+svs: |
+  Square SVS. Supports demuxing.
+tak: |
+  raw TAK. Supports demuxing.
+tedcaptions: |
+  TED Talks captions. Supports demuxing.
+tee: |
+  Multiple muxer tee. Supports muxing.
+thp: |
+  THP. Supports demuxing.
+tiertexseq: |
+  Tiertex Limited SEQ. Supports demuxing.
+tiff_pipe: |
+  piped tiff sequence. Supports demuxing.
+tmv: |
+  8088flex TMV. Supports demuxing.
+ttml: |
+  TTML subtitle. Supports muxing.
+tty: |
+  Tele-typewriter. Supports demuxing.
+txd: |
+  Renderware TeXture Dictionary. Supports demuxing.
+ty: |
+  TiVo TY Stream. Supports demuxing.
+uncodedframecrc: |
+  uncoded framecrc testing. Supports muxing.
+usm: |
+  CRI USM. Supports demuxing.
+v210: |
+  Uncompressed 4:2:2 10-bit. Supports demuxing.
+v210x: |
+  Uncompressed 4:2:2 10-bit. Supports demuxing.
+vag: |
+  Sony PS2 VAG. Supports demuxing.
+vapoursynth: |
+  VapourSynth demuxer. Supports demuxing.
+vbn_pipe: |
+  piped vbn sequence. Supports demuxing.
+vcd: |
+  MPEG-1 Systems / MPEG program stream (VCD). Supports muxing.
+vividas: |
+  Vividas VIV. Supports demuxing.
+vivo: |
+  Vivo. Supports demuxing.
+vmd: |
+  Sierra VMD. Supports demuxing.
+vob: |
+  MPEG-2 PS (VOB). Supports muxing.
+vobsub: |
+  VobSub subtitle format. Supports demuxing.
+vpk: |
+  Sony PS2 VPK. Supports demuxing.
+vplayer: |
+  VPlayer subtitles. Supports demuxing.
+vqf: |
+  Nippon Telegraph and Telephone Corporation (NTT) TwinVQ. Supports demuxing.
+wady: |
+  Marble WADY. Supports demuxing.
+wavarc: |
+  Waveform Archiver. Supports demuxing.
+wc3movie: |
+  Wing Commander III movie. Supports demuxing.
+webm: |
+  WebM. Google's subset of Matroska for web video, supporting VP8/VP9 video and Vorbis/Opus audio.
+  Optimized for HTML5 video delivery. Muxing name: `webm`.
+webm_chunk: |
+  WebM Chunk Muxer. Supports muxing.
+webp: |
+  WebP. Supports muxing.
+webp_pipe: |
+  piped webp sequence. Supports demuxing.
+whip: |
+  WHIP(WebRTC-HTTP ingestion protocol) muxer. Supports muxing.
+wsd: |
+  Wideband Single-bit Data (WSD). Supports demuxing.
+wsvqa: |
+  Westwood Studios VQA. Supports demuxing.
+wve: |
+  Psion 3 audio. Supports demuxing.
+x11grab: |
+  X11 screen capture, using XCB. Supports demuxing.
+xa: |
+  Maxis XA. Supports demuxing.
+xbin: |
+  eXtended BINary text (XBIN). Supports demuxing.
+xbm_pipe: |
+  piped xbm sequence. Supports demuxing.
+xmd: |
+  Konami XMD. Supports demuxing.
+xmv: |
+  Microsoft XMV. Supports demuxing.
+xpm_pipe: |
+  piped xpm sequence. Supports demuxing.
+xvag: |
+  Sony PS3 XVAG. Supports demuxing.
+xwd_pipe: |
+  piped xwd sequence. Supports demuxing.
+xwma: |
+  Microsoft xWMA. Supports demuxing.
+yop: |
+  Psygnosis YOP. Supports demuxing.

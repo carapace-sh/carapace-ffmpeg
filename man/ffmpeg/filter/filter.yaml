@@ -1,270 +1,1206 @@
-scale: |
-  Scale (resize) the input video. The most commonly used video filter.
-  Width and height can be set in pixels, or use `iw/2`, `ow/dar`, and other expressions.
-  Example: `scale=1280:720` or `scale=1920:-2` (preserve aspect ratio with even height).
-setsar: |
-  Set the Sample Aspect Ratio (SAR) of the video. Changes metadata without resampling.
-  Common values: `1:1` (square pixels), `16:11` (NTSC), `64:45` (PAL).
-setdar: |
-  Set the Display Aspect Ratio (DAR) of the video. Changes metadata without resampling.
-  Common values: `16:9` (widescreen), `4:3` (standard).
-fps: |
-  Force a constant output frame rate. Drops or duplicates frames to achieve the target rate.
-  Example: `fps=30` or `fps=24000/1001` (23.976 fps).
-framerate: |
-  Change frame rate with interpolation. Upsamples or downsamples between specified frame rates.
-  Higher quality than `fps` filter but slower.
-format: |
-  Convert the input video to the specified pixel format.
-  Example: `format=yuv420p` or `format=yuv420p10le`. Essential for codec compatibility.
-aformat: |
-  Convert the input audio to the specified sample format, sample rate, and channel layout.
-  Example: `aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo`.
-copy: |
-  Copy the input video unchanged to the output. Passes frames through without modification.
-  Useful for filtering specific streams in a complex filtergraph.
+a3dscope: |
+  Media filter. Convert input audio to 3d scope video output.
+aap: |
+  Audio filter. Apply Affine Projection algorithm to first audio stream.
+abench: |
+  Benchmark part of an audio filtergraph. Measures and reports filter processing time.
+abitscope: |
+  Media filter. Convert input audio to audio bit scope video output.
+abuffer: |
+  Audio source filter. Buffer audio frames, and make them accessible to the filterchain.
+abuffersink: |
+  Audio sink filter. Buffer audio frames, and make them available to the end of the filter graph.
+acompressor: |
+  Audio filter. Audio compressor.
+acontrast: |
+  Audio filter. Simple audio dynamic range compression/expansion filter.
 acopy: |
   Copy the input audio unchanged to the output. Passes audio through without modification.
   Same as `copy` but for audio streams.
-crop: |
-  Crop the input video to the specified dimensions.
-  Example: `crop=1280:720:0:0` crops to 1280x720 starting from top-left.
-cropdetect: |
-  Auto-detect crop size. Determines the optimal crop values to remove black bars.
-  Useful as a first pass to find crop values, then apply `crop` in a second pass.
-pad: |
-  Pad the input video to the specified size, adding colored borders.
-  Example: `pad=1920:1080:(ow-iw)/2:(oh-ih)/2` centers the input in a 1920x1080 canvas.
-overlay: |
-  Overlay one video on top of another. The primary filter for compositing.
-  Example: `overlay=10:20` places the overlay at x=10, y=20 on the main video.
-trim: |
-  Select a continuous section of the input by time or frame number.
-  Example: `trim=start=5:end=10` keeps frames from 5s to 10s.
-atrim: |
-  Select a continuous section of audio by time or sample number.
-  Example: `atrim=start=5:end=10` keeps audio from 5s to 10s.
-setpts: |
-  Set presentation timestamp (PTS) for output frames. Controls timing and speed.
-  Example: `setpts=0.5*PTS` doubles speed, `setpts=2*PTS` halves speed.
-asetpts: |
-  Set PTS for audio output frames. Controls audio timing.
-  Example: `asetpts=0.5*PTS` doubles playback speed.
-volume: |
-  Change input audio volume. Supports linear multiplier, decibels, and expressions.
-  Example: `volume=2.0` (double), `volume=3dB` (increase by 3 dB), `volume=0.5` (halve).
-amix: |
-  Mix multiple audio streams together. Combines audio from different inputs.
-  Example: `amix=inputs=2:duration=longest`.
+acrossfade: |
+  Audio filter. Cross fade two input audio streams.
+acrossover: |
+  Audio filter. Split audio into per-bands streams.
+acrusher: |
+  Audio filter. Reduce audio bit resolution.
+acue: |
+  Audio filter. Delay filtering to match a cue.
+addroi: |
+  Video filter. Add region of interest to frame.
+adeclick: |
+  Audio filter. Remove impulsive noise from input audio.
+adeclip: |
+  Audio filter. Remove clipping from input audio.
+adecorrelate: |
+  Audio filter. Apply decorrelation to input audio.
+adelay: |
+  Delay one or more audio channels by the specified number of milliseconds.
+  Example: `adelay=500|500` delays both channels by 500ms.
+adenorm: |
+  Audio filter. Remedy denormals by adding extremely low-level noise.
+aderivative: |
+  Audio filter. Compute derivative of input audio.
+adrawgraph: |
+  Media filter. Draw a graph using input audio metadata.
+adrc: |
+  Audio filter. Audio Spectral Dynamic Range Controller.
+adynamicequalizer: |
+  Audio filter. Apply Dynamic Equalization of input audio.
+adynamicsmooth: |
+  Audio filter. Apply Dynamic Smoothing of input audio.
+aecho: |
+  Audio filter. Add echoing to the audio.
+aemphasis: |
+  Audio filter. Audio emphasis.
+aeval: |
+  Audio filter. Filter audio signal according to a specified expression.
+aevalsrc: |
+  Audio source filter. Generate an audio signal generated by an expression.
+aexciter: |
+  Audio filter. Enhance high frequency part of audio.
+afade: |
+  Fade in/out the audio volume.
+  Example: `afade=t=in:ss=0:d=5` fades in over 5 seconds, `afade=t=out:st=30:d=5` fades out.
+afdelaysrc: |
+  Audio source filter. Generate a Fractional delay FIR coefficients.
+afftdn: |
+  Audio filter. Denoise audio samples using FFT.
+afftfilt: |
+  Audio filter. Apply arbitrary expressions to samples in frequency domain.
+afir: |
+  Audio filter. Apply Finite Impulse Response filter with supplied coefficients in additional stream(s).
+afireqsrc: |
+  Audio source filter. Generate a FIR equalizer coefficients audio stream.
+afirsrc: |
+  Audio source filter. Generate a FIR coefficients audio stream.
+aformat: |
+  Convert the input audio to the specified sample format, sample rate, and channel layout.
+  Example: `aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo`.
+afreqshift: |
+  Audio filter. Apply frequency shifting to input audio.
+afwtdn: |
+  Audio filter. Denoise audio stream using Wavelets.
+agate: |
+  Audio filter. Audio gate.
+agraphmonitor: |
+  Media filter. Show various filtergraph stats.
+ahistogram: |
+  Media filter. Convert input audio to histogram video output.
+aiir: |
+  Audio filter. Apply Infinite Impulse Response filter with supplied coefficients.
+aintegral: |
+  Audio filter. Compute integral of input audio.
+ainterleave: |
+  Temporally interleave audio inputs. Alternates audio from each input.
+  Example: `ainterleave=inputs=2`.
+alatency: |
+  Audio filter. Report audio filtering latency.
+alimiter: |
+  Audio filter. Audio lookahead limiter.
+allpass: |
+  Audio filter. Apply a two-pole all-pass filter.
+allrgb: |
+  Generate all RGB colors test pattern (4096x4096 pixels).
+allyuv: |
+  Generate all YUV colors test pattern.
+aloop: |
+  Loop audio samples a specified number of times.
+  Example: `aloop=loop=3:size=1024` loops 1024 samples 3 times.
+alphaextract: |
+  Video filter. Extract an alpha channel as a grayscale image component.
+alphamerge: |
+  Video filter. Copy the luma value of the second input into the alpha channel of the first input.
 amerge: |
   Merge audio streams into a single multi-channel stream.
   Example: `amerge=inputs=2` merges 2 stereo streams into 4-channel audio.
-pan: |
-  Remix audio channels with custom coefficients (panning).
-  Example: `pan=stereo|FL=FL+0.5*FC|FR=FR+0.5*FC` mixes center into front channels.
+ametadata: |
+  Manipulate audio frame metadata (display, modify, or delete key-value pairs).
+amix: |
+  Mix multiple audio streams together. Combines audio from different inputs.
+  Example: `amix=inputs=2:duration=longest`.
+amovie: |
+  Media filter. Read audio from a movie source.
+amplify: |
+  Video filter. Amplify changes between successive video frames.
+amultiply: |
+  Audio filter. Multiply two audio streams.
+anequalizer: |
+  Audio filter. Apply high-order audio parametric multi band equalizer.
+anlmdn: |
+  Audio filter. Reduce broadband noise from stream using Non-Local Means.
+anlmf: |
+  Audio filter. Apply Normalized Least-Mean-Fourth algorithm to first audio stream.
+anlms: |
+  Audio filter. Apply Normalized Least-Mean-Squares algorithm to first audio stream.
+anoisesrc: |
+  Generate noise audio signal (white, pink, or brown noise).
+  Example: `anoisesrc=d=5:c=pink:r=44100` generates 5s of pink noise.
+anull: |
+  Audio filter. Pass the source unchanged to the output.
+anullsink: |
+  Null audio sink. Discards all input audio data.
+  Used to consume unwanted audio streams in filtergraphs.
+anullsrc: |
+  Null audio source. Generates empty audio frames (silence).
+  Example: `anullsrc=r=44100:cl=stereo` generates silent stereo audio at 44.1 kHz.
+apad: |
+  Pad audio with silence. Extends audio duration by appending silence.
+  Example: `apad=whole_dur=30000` pads to 30 seconds.
+aperms: |
+  Audio filter. Set permissions for the output audio frame.
+aphasemeter: |
+  Audio filter. Convert input audio to phase meter video output.
+aphaser: |
+  Audio filter. Add a phasing effect to the audio.
+aphaseshift: |
+  Audio filter. Apply phase shifting to input audio.
+apsnr: |
+  Audio filter. Measure Audio Peak Signal-to-Noise Ratio.
+apsyclip: |
+  Audio filter. Audio Psychoacoustic Clipper.
+apulsator: |
+  Audio filter. Audio pulsator.
+arealtime: |
+  Slow down audio filtering to match real-time playback speed.
+aresample: |
+  Resample audio data to a different sample rate.
+  Uses libsoxr for high-quality resampling. Example: `aresample=44100` resamples to 44.1 kHz.
+areverse: |
+  Reverse audio clip. Entire clip must fit in memory.
+arls: |
+  Audio filter. Apply Recursive Least Squares algorithm to first audio stream.
+arnndn: |
+  Audio filter. Reduce noise from speech using Recurrent Neural Networks.
+asdr: |
+  Audio filter. Measure Audio Signal-to-Distortion Ratio.
+asegment: |
+  Audio filter. Segment audio stream.
+aselect: |
+  Select audio frames to pass in the output based on an expression.
+asendcmd: |
+  Audio filter. Send commands to filters.
+asetnsamples: |
+  Audio filter. Set the number of samples for each output audio frames.
+asetpts: |
+  Set PTS for audio output frames. Controls audio timing.
+  Example: `asetpts=0.5*PTS` doubles playback speed.
+asetrate: |
+  Audio filter. Change the sample rate without altering the data.
+asettb: |
+  Audio filter. Set timebase for the audio output link.
+ashowinfo: |
+  Audio filter. Show textual information for each audio frame.
+asidedata: |
+  Audio filter. Manipulate audio frame side data.
+asisdr: |
+  Audio filter. Measure Audio Scale-Invariant Signal-to-Distortion Ratio.
+asoftclip: |
+  Audio filter. Audio Soft Clipper.
+aspectralstats: |
+  Audio filter. Show frequency domain statistics about audio frames.
+asplit: |
+  Pass the audio input to multiple outputs. Audio version of `split`.
+  Example: `[0:a]asplit=2[a1][a2]` creates two copies of the audio.
+ass: |
+  Render ASS subtitles onto input video using the libass library.
+  Supports full ASS styling including fonts, colors, and animations.
+astats: |
+  Audio filter. Show time domain statistics about audio frames.
+astreamselect: |
+  Media filter. Select audio streams.
+asubboost: |
+  Audio filter. Boost subwoofer frequencies.
+asubcut: |
+  Audio filter. Cut subwoofer frequencies.
+asupercut: |
+  Audio filter. Cut super frequencies.
+asuperpass: |
+  Audio filter. Apply high order Butterworth band-pass filter.
+asuperstop: |
+  Audio filter. Apply high order Butterworth band-stop filter.
+atadenoise: |
+  Adaptive temporal averaging de-noiser. Good quality for moderate noise.
+  Slower than hqdn3d but better at preserving detail.
+atempo: |
+  Adjust audio tempo (speed) without changing pitch.
+  Example: `atempo=2.0` doubles speed, `atempo=0.5` halves speed. Range: 0.5–100.
+atilt: |
+  Audio filter. Apply spectral tilt to audio.
+atrim: |
+  Select a continuous section of audio by time or sample number.
+  Example: `atrim=start=5:end=10` keeps audio from 5s to 10s.
+avectorscope: |
+  Media filter. Convert input audio to vectorscope video output.
+avgblur: |
+  Average blur filter. Simple and fast blur.
+  Example: `avgblur=5` applies 5px average blur.
+avgblur_opencl: |
+  Video filter. Apply average blur filter.
+avgblur_vulkan: |
+  Video filter. Apply avgblur mask to input video.
+avsynctest: |
+  Media filter. Generate an Audio Video Sync Test.
+axcorrelate: |
+  Audio filter. Cross-correlate two audio streams.
+azmq: |
+  Audio filter. Receive commands through ZMQ and broker them to filters.
+backgroundkey: |
+  Video filter. Turns a static background into transparency.
+bandpass: |
+  Audio filter. Apply a two-pole Butterworth band-pass filter.
+bandreject: |
+  Audio filter. Apply a two-pole Butterworth band-reject filter.
+bass: |
+  Audio filter. Boost or cut lower frequencies.
+bbox: |
+  Video filter. Compute bounding box for each frame.
+bench: |
+  Benchmark part of a filtergraph. Measures and reports filter processing time.
+bilateral: |
+  Video filter. Apply Bilateral filter.
+bilateral_cuda: |
+  Video filter. GPU accelerated bilateral filter.
+biquad: |
+  Audio filter. Apply a biquad IIR filter with the given coefficients.
+bitplanenoise: |
+  Video filter. Measure bit plane noise.
+blackdetect: |
+  Video filter. Detect video intervals that are (almost) black.
+blackdetect_vulkan: |
+  Video filter. Detect video intervals that are (almost) black.
+blackframe: |
+  Video filter. Detect frames that are (almost) black.
+blend: |
+  Video filter. Blend two video frames into each other.
+blend_vulkan: |
+  Video filter. Blend two video frames in Vulkan.
+blockdetect: |
+  Video filter. Blockdetect filter.
+blurdetect: |
+  Video filter. Blurdetect filter.
+bm3d: |
+  Block-Matching 3D de-noiser. State-of-the-art denoising quality.
+  Very slow but produces excellent results. Good for archival restoration.
+boxblur: |
+  Box blur filter. Averages pixels within a box area.
+  Example: `boxblur=5:1` blurs with 5px radius and 1 pass.
+boxblur_opencl: |
+  Video filter. Apply boxblur filter to input video.
+bs2b: |
+  Audio filter. Bauer stereo-to-binaural filter.
+buffer: |
+  Video source filter. Buffer video frames, and make them accessible to the filterchain.
+buffersink: |
+  Video sink filter. Buffer video frames, and make them available to the end of the filter graph.
+bwdif: |
+  Bob Weave Deinterlacing Filter. Improved deinterlacer based on yadif.
+  Better quality than yadif with similar performance.
+bwdif_cuda: |
+  Video filter. Deinterlace CUDA frames.
+bwdif_vulkan: |
+  Video filter. Deinterlace Vulkan frames via bwdif.
+cas: |
+  Video filter. Contrast Adaptive Sharpen.
+ccrepack: |
+  Video filter. Repack CEA-708 closed caption metadata.
+cellauto: |
+  Video source filter. Create pattern generated by an elementary cellular automaton.
 channelmap: |
   Remap audio channels to a different layout.
   Example: `channelmap=1|0|2|3` swaps left and right channels in stereo.
 channelsplit: |
   Split audio into per-channel streams. Each output contains one channel.
   Example: `channelsplit=channel_layout=stereo` produces separate left and right streams.
-aresample: |
-  Resample audio data to a different sample rate.
-  Uses libsoxr for high-quality resampling. Example: `aresample=44100` resamples to 44.1 kHz.
-adelay: |
-  Delay one or more audio channels by the specified number of milliseconds.
-  Example: `adelay=500|500` delays both channels by 500ms.
-apad: |
-  Pad audio with silence. Extends audio duration by appending silence.
-  Example: `apad=whole_dur=30000` pads to 30 seconds.
-afade: |
-  Fade in/out the audio volume.
-  Example: `afade=t=in:ss=0:d=5` fades in over 5 seconds, `afade=t=out:st=30:d=5` fades out.
-fade: |
-  Fade in/out the video brightness.
-  Example: `fade=t=in:st=0:d=5` fades in from black over 5 seconds.
-hflip: |
-  Horizontally flip the input video (mirror image).
-  Common for fixing mirrored webcam video.
-vflip: |
-  Vertically flip the input video (upside down).
-rotate: |
-  Rotate the video by an arbitrary angle. Can also adjust the output size.
-  Example: `rotate=PI/2` rotates 90° clockwise.
-transpose: |
-  Transpose (rotate 90°) the video. Direction: 0=CCW+vertical flip, 1=90° CW, 2=90° CCW, 3=CW+vertical flip.
-  Example: `transpose=1` rotates 90° clockwise.
-hqdn3d: |
-  High quality de-noising using 3D (spatial+temporal) filtering.
-  Lightweight denoiser good for live encoding. Example: `hqdn3d=4:3:6:4.5`.
-atadenoise: |
-  Adaptive temporal averaging de-noiser. Good quality for moderate noise.
-  Slower than hqdn3d but better at preserving detail.
-nlmeans: |
-  Non-local means de-noiser. Excellent quality for film grain and moderate noise.
-  Slow but produces very clean output. Example: `nlmeans=s=3.0`.
-bm3d: |
-  Block-Matching 3D de-noiser. State-of-the-art denoising quality.
-  Very slow but produces excellent results. Good for archival restoration.
-eq: |
-  Adjust brightness, contrast, gamma, and saturation.
-  Example: `eq=brightness=0.1:contrast=1.5:gamma=0.8`.
-hue: |
-  Adjust hue and saturation of the input video.
-  Example: `hue=h=30:s=1.5` shifts hue by 30° and increases saturation.
-colorbalance: |
-  Adjust color balance for shadows, midtones, and highlights independently.
-  Fine-grained color correction per luminance range.
-curves: |
-  Adjust component curves (like Photoshop curves). Supports custom and preset curves.
-  Example: `curves=preset=vintage` or `curves=r=0/0.5:g=0/0.5:b=0/0.5`.
-colorspace: |
-  Convert between color spaces (BT.601, BT.709, BT.2020, etc.).
-  Handles primaries, transfer, and matrix conversions.
-unsharp: |
-  Sharpen or blur the video using unsharp mask filter.
-  Example: `unsharp=5:5:1.5` sharpens with 5x5 kernel and 1.5 strength.
-gblur: |
-  Gaussian blur filter. Smooths the image with configurable sigma and radius.
-  Example: `gblur=sigma=2`.
-boxblur: |
-  Box blur filter. Averages pixels within a box area.
-  Example: `boxblur=5:1` blurs with 5px radius and 1 pass.
-avgblur: |
-  Average blur filter. Simple and fast blur.
-  Example: `avgblur=5` applies 5px average blur.
-drawtext: |
-  Draw text on top of video frames using libfreetype. Supports time codes, expressions, and fonts.
-  Example: `drawtext=text='%{localtime}':x=10:y=10:fontsize=24:fontcolor=white`.
-drawbox: |
-  Draw a colored box on the input video.
-  Example: `drawbox=x=10:y=10:w=100:h=100:color=red@0.5`.
-drawgrid: |
-  Draw a colored grid on the input video.
-  Example: `drawgrid=w=100:h=100:color=red@0.5`.
-subtitle: |
-  Render text subtitles (SRT/ASS/SSA) onto input video using libass.
-  Example: `subtitle=subs.srt` or `subtitle=ass/with.ass`.
-ass: |
-  Render ASS subtitles onto input video using the libass library.
-  Supports full ASS styling including fonts, colors, and animations.
-delogo: |
-  Remove a TV station logo by interpolating surrounding pixels.
-  Example: `delogo=x=0:y=0:w=100:h=77` removes a logo at the top-left.
-split: |
-  Pass the input video to multiple outputs. Used to apply different filters to the same source.
-  Example: `[0:v]split=2[v1][v2]` creates two copies of the input.
-asplit: |
-  Pass the audio input to multiple outputs. Audio version of `split`.
-  Example: `[0:a]asplit=2[a1][a2]` creates two copies of the audio.
-hstack: |
-  Stack video inputs horizontally (side by side).
-  All inputs must have the same height. Example: `[v1][v2]hstack=inputs=2`.
-vstack: |
-  Stack video inputs vertically (top and bottom).
-  All inputs must have the same width. Example: `[v1][v2]vstack=inputs=2`.
-xstack: |
-  Stack video inputs in a custom grid layout.
-  Example: `xstack=inputs=4:layout=0_0|w0_0|0_h0|w0_h0` creates a 2x2 grid.
-interleave: |
-  Temporally interleave video inputs. Alternates frames from each input.
-  Example: `interleave=inputs=3` interleaves 3 video sources.
-ainterleave: |
-  Temporally interleave audio inputs. Alternates audio from each input.
-  Example: `ainterleave=inputs=2`.
-concat: |
-  Concatenate video/audio streams. Joins them sequentially.
-  Example: `[v1][v2]concat=n=2:v=1:a=0` concatenates 2 video streams.
-silencedetect: |
-  Detect silence in an audio stream. Outputs silence start/end timestamps.
-  Example: `silencedetect=n=-50dB:d=2` detects silence below -50 dB for 2+ seconds.
-volumedetect: |
-  Detect audio volume levels. Reports mean, max volume, and histogram.
-  Use for normalization planning: `volumedetect` then apply `volume`.
-ebur128: |
-  EBU R128 loudness scanner. Measures integrated loudness, loudness range, and true peak.
-  Used for broadcast loudness compliance.
-loudnorm: |
-  EBU R128 loudness normalization. Normalizes audio to broadcast loudness targets.
-  Example: `loudnorm=I=-16:TP=-1.5:LRA=11`.
-speechnorm: |
-  Speech normalizer. Levels volume for speech content.
-  Good for podcasts and interviews with varying speaker volumes.
-anullsrc: |
-  Null audio source. Generates empty audio frames (silence).
-  Example: `anullsrc=r=44100:cl=stereo` generates silent stereo audio at 44.1 kHz.
-anullsink: |
-  Null audio sink. Discards all input audio data.
-  Used to consume unwanted audio streams in filtergraphs.
-nullsrc: |
-  Null video source. Generates empty video frames (black).
-  Example: `nullsrc=s=256x256:r=25` generates 256x256 black video at 25 fps.
-nullsink: |
-  Null video sink. Discards all input video data.
-  Used to consume unwanted video streams in filtergraphs.
+chorus: |
+  Audio filter. Add a chorus effect to the audio.
+chromaber_vulkan: |
+  Video filter. Offset chroma of input video (chromatic aberration).
+chromahold: |
+  Video filter. Turns a certain color range into gray.
+chromakey: |
+  Video filter. Turns a certain color into transparency. Operates on YUV colors.
+chromakey_cuda: |
+  Video filter. GPU accelerated chromakey filter.
+chromanr: |
+  Video filter. Reduce chrominance noise.
+chromashift: |
+  Video filter. Shift chroma.
+ciescope: |
+  Video filter. Video CIE scope.
+codecview: |
+  Video filter. Visualize information about some codecs.
 color: |
   Generate a solid color video source.
   Example: `color=c=red:s=320x240:r=25` generates red 320x240 video at 25 fps.
+color_vulkan: |
+  Video source filter. Generate a constant color (Vulkan).
+colorbalance: |
+  Adjust color balance for shadows, midtones, and highlights independently.
+  Fine-grained color correction per luminance range.
+colorchannelmixer: |
+  Video filter. Adjust colors by mixing color channels.
 colorchart: |
   Generate color chart video source for test patterns.
-smptebars: |
-  Generate SMPTE color bars test pattern.
-  Standard video test signal for calibration and alignment.
-allrgb: |
-  Generate all RGB colors test pattern (4096x4096 pixels).
-allyuv: |
-  Generate all YUV colors test pattern.
-sin: |
-  Generate sine wave audio signal.
-  Example: `sin=frequency=440:duration=5` generates a 440 Hz tone for 5 seconds.
-anoisesrc: |
-  Generate noise audio signal (white, pink, or brown noise).
-  Example: `anoisesrc=d=5:c=pink:r=44100` generates 5s of pink noise.
-sine: |
-  Generate sine wave audio signal. Simpler interface than `sin`.
-  Example: `sine=frequency=1000:duration=5`.
-bench: |
-  Benchmark part of a filtergraph. Measures and reports filter processing time.
-abench: |
-  Benchmark part of an audio filtergraph. Measures and reports filter processing time.
-metadata: |
-  Manipulate frame metadata (display, modify, or delete key-value pairs).
-  Example: `metadata=mode=print:file=metadata.txt`.
-ametadata: |
-  Manipulate audio frame metadata (display, modify, or delete key-value pairs).
-atempo: |
-  Adjust audio tempo (speed) without changing pitch.
-  Example: `atempo=2.0` doubles speed, `atempo=0.5` halves speed. Range: 0.5–100.
-yadif: |
-  Yet Another Deinterlacing Filter. Standard deinterlacer with spatial and temporal modes.
-  Example: `yadif=0` (temporal, default), `yadif=1` (temporal and spatial).
-bwdif: |
-  Bob Weave Deinterlacing Filter. Improved deinterlacer based on yadif.
-  Better quality than yadif with similar performance.
-w3fdif: |
-  Weston 3-Field Deinterlacing Filter. BBC-developed deinterlacer.
-  Good quality with moderate performance. Supports simple and complex modes.
+colorcontrast: |
+  Video filter. Adjust color contrast between RGB components.
+colorcorrect: |
+  Video filter. Adjust color white balance selectively for blacks and whites.
+colordetect: |
+  Video filter. Detect video color properties.
+colorhold: |
+  Video filter. Turns a certain color range into gray. Operates on RGB colors.
+colorize: |
+  Video filter. Overlay a solid color on the video stream.
+colorkey: |
+  Video filter. Turns a certain color into transparency. Operates on RGB colors.
+colorkey_opencl: |
+  Video filter. Turns a certain color into transparency. Operates on RGB colors.
+colorlevels: |
+  Video filter. Adjust the color levels.
+colormap: |
+  Media filter. Apply custom Color Maps to video stream.
+colormatrix: |
+  Video filter. Convert color matrix.
+colorspace: |
+  Convert between color spaces (BT.601, BT.709, BT.2020, etc.).
+  Handles primaries, transfer, and matrix conversions.
+colorspace_cuda: |
+  Video filter. CUDA accelerated video color converter.
+colorspectrum: |
+  Video source filter. Generate colors spectrum.
+colortemperature: |
+  Video filter. Adjust color temperature of video.
+compand: |
+  Audio filter. Compress or expand audio dynamic range.
+compensationdelay: |
+  Audio filter. Audio Compensation Delay Line.
+concat: |
+  Concatenate video/audio streams. Joins them sequentially.
+  Example: `[v1][v2]concat=n=2:v=1:a=0` concatenates 2 video streams.
+convolution: |
+  Video filter. Apply convolution filter.
+convolution_opencl: |
+  Video filter. Apply convolution mask to input video.
+convolve: |
+  Video filter. Convolve first video stream with second video stream.
+copy: |
+  Copy the input video unchanged to the output. Passes frames through without modification.
+  Useful for filtering specific streams in a complex filtergraph.
+corr: |
+  Video filter. Calculate the correlation between two video streams.
+cover_rect: |
+  Video filter. Find and cover a user specified object.
+crop: |
+  Crop the input video to the specified dimensions.
+  Example: `crop=1280:720:0:0` crops to 1280x720 starting from top-left.
+cropdetect: |
+  Auto-detect crop size. Determines the optimal crop values to remove black bars.
+  Useful as a first pass to find crop values, then apply `crop` in a second pass.
+crossfeed: |
+  Audio filter. Apply headphone crossfeed filter.
+crystalizer: |
+  Audio filter. Simple audio noise sharpening filter.
+cue: |
+  Video filter. Delay filtering to match a cue.
+curves: |
+  Adjust component curves (like Photoshop curves). Supports custom and preset curves.
+  Example: `curves=preset=vintage` or `curves=r=0/0.5:g=0/0.5:b=0/0.5`.
+datascope: |
+  Video filter. Video data analysis.
+dblur: |
+  Video filter. Apply Directional Blur filter.
+dcshift: |
+  Audio filter. Apply a DC shift to the audio.
+dctdnoiz: |
+  Video filter. Denoise frames using 2D DCT.
+deband: |
+  Video filter. Debands video.
+deblock: |
+  Video filter. Deblock video.
+decimate: |
+  Video filter. Decimate frames (post field matching filter).
+deconvolve: |
+  Video filter. Deconvolve first video stream with second video stream.
+dedot: |
+  Video filter. Reduce cross-luminance and cross-color.
+deesser: |
+  Audio filter. Apply de-essing to the audio.
+deflate: |
+  Video filter. Apply deflate effect.
+deflicker: |
+  Video filter. Remove temporal frame luminance variations.
 deinterlace_qsv: |
   Intel Quick Sync Video deinterlacing. Hardware-accelerated deinterlace.
   Very fast, low CPU usage on Intel platforms.
-select: |
-  Select frames to pass in the output based on an expression.
-  Example: `select='eq(n,0)+eq(n,100)'` passes only frames 0 and 100.
-aselect: |
-  Select audio frames to pass in the output based on an expression.
-reverse: |
-  Reverse video clip. Entire clip must fit in memory.
-  Example: `reverse` reverses the entire video.
-areverse: |
-  Reverse audio clip. Entire clip must fit in memory.
+deinterlace_vaapi: |
+  Video filter. Deinterlacing of VAAPI surfaces.
+dejudder: |
+  Video filter. Remove judder produced by pullup.
+delogo: |
+  Remove a TV station logo by interpolating surrounding pixels.
+  Example: `delogo=x=0:y=0:w=100:h=77` removes a logo at the top-left.
+denoise_vaapi: |
+  Video filter. VAAPI VPP for de-noise.
+deshake: |
+  Video filter. Stabilize shaky video.
+deshake_opencl: |
+  Video filter. Feature-point based video stabilization filter.
+despill: |
+  Video filter. Despill video.
+detelecine: |
+  Video filter. Apply an inverse telecine pattern.
+dialoguenhance: |
+  Audio filter. Audio Dialogue Enhancement.
+dilation: |
+  Video filter. Apply dilation effect.
+dilation_opencl: |
+  Video filter. Apply dilation effect.
+displace: |
+  Media filter. Displace pixels.
+doubleweave: |
+  Video filter. Weave input video fields into double number of frames.
+drawbox: |
+  Draw a colored box on the input video.
+  Example: `drawbox=x=10:y=10:w=100:h=100:color=red@0.5`.
+drawbox_vaapi: |
+  Video filter. Draw a colored box on the input video.
+drawgraph: |
+  Video filter. Draw a graph using input video metadata.
+drawgrid: |
+  Draw a colored grid on the input video.
+  Example: `drawgrid=w=100:h=100:color=red@0.5`.
+drawtext: |
+  Draw text on top of video frames using libfreetype. Supports time codes, expressions, and fonts.
+  Example: `drawtext=text='%{localtime}':x=10:y=10:fontsize=24:fontcolor=white`.
+drmeter: |
+  Audio filter. Measure audio dynamic range.
+dynaudnorm: |
+  Audio filter. Dynamic Audio Normalizer.
+earwax: |
+  Audio filter. Widen the stereo image.
+ebur128: |
+  EBU R128 loudness scanner. Measures integrated loudness, loudness range, and true peak.
+  Used for broadcast loudness compliance.
+edgedetect: |
+  Video filter. Detect and draw edge.
+elbg: |
+  Video filter. Apply posterize effect, using the ELBG algorithm.
+entropy: |
+  Video filter. Measure video frames entropy.
+epx: |
+  Video filter. Scale the input using EPX algorithm.
+eq: |
+  Adjust brightness, contrast, gamma, and saturation.
+  Example: `eq=brightness=0.1:contrast=1.5:gamma=0.8`.
+equalizer: |
+  Audio filter. Apply two-pole peaking equalization (EQ) filter.
+erosion: |
+  Video filter. Apply erosion effect.
+erosion_opencl: |
+  Video filter. Apply erosion effect.
+estdif: |
+  Video filter. Apply Edge Slope Tracing deinterlace.
+exposure: |
+  Video filter. Adjust exposure of the video stream.
+extractplanes: |
+  Video filter. Extract planes as grayscale frames.
+extrastereo: |
+  Audio filter. Increase difference between stereo audio channels.
+fade: |
+  Fade in/out the video brightness.
+  Example: `fade=t=in:st=0:d=5` fades in from black over 5 seconds.
+feedback: |
+  Media filter. Apply feedback video filter.
+fftdnoiz: |
+  Video filter. Denoise frames using 3D FFT.
+fftfilt: |
+  Video filter. Apply arbitrary expressions to pixels in frequency domain.
+field: |
+  Video filter. Extract a field from the input video.
+fieldhint: |
+  Video filter. Field matching using hints.
+fieldmatch: |
+  Video filter. Field matching for inverse telecine.
+fieldorder: |
+  Video filter. Set the field order.
+fillborders: |
+  Video filter. Fill borders of the input video.
+find_rect: |
+  Video filter. Find a user specified object.
+firequalizer: |
+  Audio filter. Finite Impulse Response Equalizer.
+flanger: |
+  Audio filter. Apply a flanging effect to the audio.
+flip_vulkan: |
+  Video filter. Flip both horizontally and vertically.
+floodfill: |
+  Video filter. Fill area with same color with another color.
+format: |
+  Convert the input video to the specified pixel format.
+  Example: `format=yuv420p` or `format=yuv420p10le`. Essential for codec compatibility.
+fps: |
+  Force a constant output frame rate. Drops or duplicates frames to achieve the target rate.
+  Example: `fps=30` or `fps=24000/1001` (23.976 fps).
+framepack: |
+  Video filter. Generate a frame packed stereoscopic video.
+framerate: |
+  Change frame rate with interpolation. Upsamples or downsamples between specified frame rates.
+  Higher quality than `fps` filter but slower.
+framestep: |
+  Video filter. Select one frame every N frames.
+freezedetect: |
+  Video filter. Detects frozen video input.
+freezeframes: |
+  Video filter. Freeze video frames.
+frei0r: |
+  Video filter. Apply a frei0r effect.
+frei0r_src: |
+  Video source filter. Generate a frei0r source.
+fspp: |
+  Video filter. Apply Fast Simple Post-processing filter.
+fsync: |
+  Video filter. Synchronize video frames from external source.
+gblur: |
+  Gaussian blur filter. Smooths the image with configurable sigma and radius.
+  Example: `gblur=sigma=2`.
+gblur_vulkan: |
+  Video filter. Gaussian Blur in Vulkan.
+geq: |
+  Video filter. Apply generic equation to each pixel.
+gradfun: |
+  Video filter. Debands video quickly using gradients.
+gradients: |
+  Video source filter. Draw a gradients.
+graphmonitor: |
+  Video filter. Show various filtergraph stats.
+grayworld: |
+  Video filter. Adjust white balance using LAB gray world algorithm.
+greyedge: |
+  Video filter. Estimates scene illumination by grey edge assumption.
+guided: |
+  Video filter. Apply Guided filter.
+haas: |
+  Audio filter. Apply Haas Stereo Enhancer.
+haldclut: |
+  Video filter. Adjust colors using a Hald CLUT.
+haldclutsrc: |
+  Video source filter. Provide an identity Hald CLUT.
+hdcd: |
+  Audio filter. Apply High Definition Compatible Digital (HDCD) decoding.
+headphone: |
+  Audio filter. Apply headphone binaural spatialization with HRTFs in additional streams.
+hflip: |
+  Horizontally flip the input video (mirror image).
+  Common for fixing mirrored webcam video.
+hflip_vulkan: |
+  Video filter. Horizontally flip the input video in Vulkan.
+highpass: |
+  Audio filter. Apply a high-pass filter with 3dB point frequency.
+highshelf: |
+  Audio filter. Apply a high shelf filter.
+hilbert: |
+  Audio source filter. Generate a Hilbert transform FIR coefficients.
+histeq: |
+  Video filter. Apply global color histogram equalization.
+histogram: |
+  Video filter. Compute and draw a histogram.
+hqdn3d: |
+  High quality de-noising using 3D (spatial+temporal) filtering.
+  Lightweight denoiser good for live encoding. Example: `hqdn3d=4:3:6:4.5`.
+hqx: |
+  Video filter. Scale the input by 2, 3 or 4 using the hq*x magnification algorithm.
+hstack: |
+  Stack video inputs horizontally (side by side).
+  All inputs must have the same height. Example: `[v1][v2]hstack=inputs=2`.
+hstack_qsv: |
+  Video filter. "Quick Sync Video" hstack.
+hstack_vaapi: |
+  Video filter. "VA-API" hstack.
+hsvhold: |
+  Video filter. Turns a certain HSV range into gray.
+hsvkey: |
+  Video filter. Turns a certain HSV range into transparency. Operates on YUV colors.
+hue: |
+  Adjust hue and saturation of the input video.
+  Example: `hue=h=30:s=1.5` shifts hue by 30° and increases saturation.
+huesaturation: |
+  Video filter. Apply hue-saturation-intensity adjustments.
+hwdownload: |
+  Video filter. Download a hardware frame to a normal frame.
+hwmap: |
+  Video filter. Map hardware frames.
+hwupload: |
+  Video filter. Upload a normal frame to a hardware frame.
+hwupload_cuda: |
+  Video filter. Upload a system memory frame to a CUDA device.
+hysteresis: |
+  Video filter. Grow first stream into second stream by connecting components.
+iccdetect: |
+  Video filter. Detect and parse ICC profiles.
+iccgen: |
+  Video filter. Generate and attach ICC profiles.
+identity: |
+  Video filter. Calculate the Identity between two video streams.
+idet: |
+  Video filter. Interlace detect Filter.
+il: |
+  Video filter. Deinterleave or interleave fields.
+inflate: |
+  Video filter. Apply inflate effect.
+interlace: |
+  Video filter. Convert progressive video into interlaced.
+interlace_vulkan: |
+  Video filter. Convert progressive video into interlaced.
+interleave: |
+  Temporally interleave video inputs. Alternates frames from each input.
+  Example: `interleave=inputs=3` interleaves 3 video sources.
+join: |
+  Audio filter. Join multiple audio streams into multi-channel output.
+kerndeint: |
+  Video filter. Apply kernel deinterlacing to the input.
+kirsch: |
+  Video filter. Apply kirsch operator.
+ladspa: |
+  Audio filter. Apply LADSPA effect.
+lagfun: |
+  Video filter. Slowly update darker pixels.
+latency: |
+  Video filter. Report video filtering latency.
+lenscorrection: |
+  Video filter. Rectify the image by correcting for lens distortion.
+libplacebo: |
+  Video filter. Apply various GPU filters from libplacebo.
+libvmaf: |
+  Video filter. Calculate the VMAF between two video streams.
+life: |
+  Video source filter. Create life.
+limitdiff: |
+  Video filter. Apply filtering with limiting difference.
+limiter: |
+  Video filter. Limit pixels components to the specified range.
 loop: |
   Loop video frames a specified number of times.
   Example: `loop=loop=3:size=100:start=0` loops first 100 frames 3 times.
-aloop: |
-  Loop audio samples a specified number of times.
-  Example: `aloop=loop=3:size=1024` loops 1024 samples 3 times.
+loudnorm: |
+  EBU R128 loudness normalization. Normalizes audio to broadcast loudness targets.
+  Example: `loudnorm=I=-16:TP=-1.5:LRA=11`.
+lowpass: |
+  Audio filter. Apply a low-pass filter with 3dB point frequency.
+lowshelf: |
+  Audio filter. Apply a low shelf filter.
+lumakey: |
+  Video filter. Turns a certain luma into transparency.
+lut: |
+  Video filter. Compute and apply a lookup table to the RGB/YUV input video.
+lut1d: |
+  Video filter. Adjust colors using a 1D LUT.
+lut2: |
+  Video filter. Compute and apply a lookup table from two video inputs.
+lut3d: |
+  Video filter. Adjust colors using a 3D LUT.
+lutrgb: |
+  Video filter. Compute and apply a lookup table to the RGB input video.
+lutyuv: |
+  Video filter. Compute and apply a lookup table to the YUV input video.
+mandelbrot: |
+  Video source filter. Render a Mandelbrot fractal.
+maskedclamp: |
+  Media filter. Clamp first stream with second stream and third stream.
+maskedmax: |
+  Media filter. Apply filtering with maximum difference of two streams.
+maskedmerge: |
+  Media filter. Merge first stream with second stream using third stream as mask.
+maskedmin: |
+  Media filter. Apply filtering with minimum difference of two streams.
+maskedthreshold: |
+  Video filter. Pick pixels comparing absolute difference of two streams with threshold.
+maskfun: |
+  Video filter. Create Mask.
+mcdeint: |
+  Video filter. Apply motion compensating deinterlacing.
+mcompand: |
+  Audio filter. Multiband Compress or expand audio dynamic range.
+median: |
+  Video filter. Apply Median filter.
+mergeplanes: |
+  Video filter. Merge planes.
+mestimate: |
+  Video filter. Generate motion vectors.
+metadata: |
+  Manipulate frame metadata (display, modify, or delete key-value pairs).
+  Example: `metadata=mode=print:file=metadata.txt`.
+midequalizer: |
+  Video filter. Apply Midway Equalization.
+minterpolate: |
+  Video filter. Frame rate conversion using Motion Interpolation.
+mix: |
+  Video filter. Mix video inputs.
+monochrome: |
+  Video filter. Convert video to gray using custom color filter.
+morpho: |
+  Video filter. Apply Morphological filter.
+movie: |
+  Media filter. Read from a movie source.
+mpdecimate: |
+  Video filter. Remove near-duplicate frames.
+mptestsrc: |
+  Video source filter. Generate various test pattern.
+msad: |
+  Video filter. Calculate the MSAD between two video streams.
+multiply: |
+  Video filter. Multiply first video stream with second video stream.
+negate: |
+  Video filter. Negate input video.
+nlmeans: |
+  Non-local means de-noiser. Excellent quality for film grain and moderate noise.
+  Slow but produces very clean output. Example: `nlmeans=s=3.0`.
+nlmeans_opencl: |
+  Video filter. Non-local means denoiser through OpenCL.
+nlmeans_vulkan: |
+  Video filter. Non-local means denoiser (Vulkan).
+nnedi: |
+  Video filter. Apply neural network edge directed interpolation intra-only deinterlacer.
+noformat: |
+  Video filter. Force libavfilter not to use any of the specified pixel formats for the input to the next filter.
+noise: |
+  Video filter. Add noise.
+normalize: |
+  Video filter. Normalize RGB video.
+null: |
+  Video filter. Pass the source unchanged to the output.
+nullsink: |
+  Null video sink. Discards all input video data.
+  Used to consume unwanted video streams in filtergraphs.
+nullsrc: |
+  Null video source. Generates empty video frames (black).
+  Example: `nullsrc=s=256x256:r=25` generates 256x256 black video at 25 fps.
+openclsrc: |
+  Video source filter. Generate video using an OpenCL program.
+oscilloscope: |
+  Video filter. 2D Video Oscilloscope.
+overlay: |
+  Overlay one video on top of another. The primary filter for compositing.
+  Example: `overlay=10:20` places the overlay at x=10, y=20 on the main video.
+overlay_cuda: |
+  Video filter. Overlay one video on top of another using CUDA.
+overlay_opencl: |
+  Video filter. Overlay one video on top of another.
+overlay_qsv: |
+  Video filter. Quick Sync Video overlay.
+overlay_vaapi: |
+  Video filter. Overlay one video on top of another.
+overlay_vulkan: |
+  Video filter. Overlay a source on top of another.
+owdenoise: |
+  Video filter. Denoise using wavelets.
+pad: |
+  Pad the input video to the specified size, adding colored borders.
+  Example: `pad=1920:1080:(ow-iw)/2:(oh-ih)/2` centers the input in a 1920x1080 canvas.
+pad_cuda: |
+  Video filter. CUDA-based GPU padding filter.
+pad_opencl: |
+  Video filter. Pad the input video.
+pad_vaapi: |
+  Video filter. Pad the input video.
+pal100bars: |
+  Video source filter. Generate PAL 100% color bars.
+pal75bars: |
+  Video source filter. Generate PAL 75% color bars.
+palettegen: |
+  Video filter. Find the optimal palette for a given stream.
+paletteuse: |
+  Video filter. Use a palette to downsample an input video stream.
+pan: |
+  Remix audio channels with custom coefficients (panning).
+  Example: `pan=stereo|FL=FL+0.5*FC|FR=FR+0.5*FC` mixes center into front channels.
+perlin: |
+  Video source filter. Generate Perlin noise.
+perms: |
+  Video filter. Set permissions for the output video frame.
+perspective: |
+  Video filter. Correct the perspective of video.
+phase: |
+  Video filter. Phase shift fields.
+photosensitivity: |
+  Video filter. Filter out photosensitive epilepsy seizure-inducing flashes.
+pixdesctest: |
+  Video filter. Test pixel format definitions.
+pixelize: |
+  Video filter. Pixelize video.
+pixscope: |
+  Video filter. Pixel data analysis.
+pp7: |
+  Video filter. Apply Postprocessing 7 filter.
+premultiply: |
+  Video filter. PreMultiply first stream with first plane of second stream.
+premultiply_dynamic: |
+  Video filter. Premultiply or unpremultiply an image in-place, as needed.
+prewitt: |
+  Video filter. Apply prewitt operator.
+prewitt_opencl: |
+  Video filter. Apply prewitt operator.
+procamp_vaapi: |
+  Video filter. ProcAmp (color balance) adjustments for hue, saturation, brightness, contrast.
+program_opencl: |
+  Video filter. Filter video using an OpenCL program.
+pseudocolor: |
+  Video filter. Make pseudocolored video frames.
+psnr: |
+  Video filter. Calculate the PSNR between two video streams.
+pullup: |
+  Video filter. Pullup from field sequence to frames.
+qp: |
+  Video filter. Change video quantization parameters.
+random: |
+  Video filter. Return random frames.
+readeia608: |
+  Video filter. Read EIA-608 Closed Caption codes from input video and write them to frame metadata.
+readvitc: |
+  Video filter. Read vertical interval timecode and write it to frame metadata.
 realtime: |
   Slow down filtering to match real-time playback speed.
   Useful when output needs to be processed at original speed (e.g., streaming).
-arealtime: |
-  Slow down audio filtering to match real-time playback speed.
+remap: |
+  Media filter. Remap pixels.
+remap_opencl: |
+  Media filter. Remap pixels using OpenCL.
+removegrain: |
+  Video filter. Remove grain.
+removelogo: |
+  Video filter. Remove a TV logo based on a mask image.
+repeatfields: |
+  Video filter. Hard repeat fields based on MPEG repeat field flag.
+replaygain: |
+  Audio filter. ReplayGain scanner.
+reverse: |
+  Reverse video clip. Entire clip must fit in memory.
+  Example: `reverse` reverses the entire video.
+rgbashift: |
+  Video filter. Shift RGBA.
+rgbtestsrc: |
+  Video source filter. Generate RGB test pattern.
+roberts: |
+  Video filter. Apply roberts cross operator.
+roberts_opencl: |
+  Video filter. Apply roberts operator.
+rotate: |
+  Rotate the video by an arbitrary angle. Can also adjust the output size.
+  Example: `rotate=PI/2` rotates 90° clockwise.
+rubberband: |
+  Audio filter. Apply time-stretching and pitch-shifting.
+sab: |
+  Video filter. Apply shape adaptive blur.
+scale: |
+  Scale (resize) the input video. The most commonly used video filter.
+  Width and height can be set in pixels, or use `iw/2`, `ow/dar`, and other expressions.
+  Example: `scale=1280:720` or `scale=1920:-2` (preserve aspect ratio with even height).
+scale2ref: |
+  Media filter. Scale the input video size and/or convert the image format to the given reference.
+scale_cuda: |
+  Video filter. GPU accelerated video resizer.
+scale_qsv: |
+  Video filter. Quick Sync Video "scaling and format conversion".
+scale_vaapi: |
+  Video filter. Scale to/from VAAPI surfaces.
+scale_vulkan: |
+  Video filter. Scale Vulkan frames.
+scdet: |
+  Video filter. Detect video scene change.
+scdet_vulkan: |
+  Video filter. Detect video scene change.
+scharr: |
+  Video filter. Apply scharr operator.
+scroll: |
+  Video filter. Scroll input video.
+segment: |
+  Video filter. Segment video stream.
+select: |
+  Select frames to pass in the output based on an expression.
+  Example: `select='eq(n,0)+eq(n,100)'` passes only frames 0 and 100.
+selectivecolor: |
+  Video filter. Apply CMYK adjustments to specific color ranges.
+sendcmd: |
+  Video filter. Send commands to filters.
+separatefields: |
+  Video filter. Split input video frames into fields.
+setdar: |
+  Set the Display Aspect Ratio (DAR) of the video. Changes metadata without resampling.
+  Common values: `16:9` (widescreen), `4:3` (standard).
+setfield: |
+  Video filter. Force field for the output video frame.
+setparams: |
+  Video filter. Force field, or color property for the output video frame.
+setpts: |
+  Set presentation timestamp (PTS) for output frames. Controls timing and speed.
+  Example: `setpts=0.5*PTS` doubles speed, `setpts=2*PTS` halves speed.
+setrange: |
+  Video filter. Force color range for the output video frame.
+setsar: |
+  Set the Sample Aspect Ratio (SAR) of the video. Changes metadata without resampling.
+  Common values: `1:1` (square pixels), `16:11` (NTSC), `64:45` (PAL).
+settb: |
+  Video filter. Set timebase for the video output link.
+sharpness_vaapi: |
+  Video filter. VAAPI VPP for sharpness.
+shear: |
+  Video filter. Shear transform the input image.
+showcqt: |
+  Media filter. Convert input audio to a CQT (Constant/Clamped Q Transform) spectrum video output.
+showcwt: |
+  Media filter. Convert input audio to a CWT (Continuous Wavelet Transform) spectrum video output.
+showfreqs: |
+  Media filter. Convert input audio to a frequencies video output.
+showinfo: |
+  Video filter. Show textual information for each video frame.
+showpalette: |
+  Video filter. Display frame palette.
+showspatial: |
+  Media filter. Convert input audio to a spatial video output.
+showspectrum: |
+  Media filter. Convert input audio to a spectrum video output.
+showspectrumpic: |
+  Media filter. Convert input audio to a spectrum video output single picture.
+showvolume: |
+  Media filter. Convert input audio volume to video output.
+showwaves: |
+  Media filter. Convert input audio to a video output.
+showwavespic: |
+  Media filter. Convert input audio to a video output single picture.
+shuffleframes: |
+  Video filter. Shuffle video frames.
+shufflepixels: |
+  Video filter. Shuffle video pixels.
+shuffleplanes: |
+  Video filter. Shuffle video planes.
+sidechaincompress: |
+  Audio filter. Sidechain compressor.
+sidechaingate: |
+  Audio filter. Audio sidechain gate.
+sidedata: |
+  Video filter. Manipulate video frame side data.
+sierpinski: |
+  Video source filter. Render a Sierpinski fractal.
+signalstats: |
+  Video filter. Generate statistics from video analysis.
+signature: |
+  Video filter. Calculate the MPEG-7 video signature.
+silencedetect: |
+  Detect silence in an audio stream. Outputs silence start/end timestamps.
+  Example: `silencedetect=n=-50dB:d=2` detects silence below -50 dB for 2+ seconds.
+silenceremove: |
+  Audio filter. Remove silence.
+sinc: |
+  Audio source filter. Generate a sinc kaiser-windowed low-pass, high-pass, band-pass, or band-reject FIR coefficients.
+sine: |
+  Generate sine wave audio signal. Simpler interface than `sin`.
+  Example: `sine=frequency=1000:duration=5`.
+siti: |
+  Video filter. Calculate spatial information (SI) and temporal information (TI).
+smartblur: |
+  Video filter. Blur the input video without impacting the outlines.
+smptebars: |
+  Generate SMPTE color bars test pattern.
+  Standard video test signal for calibration and alignment.
+smptehdbars: |
+  Video source filter. Generate SMPTE HD color bars.
+sobel: |
+  Video filter. Apply sobel operator.
+sobel_opencl: |
+  Video filter. Apply sobel operator.
+spectrumsynth: |
+  Media filter. Convert input spectrum videos to audio output.
+speechnorm: |
+  Speech normalizer. Levels volume for speech content.
+  Good for podcasts and interviews with varying speaker volumes.
+split: |
+  Pass the input video to multiple outputs. Used to apply different filters to the same source.
+  Example: `[0:v]split=2[v1][v2]` creates two copies of the input.
+spp: |
+  Video filter. Apply a simple post processing filter.
+sr_amf: |
+  Video filter. AMF HQ video upscaling.
+ssim: |
+  Video filter. Calculate the SSIM between two video streams.
+ssim360: |
+  Video filter. Calculate the SSIM between two 360 video streams.
+stereo3d: |
+  Video filter. Convert video stereoscopic 3D view.
+stereotools: |
+  Audio filter. Apply various stereo tools.
+stereowiden: |
+  Audio filter. Apply stereo widening effect.
+streamselect: |
+  Media filter. Select video streams.
+subtitles: |
+  Video filter. Render text subtitles onto input video using the libass library.
+super2xsai: |
+  Video filter. Scale the input by 2x using the Super2xSaI pixel art algorithm.
+superequalizer: |
+  Audio filter. Apply 18 band equalization filter.
+surround: |
+  Audio filter. Apply audio surround upmix filter.
+swaprect: |
+  Video filter. Swap 2 rectangular objects in video.
+swapuv: |
+  Video filter. Swap U and V components.
+tblend: |
+  Video filter. Blend successive frames.
+telecine: |
+  Video filter. Apply a telecine pattern.
+testsrc: |
+  Video source filter. Generate test pattern.
+testsrc2: |
+  Video source filter. Generate another test pattern.
+thistogram: |
+  Video filter. Compute and draw a temporal histogram.
+threshold: |
+  Media filter. Threshold first video stream using other video streams.
+thumbnail: |
+  Video filter. Select the most representative frame in a given sequence of consecutive frames.
+thumbnail_cuda: |
+  Video filter. Select the most representative frame in a given sequence of consecutive frames using CUDA.
+tile: |
+  Video filter. Tile several successive frames together.
+tiltandshift: |
+  Video filter. Generate a tilt-and-shift'd video.
+tiltshelf: |
+  Audio filter. Apply a tilt shelf filter.
+tinterlace: |
+  Video filter. Perform temporal field interlacing.
+tlut2: |
+  Video filter. Compute and apply a lookup table from two successive frames.
+tmedian: |
+  Video filter. Pick median pixels from successive frames.
+tmidequalizer: |
+  Video filter. Apply Temporal Midway Equalization.
+tmix: |
+  Video filter. Mix successive video frames.
+tonemap: |
+  Video filter. Conversion to/from different dynamic ranges.
+tonemap_opencl: |
+  Video filter. Perform HDR to SDR conversion with tonemapping.
+tonemap_vaapi: |
+  Video filter. VAAPI VPP for tone-mapping.
+tpad: |
+  Video filter. Temporarily pad video frames.
+transpose: |
+  Transpose (rotate 90°) the video. Direction: 0=CCW+vertical flip, 1=90° CW, 2=90° CCW, 3=CW+vertical flip.
+  Example: `transpose=1` rotates 90° clockwise.
+transpose_opencl: |
+  Video filter. Transpose input video.
+transpose_vaapi: |
+  Video filter. VAAPI VPP for transpose.
+transpose_vulkan: |
+  Video filter. Transpose Vulkan Filter.
+treble: |
+  Audio filter. Boost or cut upper frequencies.
+tremolo: |
+  Audio filter. Apply tremolo effect.
+trim: |
+  Select a continuous section of the input by time or frame number.
+  Example: `trim=start=5:end=10` keeps frames from 5s to 10s.
+unpremultiply: |
+  Video filter. UnPreMultiply first stream with first plane of second stream.
+unsharp: |
+  Sharpen or blur the video using unsharp mask filter.
+  Example: `unsharp=5:5:1.5` sharpens with 5x5 kernel and 1.5 strength.
+unsharp_opencl: |
+  Video filter. Apply unsharp mask to input video.
+untile: |
+  Video filter. Untile a frame into a sequence of frames.
+uspp: |
+  Video filter. Apply Ultra Simple / Slow Post-processing filter.
+v360: |
+  Video filter. Convert 360 projection of video.
+vaguedenoiser: |
+  Video filter. Apply a Wavelet based Denoiser.
+varblur: |
+  Video filter. Apply Variable Blur filter.
+vectorscope: |
+  Video filter. Video vectorscope.
+vflip: |
+  Vertically flip the input video (upside down).
+vflip_vulkan: |
+  Video filter. Vertically flip the input video in Vulkan.
+vfrdet: |
+  Video filter. Variable frame rate detect filter.
+vibrance: |
+  Video filter. Boost or alter saturation.
+vibrato: |
+  Audio filter. Apply vibrato effect.
+vidstabdetect: |
+  Video filter. Extract relative transformations, pass 1 of 2 for stabilization (see vidstabtransform for pass 2).
+vidstabtransform: |
+  Video filter. Transform the frames, pass 2 of 2 for stabilization (see vidstabdetect for pass 1).
+vif: |
+  Video filter. Calculate the VIF between two video streams.
+vignette: |
+  Video filter. Make or reverse a vignette effect.
+virtualbass: |
+  Audio filter. Audio Virtual Bass.
+vmafmotion: |
+  Video filter. Calculate the VMAF Motion score.
+volume: |
+  Change input audio volume. Supports linear multiplier, decibels, and expressions.
+  Example: `volume=2.0` (double), `volume=3dB` (increase by 3 dB), `volume=0.5` (halve).
+volumedetect: |
+  Detect audio volume levels. Reports mean, max volume, and histogram.
+  Use for normalization planning: `volumedetect` then apply `volume`.
+vpp_amf: |
+  Video filter. AMF video scaling and format conversion.
+vpp_qsv: |
+  Video filter. Quick Sync Video "VPP".
+vsrc_amf: |
+  Video source filter. AMD AMF screen capture.
+vstack: |
+  Stack video inputs vertically (top and bottom).
+  All inputs must have the same width. Example: `[v1][v2]vstack=inputs=2`.
+vstack_qsv: |
+  Video filter. "Quick Sync Video" vstack.
+vstack_vaapi: |
+  Video filter. "VA-API" vstack.
+w3fdif: |
+  Weston 3-Field Deinterlacing Filter. BBC-developed deinterlacer.
+  Good quality with moderate performance. Supports simple and complex modes.
+waveform: |
+  Video filter. Video waveform monitor.
+weave: |
+  Video filter. Weave input video fields into frames.
+xbr: |
+  Video filter. Scale the input using xBR algorithm.
+xcorrelate: |
+  Video filter. Cross-correlate first video stream with second video stream.
+xfade: |
+  Video filter. Cross fade one video with another video.
+xfade_opencl: |
+  Video filter. Cross fade one video with another video.
+xfade_vulkan: |
+  Video filter. Cross fade one video with another video.
+xmedian: |
+  Video filter. Pick median pixels from several video inputs.
+xpsnr: |
+  Video filter. Calculate the extended perceptually weighted peak signal-to-noise ratio (XPSNR) between two video streams.
+xstack: |
+  Stack video inputs in a custom grid layout.
+  Example: `xstack=inputs=4:layout=0_0|w0_0|0_h0|w0_h0` creates a 2x2 grid.
+xstack_qsv: |
+  Video filter. "Quick Sync Video" xstack.
+xstack_vaapi: |
+  Video filter. "VA-API" xstack.
+yadif: |
+  Yet Another Deinterlacing Filter. Standard deinterlacer with spatial and temporal modes.
+  Example: `yadif=0` (temporal, default), `yadif=1` (temporal and spatial).
+yadif_cuda: |
+  Video filter. Deinterlace CUDA frames.
+yaepblur: |
+  Video filter. Yet another edge preserving blur filter.
+yuvtestsrc: |
+  Video source filter. Generate YUV test pattern.
+zmq: |
+  Video filter. Receive commands through ZMQ and broker them to filters.
+zoneplate: |
+  Video source filter. Generate zone-plate.
+zoompan: |
+  Video filter. Apply Zoom & Pan effect.
+zscale: |
+  Video filter. Apply resizing, colorspace and bit depth conversion.

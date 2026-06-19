@@ -1,147 +1,790 @@
-mp4: |
-  MP4 (MPEG-4 Part 14) demuxer. Reads the most widely used multimedia container format.
-  Supports H.264, HEVC, AAC, and many other codecs. Handles fragmented MP4 (fMP4) for DASH.
-mov: |
-  QuickTime / MOV demuxer. Reads Apple's multimedia container format.
-  Very similar to MP4. Supports ProRes, timecode, chapters, and multiple tracks.
-avi: |
-  AVI (Audio Video Interleaved) demuxer. Reads Microsoft's legacy multimedia container.
-  Handles OpenDML extensions for files larger than 2 GB.
-matroska: |
-  Matroska (MKV) demuxer. Reads the open-standard multimedia container.
-  Supports chapters, attachments, ordered chapters, and virtually all codec types.
-webm: |
-  WebM demuxer. Reads Google's web video subset of Matroska.
-  Supports VP8/VP9 video and Vorbis/Opus audio only.
-flv: |
-  FLV (Flash Video) demuxer. Reads Adobe Flash Video container.
-  Supports H.264/AAC and VP6/MP3. Legacy but still found in old content.
-mpegts: |
-  MPEG Transport Stream demuxer. Reads DVB, ATSC, IPTV, and HLS streams.
-  Supports program selection, teletext, and DVB subtitles. Robust error recovery.
-mpegvideo: |
-  MPEG-PS (Program Stream) demuxer. Reads MPEG-1/MPEG-2 program streams.
-  Used for DVD-Video, SVCD, and VOB files.
-dvdvideo: |
-  DVD-Video demuxer. Reads full DVD-Video structure (IFO/VOB).
-  Supports DVD menus, angles, and chapter navigation.
+"3dostr": |
+  Demuxer: 3DO STR.
+"3g2": |
+  Demuxer: QuickTime / MOV.
+"3gp": |
+  Demuxer: QuickTime / MOV.
+"4xm": |
+  Demuxer: 4X Technologies.
+aa: |
+  Demuxer: Audible AA format files.
+aac: |
+  Raw ADTS AAC demuxer. Reads AAC audio in ADTS frames.
+  Each frame is self-contained with its own header.
+aax: |
+  Demuxer: CRI AAX.
+ac3: |
+  Raw AC-3 demuxer. Reads Dolby Digital audio streams.
+  Auto-detects sync words. Supports AC-3 frame parsing.
+ac4: |
+  Demuxer: raw AC-4.
+ace: |
+  Demuxer: tri-Ace Audio Container.
+acm: |
+  Demuxer: Interplay ACM.
+act: |
+  Demuxer: ACT Voice file format.
+adf: |
+  Demuxer: Artworx Data Format.
+adp: |
+  Demuxer: ADP.
+ads: |
+  Demuxer: Sony PS2 ADS.
+adx: |
+  Demuxer: CRI ADX.
+aea: |
+  Demuxer: MD STUDIO audio.
+afc: |
+  Demuxer: AFC.
+aiff: |
+  Audio IFF demuxer. Reads Apple AIFF format.
+  Supports AIFF-C compressed variants and embedded metadata.
+aix: |
+  Demuxer: CRI AIX.
+alaw: |
+  Demuxer: PCM A-law.
+alias_pix: |
+  Demuxer: Alias/Wavefront PIX image.
+alp: |
+  Demuxer: LEGO Racers ALP.
+amr: |
+  Demuxer: 3GPP AMR.
+amrnb: |
+  Demuxer: raw AMR-NB.
+amrwb: |
+  Demuxer: raw AMR-WB.
+anm: |
+  Demuxer: Deluxe Paint Animation.
+apac: |
+  Demuxer: raw APAC.
+apc: |
+  Demuxer: CRYO APC.
+ape: |
+  Monkey's Audio demuxer. Reads APE lossless audio files.
+  High compression ratio lossless codec popular in China.
+apm: |
+  Demuxer: Ubisoft Rayman 2 APM.
+apng: |
+  APNG demuxer. Reads Animated PNG files as video.
+  Supports transparency and variable frame timing.
+aptx: |
+  Demuxer: raw aptX.
+aptx_hd: |
+  Demuxer: raw aptX HD.
+apv: |
+  Demuxer: APV raw bitstream.
+aqtitle: |
+  Demuxer: AQTitle subtitles.
+argo_asf: |
+  Demuxer: Argonaut Games ASF.
+argo_brp: |
+  Demuxer: Argonaut Games BRP.
+argo_cvg: |
+  Demuxer: Argonaut Games CVG.
 asf: |
   ASF (Advanced Streaming Format) demuxer. Reads Microsoft ASF/WMV/WMA container.
   Supports WMV video, WMA audio, and metadata.
 asf_o: |
   ASF (old) demuxer. Alternative ASF reader with different parsing for problematic files.
   Fallback for ASF files that fail with the primary demuxer.
-aac: |
-  Raw ADTS AAC demuxer. Reads AAC audio in ADTS frames.
-  Each frame is self-contained with its own header.
-ac3: |
-  Raw AC-3 demuxer. Reads Dolby Digital audio streams.
-  Auto-detects sync words. Supports AC-3 frame parsing.
-eac3: |
-  Raw E-AC-3 demuxer. Reads Dolby Digital Plus audio streams.
-  Enhanced AC-3 with higher bitrates and more channels.
-dts: |
-  Raw DTS demuxer. Reads DTS (DCA) audio streams.
-  Supports DTS core, DTS-ES, and DTS-HD extensions.
-flac: |
-  Raw FLAC demuxer. Reads FLAC audio with metadata.
-  Supports Vorbis comments, cover art, cue sheets, and seeking.
-mp3: |
-  Raw MP3 demuxer. Reads MP3 audio files with ID3 tag support.
-  Supports ID3v1, ID3v2, APEv2 tags and LAME headers.
-ogg: |
-  OGG demuxer. Reads Xiph.org container format.
-  Supports Vorbis, Opus, FLAC, Speex, and Theora codecs.
-wav: |
-  WAV demuxer. Reads Microsoft/IBM audio container.
-  Supports PCM, ADPCM, MP3, AC-3, and many other audio codecs.
-aiff: |
-  Audio IFF demuxer. Reads Apple AIFF format.
-  Supports AIFF-C compressed variants and embedded metadata.
-caf: |
-  Apple CAF demuxer. Reads Core Audio Format.
-  Supports many audio codecs in Apple's modern audio container.
-h264: |
-  Raw H.264 demuxer. Reads H.264 Annex B bitstream.
-  No container — parses NAL units directly from the bitstream.
-hevc: |
-  Raw HEVC demuxer. Reads H.265 Annex B bitstream.
-  No container — parses NAL units directly.
+ass: |
+  SSA/ASS subtitle demuxer. Reads SubStation Alpha subtitle files.
+  Supports rich formatting including fonts, colors, and positioning.
+ast: |
+  Demuxer: AST (Audio Stream).
+au: |
+  Demuxer: Sun AU.
 av1: |
   Raw AV1 Annex B demuxer. Reads AV1 bitstream without container.
   Parses OBU (Open Bitstream Units) directly.
-ivf: |
-  IVF demuxer. Reads On2 IVF container for VP8/VP9/AV1.
-  Simple container used in codec testing and development.
+avi: |
+  AVI (Audio Video Interleaved) demuxer. Reads Microsoft's legacy multimedia container.
+  Handles OpenDML extensions for files larger than 2 GB.
+avisynth: |
+  AviSynth demuxer. Reads AviSynth script files (.avs) as video input.
+  Windows-only. Provides frame-accurate access via AviSynth scripting.
+avr: |
+  Demuxer: AVR (Audio Visual Research).
+avs: |
+  Demuxer: Argonaut Games Creature Shock.
+avs2: |
+  Demuxer: raw AVS2-P2/IEEE1857.4.
+avs3: |
+  Demuxer: raw AVS3-P2/IEEE1857.10.
+bethsoftvid: |
+  Demuxer: Bethesda Softworks VID.
+bfi: |
+  Demuxer: Brute Force & Ignorance.
+bfstm: |
+  Demuxer: BFSTM (Binary Cafe Stream).
+bin: |
+  Demuxer: Binary text.
+bink: |
+  Demuxer: Bink.
+binka: |
+  Demuxer: Bink Audio.
+bit: |
+  Demuxer: G.729 BIT file format.
+bitpacked: |
+  Demuxer: Bitpacked.
+bmp_pipe: |
+  Demuxer: piped bmp sequence.
+bmv: |
+  Demuxer: Discworld II BMV.
+boa: |
+  Demuxer: Black Ops Audio.
+bonk: |
+  Demuxer: raw Bonk.
+brender_pix: |
+  Demuxer: BRender PIX image.
+brstm: |
+  Demuxer: BRSTM (Binary Revolution Stream).
+c93: |
+  Demuxer: Interplay C93.
+caf: |
+  Apple CAF demuxer. Reads Core Audio Format.
+  Supports many audio codecs in Apple's modern audio container.
+cavsvideo: |
+  Demuxer: raw Chinese AVS (Audio Video Standard).
+cdg: |
+  Demuxer: CD Graphics.
+cdxl: |
+  Demuxer: Commodore CDXL video.
+cine: |
+  Demuxer: Phantom Cine.
+codec2: |
+  Demuxer: codec2 .c2 demuxer.
+codec2raw: |
+  Demuxer: raw codec2 demuxer.
 concat: |
   Concatenation demuxer. Reads a text file listing URLs to play sequentially.
   Each line is a file path or URL. Supports duration and in/out points.
-concatf: |
-  Concatenation (file) demuxer. File-based concatenation protocol.
-  Safer for filenames with special characters.
+cri_pipe: |
+  Demuxer: piped cri sequence.
+d: |
+  Demuxer: x11grab         X11 screen capture, using XCB.
+dash: |
+  DASH demuxer. Reads DASH MPD manifests for adaptive streaming.
+  Supports Dynamic Adaptive Streaming over HTTP.
+data: |
+  Raw data demuxer. Reads arbitrary data without interpretation.
+  Generic format for unknown or custom data streams.
+daud: |
+  Demuxer: D-Cinema audio.
+dcstr: |
+  Demuxer: Sega DC STR.
+dds_pipe: |
+  Demuxer: piped dds sequence.
+derf: |
+  Demuxer: Xilam DERF.
+dfa: |
+  Demuxer: Chronomaster DFA.
+dfpwm: |
+  Demuxer: raw DFPWM1a.
+dhav: |
+  Demuxer: Video DAV.
+dirac: |
+  Demuxer: raw Dirac.
+dnxhd: |
+  Raw DNxHD demuxer. Reads Avid DNxHD video elementary streams.
+  Professional broadcast intermediate codec.
+dpx_pipe: |
+  Demuxer: piped dpx sequence.
+dsf: |
+  DSF demuxer. Reads DSD Stream Files (DSDIFF-based).
+  Sony's DSD audio format for high-resolution audio.
+dsicin: |
+  Demuxer: Delphine Software International CIN.
+dss: |
+  Demuxer: Digital Speech Standard (DSS).
+dts: |
+  Raw DTS demuxer. Reads DTS (DCA) audio streams.
+  Supports DTS core, DTS-ES, and DTS-HD extensions.
+dtshd: |
+  Demuxer: raw DTS-HD.
+dv: |
+  DV (Digital Video) demuxer. Reads DV25/DV50/DV100 from camcorder tapes.
+  Common for capturing from MiniDV/DVCAM equipment.
+dvbsub: |
+  Demuxer: raw dvbsub.
+dvbtxt: |
+  Demuxer: dvbtxt.
+dvdvideo: |
+  DVD-Video demuxer. Reads full DVD-Video structure (IFO/VOB).
+  Supports DVD menus, angles, and chapter navigation.
+dxa: |
+  Demuxer: DXA.
+ea: |
+  Demuxer: Electronic Arts Multimedia.
+ea_cdata: |
+  Demuxer: Electronic Arts cdata.
+eac3: |
+  Raw E-AC-3 demuxer. Reads Dolby Digital Plus audio streams.
+  Enhanced AC-3 with higher bitrates and more channels.
+epaf: |
+  Demuxer: Ensoniq Paris Audio File.
+evc: |
+  Demuxer: EVC Annex B.
+exr_pipe: |
+  Demuxer: piped exr sequence.
+f32be: |
+  Demuxer: PCM 32-bit floating-point big-endian.
+f32le: |
+  Demuxer: PCM 32-bit floating-point little-endian.
+f64be: |
+  Demuxer: PCM 64-bit floating-point big-endian.
+f64le: |
+  Demuxer: PCM 64-bit floating-point little-endian.
+ffmetadata: |
+  Demuxer: FFmpeg metadata in text.
+film_cpk: |
+  Demuxer: Sega FILM / CPK.
+filmstrip: |
+  Demuxer: Adobe Filmstrip.
+fits: |
+  Demuxer: Flexible Image Transport System.
+flac: |
+  Raw FLAC demuxer. Reads FLAC audio with metadata.
+  Supports Vorbis comments, cover art, cue sheets, and seeking.
+flic: |
+  Demuxer: FLI/FLC/FLX animation.
+flv: |
+  FLV (Flash Video) demuxer. Reads Adobe Flash Video container.
+  Supports H.264/AAC and VP6/MP3. Legacy but still found in old content.
+frm: |
+  Demuxer: Megalux Frame.
+fsb: |
+  Demuxer: FMOD Sample Bank.
+fwse: |
+  Demuxer: Capcom's MT Framework sound.
+g722: |
+  Demuxer: raw G.722.
+g723_1: |
+  Demuxer: G.723.1.
+g726: |
+  Demuxer: raw big-endian G.726 ("left aligned").
+g726le: |
+  Demuxer: raw little-endian G.726 ("right aligned").
+g728: |
+  Demuxer: raw G.728.
+g729: |
+  Demuxer: G.729 raw format demuxer.
+gdv: |
+  Demuxer: Gremlin Digital Video.
+gem_pipe: |
+  Demuxer: piped gem sequence.
+genh: |
+  Demuxer: GENeric Header.
+gif: |
+  GIF demuxer. Reads animated GIF images as video.
+  Limited to 256-color palette per frame. No audio.
+gif_pipe: |
+  Demuxer: piped gif sequence.
+gsm: |
+  Demuxer: raw GSM.
+gxf: |
+  Demuxer: GXF (General eXchange Format).
+h261: |
+  Demuxer: raw H.261.
+h263: |
+  Demuxer: raw H.263.
+h264: |
+  Raw H.264 demuxer. Reads H.264 Annex B bitstream.
+  No container — parses NAL units directly from the bitstream.
+hca: |
+  Demuxer: CRI HCA.
+hcom: |
+  Demuxer: Macintosh HCOM.
+hdr_pipe: |
+  Demuxer: piped hdr sequence.
+hevc: |
+  Raw HEVC demuxer. Reads H.265 Annex B bitstream.
+  No container — parses NAL units directly.
+hls: |
+  HLS (Apple HTTP Live Streaming) demuxer. Reads M3U8 playlists and segments.
+  Supports live and VOD HLS streams with adaptive bitrate.
+hnm: |
+  Demuxer: Cryo HNM v4.
+hxvs: |
+  Demuxer: HXVF/HXVS IP camera format.
+iamf: |
+  Demuxer: Raw Immersive Audio Model and Formats.
+ico: |
+  Demuxer: Microsoft Windows ICO.
+idcin: |
+  Demuxer: id Cinematic.
+idf: |
+  Demuxer: iCE Draw File.
+iff: |
+  Demuxer: IFF (Interchange File Format).
+ifv: |
+  Demuxer: IFV CCTV DVR.
+ilbc: |
+  Demuxer: iLBC storage.
 image2: |
   Image sequence demuxer. Reads numbered image files as a video stream.
   Pattern: `img%03d.png`. Supports PNG, JPEG, BMP, TIFF, and many more.
 image2pipe: |
   Piped image sequence demuxer. Reads image data from stdin/pipe.
   Used for streaming image input from other processes.
-hls: |
-  HLS (Apple HTTP Live Streaming) demuxer. Reads M3U8 playlists and segments.
-  Supports live and VOD HLS streams with adaptive bitrate.
-dash: |
-  DASH demuxer. Reads DASH MPD manifests for adaptive streaming.
-  Supports Dynamic Adaptive Streaming over HTTP.
-rtmp: |
-  RTMP demuxer. Reads from RTMP streaming servers.
-  Adobe's proprietary streaming protocol, still used for live video.
-rtp: |
-  RTP demuxer. Reads Real-Time Transport Protocol streams.
-  UDP-based protocol for real-time media delivery.
-srt: |
-  SRT (Secure Reliable Transport) demuxer. Reads from SRT streaming sources.
-  Open-source low-latency streaming with reliability features.
-avisynth: |
-  AviSynth demuxer. Reads AviSynth script files (.avs) as video input.
-  Windows-only. Provides frame-accurate access via AviSynth scripting.
-apng: |
-  APNG demuxer. Reads Animated PNG files as video.
-  Supports transparency and variable frame timing.
-gif: |
-  GIF demuxer. Reads animated GIF images as video.
-  Limited to 256-color palette per frame. No audio.
-ass: |
-  SSA/ASS subtitle demuxer. Reads SubStation Alpha subtitle files.
-  Supports rich formatting including fonts, colors, and positioning.
-webvtt: |
-  WebVTT demuxer. Reads Web Video Text Tracks subtitle files.
-  W3C standard for HTML5 video subtitles.
-dv: |
-  DV (Digital Video) demuxer. Reads DV25/DV50/DV100 from camcorder tapes.
-  Common for capturing from MiniDV/DVCAM equipment.
-dnxhd: |
-  Raw DNxHD demuxer. Reads Avid DNxHD video elementary streams.
-  Professional broadcast intermediate codec.
+imf: |
+  Demuxer: IMF (Interoperable Master Format).
+ingenient: |
+  Demuxer: raw Ingenient MJPEG.
+ipmovie: |
+  Demuxer: Interplay MVE.
+ipu: |
+  Demuxer: raw IPU Video.
+ircam: |
+  Demuxer: Berkeley/IRCAM/CARL Sound Format.
+iss: |
+  Demuxer: Funcom ISS.
+iv8: |
+  Demuxer: IndigoVision 8000 video.
+ivf: |
+  IVF demuxer. Reads On2 IVF container for VP8/VP9/AV1.
+  Simple container used in codec testing and development.
+ivr: |
+  Demuxer: IVR (Internet Video Recording).
+j2k_pipe: |
+  Demuxer: piped j2k sequence.
+jacosub: |
+  Demuxer: JACOsub subtitle format.
+jpeg_pipe: |
+  Demuxer: piped jpeg sequence.
+jpegls_pipe: |
+  Demuxer: piped jpegls sequence.
+jpegxl_anim: |
+  Demuxer: Animated JPEG XL.
+jpegxl_pipe: |
+  Demuxer: piped jpegxl sequence.
+jpegxs_pipe: |
+  Demuxer: piped jpegxs sequence.
+jv: |
+  Demuxer: Bitmap Brothers JV.
+kux: |
+  Demuxer: KUX (YouKu).
+kvag: |
+  Demuxer: Simon & Schuster Interactive VAG.
+laf: |
+  Demuxer: LAF (Limitless Audio Format).
+lc3: |
+  Demuxer: LC3 (Low Complexity Communication Codec).
+libmodplug: |
+  Demuxer: ModPlug demuxer.
+libopenmpt: |
+  Demuxer: Tracker formats (libopenmpt).
+live_flv: |
+  Demuxer: live RTMP FLV (Flash Video).
+lmlm4: |
+  Demuxer: raw lmlm4.
+loas: |
+  Demuxer: LOAS AudioSyncStream.
+lrc: |
+  Demuxer: LRC lyrics.
+luodat: |
+  Demuxer: Video CCTV DAT.
+lvf: |
+  Demuxer: LVF.
+lxf: |
+  Demuxer: VR native stream (LXF).
+m4a: |
+  Demuxer: QuickTime / MOV.
+m4v: |
+  Demuxer: raw MPEG-4 video.
+matroska: |
+  Matroska (MKV) demuxer. Reads the open-standard multimedia container.
+  Supports chapters, attachments, ordered chapters, and virtually all codec types.
+mca: |
+  Demuxer: MCA Audio Format.
+mcc: |
+  Demuxer: MacCaption.
+mgsts: |
+  Demuxer: Metal Gear Solid: The Twin Snakes.
+microdvd: |
+  Demuxer: MicroDVD subtitle format.
+mj2: |
+  Demuxer: QuickTime / MOV.
+mjpeg: |
+  Demuxer: raw MJPEG video.
+mjpeg_2000: |
+  Demuxer: raw MJPEG 2000 video.
+mlp: |
+  Demuxer: raw MLP.
+mlv: |
+  Demuxer: Magic Lantern Video (MLV).
+mm: |
+  Demuxer: American Laser Games MM.
+mmf: |
+  Demuxer: Yamaha SMAF.
+mods: |
+  Demuxer: MobiClip MODS.
+moflex: |
+  Demuxer: MobiClip MOFLEX.
+mov: |
+  QuickTime / MOV demuxer. Reads Apple's multimedia container format.
+  Very similar to MP4. Supports ProRes, timecode, chapters, and multiple tracks.
+mp3: |
+  Raw MP3 demuxer. Reads MP3 audio files with ID3 tag support.
+  Supports ID3v1, ID3v2, APEv2 tags and LAME headers.
+mp4: |
+  MP4 (MPEG-4 Part 14) demuxer. Reads the most widely used multimedia container format.
+  Supports H.264, HEVC, AAC, and many other codecs. Handles fragmented MP4 (fMP4) for DASH.
+mpc: |
+  Demuxer: Musepack.
+mpc8: |
+  Demuxer: Musepack SV8.
+mpeg: |
+  Demuxer: MPEG-PS (MPEG-2 Program Stream).
+mpegts: |
+  MPEG Transport Stream demuxer. Reads DVB, ATSC, IPTV, and HLS streams.
+  Supports program selection, teletext, and DVB subtitles. Robust error recovery.
+mpegtsraw: |
+  Demuxer: raw MPEG-TS (MPEG-2 Transport Stream).
+mpegvideo: |
+  MPEG-PS (Program Stream) demuxer. Reads MPEG-1/MPEG-2 program streams.
+  Used for DVD-Video, SVCD, and VOB files.
+mpjpeg: |
+  Demuxer: MIME multipart JPEG.
+mpl2: |
+  Demuxer: MPL2 subtitles.
+mpsub: |
+  Demuxer: MPlayer subtitles.
+msf: |
+  Demuxer: Sony PS3 MSF.
+msnwctcp: |
+  Demuxer: MSN TCP Webcam stream.
+msp: |
+  Demuxer: Microsoft Paint (MSP)).
+mtaf: |
+  Demuxer: Konami PS2 MTAF.
+mtv: |
+  Demuxer: MTV.
+mulaw: |
+  Demuxer: PCM mu-law.
+musx: |
+  Demuxer: Eurocom MUSX.
+mv: |
+  Demuxer: Silicon Graphics Movie.
+mvi: |
+  Demuxer: Motion Pixels MVI.
+mxf: |
+  Demuxer: MXF (Material eXchange Format).
+mxg: |
+  Demuxer: MxPEG clip.
+nc: |
+  Demuxer: NC camera feed.
+nistsphere: |
+  Demuxer: NIST SPeech HEader REsources.
+nsp: |
+  Demuxer: Computerized Speech Lab NSP.
+nsv: |
+  Demuxer: Nullsoft Streaming Video.
+nut: |
+  Demuxer: NUT.
+nuv: |
+  Demuxer: NuppelVideo.
+obu: |
+  Demuxer: AV1 low overhead OBU.
+ogg: |
+  OGG demuxer. Reads Xiph.org container format.
+  Supports Vorbis, Opus, FLAC, Speex, and Theora codecs.
+oma: |
+  Demuxer: Sony OpenMG audio.
+osq: |
+  Demuxer: raw OSQ.
+paf: |
+  Demuxer: Amazing Studio Packed Animation File.
+pam_pipe: |
+  Demuxer: piped pam sequence.
+pbm_pipe: |
+  Demuxer: piped pbm sequence.
+pcx_pipe: |
+  Demuxer: piped pcx sequence.
+pdv: |
+  Demuxer: PlayDate Video.
+pfm_pipe: |
+  Demuxer: piped pfm sequence.
+pgm_pipe: |
+  Demuxer: piped pgm sequence.
+pgmyuv_pipe: |
+  Demuxer: piped pgmyuv sequence.
+pgx_pipe: |
+  Demuxer: piped pgx sequence.
+phm_pipe: |
+  Demuxer: piped phm sequence.
+photocd_pipe: |
+  Demuxer: piped photocd sequence.
+pictor_pipe: |
+  Demuxer: piped pictor sequence.
+pjs: |
+  Demuxer: PJS (Phoenix Japanimation Society) subtitles.
+pmp: |
+  Demuxer: Playstation Portable PMP.
+png_pipe: |
+  Demuxer: piped png sequence.
+pp_bnk: |
+  Demuxer: Pro Pinball Series Soundbank.
+ppm_pipe: |
+  Demuxer: piped ppm sequence.
+psd_pipe: |
+  Demuxer: piped psd sequence.
+psxstr: |
+  Demuxer: Sony Playstation STR.
+pva: |
+  Demuxer: TechnoTrend PVA.
+pvf: |
+  Demuxer: PVF (Portable Voice Format).
+qcp: |
+  Demuxer: QCP.
+qdraw_pipe: |
+  Demuxer: piped qdraw sequence.
+qoa: |
+  Demuxer: QOA.
+qoi_pipe: |
+  Demuxer: piped qoi sequence.
+r3d: |
+  Demuxer: REDCODE R3D.
 rawvideo: |
   Raw video demuxer. Reads uncompressed raw video data.
   Requires `video_size` and `pixel_format` to be set explicitly.
-data: |
-  Raw data demuxer. Reads arbitrary data without interpretation.
-  Generic format for unknown or custom data streams.
-ape: |
-  Monkey's Audio demuxer. Reads APE lossless audio files.
-  High compression ratio lossless codec popular in China.
+rcwt: |
+  Demuxer: RCWT (Raw Captions With Time).
+realtext: |
+  Demuxer: RealText subtitle format.
+redspark: |
+  Demuxer: RedSpark.
+rka: |
+  Demuxer: RKA (RK Audio).
+rl2: |
+  Demuxer: RL2.
+rm: |
+  Demuxer: RealMedia.
+roq: |
+  Demuxer: id RoQ.
+rpl: |
+  Demuxer: RPL / ARMovie.
+rsd: |
+  Demuxer: GameCube RSD.
+rso: |
+  Demuxer: Lego Mindstorms RSO.
+rtp: |
+  RTP demuxer. Reads Real-Time Transport Protocol streams.
+  UDP-based protocol for real-time media delivery.
+rtsp: |
+  Demuxer: RTSP input.
+s16be: |
+  Demuxer: PCM signed 16-bit big-endian.
+s16le: |
+  Demuxer: PCM signed 16-bit little-endian.
+s24be: |
+  Demuxer: PCM signed 24-bit big-endian.
+s24le: |
+  Demuxer: PCM signed 24-bit little-endian.
+s32be: |
+  Demuxer: PCM signed 32-bit big-endian.
+s32le: |
+  Demuxer: PCM signed 32-bit little-endian.
+s337m: |
+  Demuxer: SMPTE 337M.
+s8: |
+  Demuxer: PCM signed 8-bit.
+sami: |
+  Demuxer: SAMI subtitle format.
+sap: |
+  Demuxer: SAP input.
+sbc: |
+  Demuxer: raw SBC (low-complexity subband codec).
+sbg: |
+  Demuxer: SBaGen binaural beats script.
+scc: |
+  Demuxer: Scenarist Closed Captions.
+scd: |
+  Demuxer: Square Enix SCD.
+sdns: |
+  Demuxer: Xbox SDNS.
+sdp: |
+  Demuxer: SDP.
+sdr2: |
+  Demuxer: SDR2.
+sds: |
+  Demuxer: MIDI Sample Dump Standard.
+sdx: |
+  Demuxer: Sample Dump eXchange.
+ser: |
+  Demuxer: SER (Simple uncompressed video format for astronomical capturing).
+sga: |
+  Demuxer: Digital Pictures SGA.
+sgi_pipe: |
+  Demuxer: piped sgi sequence.
+shn: |
+  Demuxer: raw Shorten.
+siff: |
+  Demuxer: Beam Software SIFF.
+simbiosis_imx: |
+  Demuxer: Simbiosis Interactive IMX.
+sln: |
+  Demuxer: Asterisk raw pcm.
+smjpeg: |
+  Demuxer: Loki SDL MJPEG.
+smk: |
+  Demuxer: Smacker.
+smush: |
+  Demuxer: LucasArts Smush.
+sol: |
+  Demuxer: Sierra SOL.
+sox: |
+  Demuxer: SoX (Sound eXchange) native.
+spdif: |
+  Demuxer: IEC 61937 (compressed data in S/PDIF).
+srt: |
+  SRT (Secure Reliable Transport) demuxer. Reads from SRT streaming sources.
+  Open-source low-latency streaming with reliability features.
+stl: |
+  Demuxer: Spruce subtitle format.
+subviewer: |
+  Demuxer: SubViewer subtitle format.
+subviewer1: |
+  Demuxer: SubViewer v1 subtitle format.
+sunrast_pipe: |
+  Demuxer: piped sunrast sequence.
+sup: |
+  Demuxer: raw HDMV Presentation Graphic Stream subtitles.
+svag: |
+  Demuxer: Konami PS2 SVAG.
+svg_pipe: |
+  Demuxer: piped svg sequence.
+svs: |
+  Demuxer: Square SVS.
+swf: |
+  Demuxer: SWF (ShockWave Flash).
+tak: |
+  Demuxer: raw TAK.
+tedcaptions: |
+  Demuxer: TED Talks captions.
+thp: |
+  Demuxer: THP.
+tiertexseq: |
+  Demuxer: Tiertex Limited SEQ.
+tiff_pipe: |
+  Demuxer: piped tiff sequence.
+tmv: |
+  Demuxer: 8088flex TMV.
+truehd: |
+  Demuxer: raw TrueHD.
 tta: |
   True Audio demuxer. Reads TTA lossless audio files.
   Simple lossless audio codec with fast decoding.
-wv: |
-  WavPack demuxer. Reads WavPack lossless/hybrid audio files.
-  Supports lossless, lossy, and hybrid modes.
-dsf: |
-  DSF demuxer. Reads DSD Stream Files (DSDIFF-based).
-  Sony's DSD audio format for high-resolution audio.
-spx: |
-  OGG Speex demuxer. Xiph.org Speex speech codec in OGG containers.
-  Optimized for speech at low bitrates. Largely replaced by Opus.
+tty: |
+  Demuxer: Tele-typewriter.
+txd: |
+  Demuxer: Renderware TeXture Dictionary.
+ty: |
+  Demuxer: TiVo TY Stream.
+u16be: |
+  Demuxer: PCM unsigned 16-bit big-endian.
+u16le: |
+  Demuxer: PCM unsigned 16-bit little-endian.
+u24be: |
+  Demuxer: PCM unsigned 24-bit big-endian.
+u24le: |
+  Demuxer: PCM unsigned 24-bit little-endian.
+u32be: |
+  Demuxer: PCM unsigned 32-bit big-endian.
+u32le: |
+  Demuxer: PCM unsigned 32-bit little-endian.
+u8: |
+  Demuxer: PCM unsigned 8-bit.
+usm: |
+  Demuxer: CRI USM.
+v210: |
+  Demuxer: Uncompressed 4:2:2 10-bit.
+v210x: |
+  Demuxer: Uncompressed 4:2:2 10-bit.
+vag: |
+  Demuxer: Sony PS2 VAG.
+vapoursynth: |
+  Demuxer: VapourSynth demuxer.
+vbn_pipe: |
+  Demuxer: piped vbn sequence.
+vc1: |
+  Demuxer: raw VC-1.
+vc1test: |
+  Demuxer: VC-1 test bitstream.
+vidc: |
+  Demuxer: PCM Archimedes VIDC.
+vividas: |
+  Demuxer: Vividas VIV.
+vivo: |
+  Demuxer: Vivo.
+vmd: |
+  Demuxer: Sierra VMD.
 vobsub: |
   VobSub subtitle demuxer. Reads DVD bitmap subtitles (.idx+.sub).
   Paired format with index file and sub/VOB data.
+voc: |
+  Demuxer: Creative Voice.
+vpk: |
+  Demuxer: Sony PS2 VPK.
+vplayer: |
+  Demuxer: VPlayer subtitles.
+vqf: |
+  Demuxer: Nippon Telegraph and Telephone Corporation (NTT) TwinVQ.
+vvc: |
+  Demuxer: raw H.266/VVC video.
+w64: |
+  Demuxer: Sony Wave64.
+wady: |
+  Demuxer: Marble WADY.
+wav: |
+  WAV demuxer. Reads Microsoft/IBM audio container.
+  Supports PCM, ADPCM, MP3, AC-3, and many other audio codecs.
+wavarc: |
+  Demuxer: Waveform Archiver.
+wc3movie: |
+  Demuxer: Wing Commander III movie.
+webm: |
+  WebM demuxer. Reads Google's web video subset of Matroska.
+  Supports VP8/VP9 video and Vorbis/Opus audio only.
+webm_dash_manifest: |
+  Demuxer: WebM DASH Manifest.
+webp_pipe: |
+  Demuxer: piped webp sequence.
+webvtt: |
+  WebVTT demuxer. Reads Web Video Text Tracks subtitle files.
+  W3C standard for HTML5 video subtitles.
+wsaud: |
+  Demuxer: Westwood Studios audio.
+wsd: |
+  Demuxer: Wideband Single-bit Data (WSD).
+wsvqa: |
+  Demuxer: Westwood Studios VQA.
+wtv: |
+  Demuxer: Windows Television (WTV).
+wv: |
+  WavPack demuxer. Reads WavPack lossless/hybrid audio files.
+  Supports lossless, lossy, and hybrid modes.
+wve: |
+  Demuxer: Psion 3 audio.
+xa: |
+  Demuxer: Maxis XA.
+xbin: |
+  Demuxer: eXtended BINary text (XBIN).
+xbm_pipe: |
+  Demuxer: piped xbm sequence.
+xmd: |
+  Demuxer: Konami XMD.
+xmv: |
+  Demuxer: Microsoft XMV.
+xpm_pipe: |
+  Demuxer: piped xpm sequence.
+xvag: |
+  Demuxer: Sony PS3 XVAG.
+xwd_pipe: |
+  Demuxer: piped xwd sequence.
+xwma: |
+  Demuxer: Microsoft xWMA.
+yop: |
+  Demuxer: Psygnosis YOP.
+yuv4mpegpipe: |
+  Demuxer: YUV4MPEG pipe.
