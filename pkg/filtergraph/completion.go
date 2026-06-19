@@ -43,6 +43,7 @@ type FilterContext struct {
 	Name       string   `json:"name"`
 	Options    []string `json:"options,omitempty"`
 	OptionKeys []string `json:"optionKeys,omitempty"`
+	OptionKey  string   `json:"optionKey,omitempty"`
 	ArgIndex   int      `json:"argIndex"`
 	InKey      bool     `json:"inKey"`
 	InValue    bool     `json:"inValue"`

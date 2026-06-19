@@ -246,9 +246,26 @@ func ActionFilterValue(value string, isComplex bool) carapace.Action {
 				// preceding filtergraph text.
 				action = action.Invoke(carapace.Context{Value: fgCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
 				actions = append(actions, action.NoSpace())
-			case filtergraph.ExpectedFilterOption, filtergraph.ExpectedFilterOptionKey, filtergraph.ExpectedFilterOptionValue:
-				// TODO: filter-specific option completion (requires filter option database)
-				actions = append(actions, carapace.ActionValues())
+			case filtergraph.ExpectedFilterOptionKey:
+				if fgCtx.Filter != nil && fgCtx.Filter.Name != "" {
+					action := ffmpeg.ActionFilterOptions(fgCtx.Filter.Name, fgCtx.Filter.OptionKeys)
+					action = action.Invoke(carapace.Context{Value: fgCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+					actions = append(actions, action.NoSpace())
+				}
+			case filtergraph.ExpectedFilterOptionValue:
+				if fgCtx.Filter != nil && fgCtx.Filter.Name != "" && fgCtx.Filter.OptionKey != "" {
+					action := ffmpeg.ActionFilterOptionValue(fgCtx.Filter.Name, fgCtx.Filter.OptionKey)
+					action = action.Invoke(carapace.Context{Value: fgCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+					actions = append(actions, action.NoSpace())
+				}
+			case filtergraph.ExpectedFilterOption:
+				// Ambiguous position — could be key or positional value.
+				// Offer key=value completions with Suffix("=") for known filters.
+				if fgCtx.Filter != nil && fgCtx.Filter.Name != "" {
+					action := ffmpeg.ActionFilterOptions(fgCtx.Filter.Name, fgCtx.Filter.OptionKeys)
+					action = action.Invoke(carapace.Context{Value: fgCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+					actions = append(actions, action.NoSpace('='))
+				}
 			case filtergraph.ExpectedLinkLabel:
 				if fgCtx.IsComplex {
 					actions = append(actions, carapace.ActionValues().NoSpace())
