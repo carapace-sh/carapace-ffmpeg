@@ -6,6 +6,7 @@ import (
 
 	"github.com/carapace-sh/carapace"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
+	"github.com/carapace-sh/carapace-ffmpeg/pkg/completer"
 )
 
 func TestContextToArgs(t *testing.T) {
@@ -70,7 +71,7 @@ func TestContextToArgs(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := carapace.Context{Args: tt.args, Value: tt.value}
-			args, trailingSpace := contextToArgs(c)
+			args, trailingSpace := completer.ContextToArgs(c)
 			if len(args) != len(tt.expectedArgs) {
 				t.Errorf("expected args %v, got %v", tt.expectedArgs, args)
 			}
@@ -124,7 +125,7 @@ func TestContextToArgsArgstreamIntegration(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := carapace.Context{Args: tt.args, Value: tt.value}
-			args, trailingSpace := contextToArgs(c)
+			args, trailingSpace := completer.ContextToArgs(c)
 			ctx := argstream.ParseForCompletion(args, trailingSpace)
 
 			if ctx.Scope != tt.expectedScope {

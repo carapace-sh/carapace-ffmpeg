@@ -101,7 +101,7 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 			optName = strings.TrimPrefix(optName, "-")
 
 			baseName, spec, hasColon := ParseOptionName(optName)
-			optDef := profile.lookupOption(baseName)
+			optDef := profile.LookupOption(baseName)
 
 			// Check if we're at the last argument and it's the one being completed
 			if i == len(args)-1 && !trailingSpace {

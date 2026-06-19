@@ -7,3 +7,6 @@
 *.test
 *.out
 /bin/
+carapace-ffmpeg
+carapace-ffplay
+carapace-ffprobe

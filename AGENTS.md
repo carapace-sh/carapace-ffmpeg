@@ -36,19 +36,35 @@ go run ./cmd/carapace-ffmpeg _carapace bash '' ''              # complete at emp
 go run ./cmd/carapace-ffmpeg _carapace bash '-c:v' '' '-c:v' 'libx'  # complete codec value
 ```
 
+### Completer CLI (`cmd/carapace-ffplay/`)
+
+```sh
+go run ./cmd/carapace-ffplay _carapace spec                    # generate carapace spec
+go run ./cmd/carapace-ffplay _carapace bash '' ''              # complete at empty position
+```
+
+### Completer CLI (`cmd/carapace-ffprobe/`)
+
+```sh
+go run ./cmd/carapace-ffprobe _carapace spec                    # generate carapace spec
+go run ./cmd/carapace-ffprobe _carapace bash '' ''              # complete at empty position
+```
+
 No Makefile, no linter config.
 
 ## Architecture
 
-Two CLIs and four independent parser packages with carapace completion actions.
+Four CLIs, a shared completer package, and four independent parser packages with carapace completion actions.
 
-### Completer CLI (`cmd/carapace-ffmpeg/`)
+### Completer CLIs (`cmd/carapace-ffmpeg/`, `cmd/carapace-ffplay/`, `cmd/carapace-ffprobe/`)
 
-Standalone carapace completer for the `ffmpeg` command. Uses `DisableFlagParsing` + `PositionalAnyCompletion` with `argstream.ParseForCompletion()` to dispatch context-aware completions.
+Standalone carapace completers for the `ffmpeg`, `ffplay`, and `ffprobe` commands. Each uses `DisableFlagParsing` + `PositionalAnyCompletion` with `argstream.ParseForCompletionWithProfile()` and a tool-specific `ToolProfile` to dispatch context-aware completions.
 
-- **`root.go`** — Root cobra command (`Use: "ffmpeg"`) with `carapace.Gen(rootCmd).Standalone()`. `PositionalAnyCompletion` callback parses args with `argstream.ParseForCompletion()` and dispatches to `actionOptions()`, `actionOptionValue()`, `actionStreamSpecifiers()`, `actionFilterValue()`, `actionMapValue()`.
-- **`root_test.go`** — Tests for `contextToArgs()` helper and argstream integration.
+- **`root.go`** — Root cobra command with `carapace.Gen(rootCmd).Standalone()`. `PositionalAnyCompletion` callback parses args with `argstream.ParseForCompletionWithProfile()` and dispatches to shared actions from `pkg/completer/`.
+- **`root_test.go`** — Tests for `completer.ContextToArgs()` helper and argstream integration (ffmpeg CLI only).
 - **`main.go`** — Entry point calling `cmd.Execute()`.
+
+The ffplay completer uses `DefaultFFplayProfile` (no output section, decoder-only codec). The ffprobe completer uses `DefaultFFprobeProfile` (no output section, no filter completion, decoder-only codec).
 
 ### Debug CLI (`cmd/carapace-ffmpeg-debug/`)
 
@@ -89,13 +105,20 @@ Testing/debug CLI exposing raw parser output as JSON. Each subcommand has a `-co
 
 ### Argument Stream (`pkg/argstream/`)
 
-- **`parser.go`** — Full parser. `Parse(args)` → `*Program` AST. Tokenizes an ffmpeg argument list into global options, input options, input files, output options, and output files. Tracks scope (global → input → output) based on `-i` markers and option definitions.
-- **`completion_parser.go`** — Completion parser. `ParseForCompletion(args, trailingSpace)` → `*CompletionContext` with scope info, current option context, and expected tokens. The `trailingSpace` bool is critical: `true` means the cursor is at a new blank position after the last token; `false` means mid-token completion.
+- **`parser.go`** — Full parser. `Parse(args)` → `*Program` AST (uses `DefaultFFmpegProfile`). `ParseWithProfile(args, profile)` allows ffplay/ffprobe profiles. Tokenizes an argument list into global options, input options, input files, output options, and output files. Tracks scope based on `-i` markers, option definitions, and `ToolProfile.HasOutputSection`.
+- **`completion_parser.go`** — Completion parser. `ParseForCompletion(args, trailingSpace)` → `*CompletionContext` (uses `DefaultFFmpegProfile`). `ParseForCompletionWithProfile(args, trailingSpace, profile)` allows ffplay/ffprobe profiles. With `HasOutputSection=false`, positional non-option args are treated as input URLs and output-related expected tokens are never emitted.
 - **`completion.go`** — Completion context types: `ExpectedToken` (enum), `Scope`, `OptionContext`, `CompletionContext`. JSON-serializable with `json` tags.
 - **`ast.go`** — AST node types (`Token`, `TokenKind`, `Scope`, `InputFile`, `OutputFile`, `Program`). Also JSON-serializable.
-- **`options.go`** — Static option definitions (`OptionDef`, `OptionScope`, `OptionType`, `ValueType`, `OptionIndex`). `ParseOptionName()` splits `-c:v:1` into `("c", "v:1")`. `LookupOption()` looks up by base name. `buildOptionIndex()` is called from `init()`.
+- **`options.go`** — Static option definitions for ffmpeg (`OptionDef`, `OptionScope`, `OptionType`, `ValueType`, `OptionIndex`). `ParseOptionName()` splits `-c:v:1` into `("c", "v:1")`. `LookupOption()` looks up by base name. `buildOptionIndex()` is called from `init()`. `buildIndexFromOptions()` is the shared index builder used by all three tool option files.
+- **`ffplay_options.go`** — Static option definitions for ffplay. `buildFFplayOptionIndex()` returns the ffplay option index.
+- **`ffprobe_options.go`** — Static option definitions for ffprobe. `buildFFprobeOptionIndex()` returns the ffprobe option index.
+- **`profile.go`** — `ToolProfile` struct with `Name`, `HasOutputSection`, and `OptionIndex`. Defines `DefaultFFmpegProfile`, `DefaultFFplayProfile`, `DefaultFFprobeProfile`. `LookupOption()` method looks up options in the profile's index.
 - **`span.go`** — `Span` type.
 - **`argstream_test.go`** / **`completion_test.go`** — Tests.
+
+### Completer (`pkg/completer/`)
+
+- **`completer.go`** — Shared completion actions used by all three completer CLIs. Provides `ContextToArgs()`, `IsMidTokenOptionWithSpec()`, `ActionOptions()`, `ActionOptionNames()`, `ActionOptionNamesWithSpecSuffix()`, `ActionOptionValue()`, `ActionStreamSpecifier()`, `ActionStreamSpecifiers()`, `ActionFilterValue()`, `ActionDecoderOnlyCodec()` (for ffplay/ffprobe). Takes a `*argstream.ToolProfile` parameter to support tool-specific option sets.
 
 ### Actions (`pkg/actions/tools/ffmpeg/`)
 

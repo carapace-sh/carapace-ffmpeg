@@ -7,9 +7,9 @@ type ToolProfile struct {
 	OptionIndex      map[string]*OptionDef
 }
 
-// lookupOption looks up an option by name in the profile's option index.
+// LookupOption looks up an option by name in the profile's option index.
 // Falls back to the default FFmpeg OptionIndex if the profile is nil or has no index.
-func (p *ToolProfile) lookupOption(name string) *OptionDef {
+func (p *ToolProfile) LookupOption(name string) *OptionDef {
 	if p != nil && p.OptionIndex != nil {
 		return p.OptionIndex[name]
 	}

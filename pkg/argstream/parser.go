@@ -74,7 +74,7 @@ func (p *parser) parseProgram() (*Program, error) {
 		if isOption(arg) {
 			optName := arg[1:] // strip leading '-'
 			baseName, spec, _ := ParseOptionName(optName)
-			optDef := p.profile.lookupOption(baseName)
+			optDef := p.profile.LookupOption(baseName)
 
 			// Determine the option's effective scope based on position
 			switch {
