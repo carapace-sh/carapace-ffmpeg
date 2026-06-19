@@ -148,3 +148,45 @@ For a lexer, the scope determines:
 4. **Where stream specifiers apply** — only per-stream options accept `:spec` suffixes
 
 The lexer must track a **file position context**: are we in global, input N, or output N space? This context determines how to interpret each option.
+
+## ffplay and ffprobe: Subset of the Scope Model
+
+ffplay and ffprobe use a **simplified scope model** — they have no output section:
+
+```
+ffplay [global_options] [input_options] input_url
+ffprobe [global_options] [input_options] input_url
+```
+
+### Scope Differences
+
+|| Aspect | ffmpeg | ffplay / ffprobe |
+|--------|--------|------------------|
+| Output-only options | Extensive (`-map`, `-metadata`, `-shortest`, `-fs`, encoders, muxers) | None |
+| Scope transitions | Global → Input → Output | Global → Input only |
+| Positional non-option arguments | Output URLs | Input URL |
+| Per-stream options | Apply to input or output depending on position | Apply to input only |
+| `-c:*` context | Encoder (output) or decoder (input) | Decoder only |
+
+### Implications for the Lexer
+
+The same lexer architecture can handle all three tools with a boolean flag controlling whether the output section exists:
+
+- **`HasOutputSection = true`**: ffmpeg — positional non-option args are output URLs, scope transitions to output
+- **`HasOutputSection = false`**: ffplay/ffprobe — positional non-option args are the input URL, scope never transitions past input
+
+Without an output section:
+- Output-only options are not in the option index
+- The lexer never enters `ScopeOutputFile`
+- `ExpectedOutputOption` and `ExpectedOutputURL` tokens are never emitted
+
+### Same Option Name, Different Meaning
+
+Some option names have different semantics across the tools:
+
+|| Option | ffmpeg | ffplay |
+|--------|--------|--------|
+| `-y` | Overwrite output files | Force display height |
+| `-top` | Deprecated video field order | Window y position |
+| `-fs` | Limit file size (bytes) | Fullscreen mode |
+| `-c:v` | Video encoder | Video decoder |

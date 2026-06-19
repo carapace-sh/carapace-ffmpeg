@@ -119,3 +119,37 @@ Each output gets its own set of options. Options for output N appear between out
 - **Same option, different scope**: `-r` is both an input and output option; the same flag name applies to different files depending on position
 - **Output URL looks like option**: a filename starting with `-` can be ambiguous — use `./-filename` to disambiguate
 - **Stream count limits**: Container formats restrict which stream types and counts they support
+
+## ffplay Pipeline: Read and Play
+
+ffplay is a media player — a simplified pipeline with no encoding or output:
+
+```
+input_url ─► demuxer ─► decoder ─► filter? ─► renderer (SDL/Vulkan)
+```
+
+Key differences from ffmpeg:
+- **Single input only** (no multiple `-i` inputs)
+- **No encoder or muxer** — no output file
+- **No complex filtergraphs** — only simple `-vf`/`-af` filters
+- **Renderer instead of muxer** — SDL or Vulkan display
+- **No `-map`** — stream selection via `-ast`/`-vst`/`-sst`
+
+See [ffplay.md](ffplay.md) for the full ffplay CLI model.
+
+## ffprobe Pipeline: Read and Inspect
+
+ffprobe is a probe/inspection tool — it reads metadata without (by default) decoding:
+
+```
+input_url ─► demuxer ─► decoder? ─► inspector (print metadata/frames/packets)
+```
+
+Key differences from ffmpeg:
+- **Single input only** (no multiple `-i` inputs)
+- **No encoding, no filtering** — no `-vf`/`-af`/`-filter_complex`
+- **Decoding is optional** — only happens with `-show_frames`/`-show_log`/`-analyze_frames`
+- **No `-map`** — display filtering via `-select_streams`
+- **Output is text** — formatted by `-of`/`-print_format` (json, xml, csv, etc.)
+
+See [ffprobe.md](ffprobe.md) for the full ffprobe CLI model.

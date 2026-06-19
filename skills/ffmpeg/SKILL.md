@@ -5,7 +5,7 @@ description: >
   command structure, option syntax, stream specifiers, filter graph DSL, value types,
   option scopes, and stream mapping. Triggers on: "ffmpeg", "ffmpeg cli", "ffmpeg arguments",
   "ffmpeg options", "ffmpeg flags", "stream specifier", "filter_complex", "ffmpeg filter",
-  "ffmpeg map", "ffmpeg lexer", "ffmpeg completion", "ffmpeg value types", "ffmpeg syntax",
+  "ffmpeg map", "ffmpeg lexer", "ffmpeg completion", "ffmpeg value types", "ffmpeg syntax", "ffplay", "ffprobe",
   "ffmpeg stream", "ffmpeg pipeline", "ffmpeg transcoding", "-filter_complex",
   "stream_specifier", "-map", "ffmpeg quoting".
 user-invocable: true
@@ -39,6 +39,8 @@ Load the reference that matches your task. When in doubt, load multiple referenc
 | filter graph, filtergraph, simple filter, complex filter, -vf, -af, -filter_complex, link label, pad, filter chain, filter option, lavfi | [references/filtergraph.md](references/filtergraph.md) |
 | -map, stream mapping, negative map, optional map, view specifier, linklabel mapping, loopback decoder | [references/mapping.md](references/mapping.md) |
 | value types, time duration, video size, video rate, ratio, pixel format, sample format, channel layout, color, codec, format, boolean, integer, float, string, expression | [references/value-types.md](references/value-types.md) |
+| ffplay, player, display, fullscreen, show mode, sync, vulkan renderer, playback control | [references/ffplay.md](references/ffplay.md) |
+| ffprobe, probe, inspector, show streams, show format, output format, print format, select streams, read intervals, sections | [references/ffprobe.md](references/ffprobe.md) |
 
 ## Quick Guide
 
@@ -51,6 +53,8 @@ Load the reference that matches your task. When in doubt, load multiple referenc
 - **What value types does ffmpeg use for option arguments?** → [references/value-types.md](references/value-types.md)
 - **How does quoting/escaping work in ffmpeg option values?** → [references/option-syntax.md](references/option-syntax.md)
 - **How do complex filtergraphs connect inputs and outputs?** → [references/filtergraph.md](references/filtergraph.md) and [references/mapping.md](references/mapping.md)
+- **How does ffplay's CLI model differ from ffmpeg?** → [references/ffplay.md](references/ffplay.md)
+- **How does ffprobe's CLI model differ from ffmpeg?** → [references/ffprobe.md](references/ffprobe.md)
 
 ## Cross-Project References
 

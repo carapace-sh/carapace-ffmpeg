@@ -301,6 +301,91 @@ S = Subtitle
   -pix_fmt <fmt> E..V.......  (applies to Encoding, Video only)
 ```
 
+## ffplay Value Types
+
+### Show Mode (ffplay)
+
+Used by `-showmode`:
+
+```
+0 | video       # Display video (default)
+1 | waves       # Show audio waveform
+2 | rdft        # Show audio frequency data (RDFT)
+```
+
+Both numeric and string forms are accepted.
+
+### Sync Type (ffplay)
+
+Used by `-sync`:
+
+```
+audio   # Audio clock is master (default)
+video   # Video clock is master
+ext     # External clock is master
+```
+
+### Vulkan Parameters (ffplay)
+
+Used by `-vulkan_params`. Colon-separated key=value pairs:
+
+```
+key1=value1:key2=value2
+```
+
+Specific keys depend on the libplacebo version. The value is a free-form string with colon-separated key=value pairs.
+
+## ffprobe Value Types
+
+### Probe Output Format (ffprobe)
+
+Used by `-of` / `-print_format` / `-output_format`:
+
+```
+writer_name[=writer_options]
+```
+
+|| Writer | Description |
+|--------|-------------|
+| `default` | Human-readable key=value (default) |
+| `compact` | Compact one-line format |
+| `csv` | CSV format |
+| `flat` | Flat key=value with dot-separated paths |
+| `ini` | INI-style sections |
+| `json` | JSON format |
+| `xml` | XML format |
+
+Writer options follow after `=`: `-of json=compact=1`.
+
+### Data Dump Format (ffprobe)
+
+Used by `-data_dump_format`:
+
+```
+xxd      # Hex+ASCII dump (default)
+base64   # Base64-encoded
+```
+
+### Show Optional Fields (ffprobe)
+
+Used by `-show_optional_fields`:
+
+```
+always | 1   # Always print, even if invalid
+never  | 0   # Never print invalid fields
+auto   | -1  # Print only if valid (default)
+```
+
+### Read Intervals (ffprobe)
+
+Used by `-read_intervals`:
+
+```
+[START|+START_OFFSET][%[END|+END_OFFSET]]
+```
+
+Multiple intervals are separated by `,`.
+
 ## Edge Cases
 
 - **Numeric with suffix**: `128k` = 128 kilobits, `2M` = 2 megabits — the suffix is part of the value
