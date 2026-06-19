@@ -1,0 +1,147 @@
+mp4: |
+  MP4 (MPEG-4 Part 14) demuxer. Reads the most widely used multimedia container format.
+  Supports H.264, HEVC, AAC, and many other codecs. Handles fragmented MP4 (fMP4) for DASH.
+mov: |
+  QuickTime / MOV demuxer. Reads Apple's multimedia container format.
+  Very similar to MP4. Supports ProRes, timecode, chapters, and multiple tracks.
+avi: |
+  AVI (Audio Video Interleaved) demuxer. Reads Microsoft's legacy multimedia container.
+  Handles OpenDML extensions for files larger than 2 GB.
+matroska: |
+  Matroska (MKV) demuxer. Reads the open-standard multimedia container.
+  Supports chapters, attachments, ordered chapters, and virtually all codec types.
+webm: |
+  WebM demuxer. Reads Google's web video subset of Matroska.
+  Supports VP8/VP9 video and Vorbis/Opus audio only.
+flv: |
+  FLV (Flash Video) demuxer. Reads Adobe Flash Video container.
+  Supports H.264/AAC and VP6/MP3. Legacy but still found in old content.
+mpegts: |
+  MPEG Transport Stream demuxer. Reads DVB, ATSC, IPTV, and HLS streams.
+  Supports program selection, teletext, and DVB subtitles. Robust error recovery.
+mpegvideo: |
+  MPEG-PS (Program Stream) demuxer. Reads MPEG-1/MPEG-2 program streams.
+  Used for DVD-Video, SVCD, and VOB files.
+dvdvideo: |
+  DVD-Video demuxer. Reads full DVD-Video structure (IFO/VOB).
+  Supports DVD menus, angles, and chapter navigation.
+asf: |
+  ASF (Advanced Streaming Format) demuxer. Reads Microsoft ASF/WMV/WMA container.
+  Supports WMV video, WMA audio, and metadata.
+asf_o: |
+  ASF (old) demuxer. Alternative ASF reader with different parsing for problematic files.
+  Fallback for ASF files that fail with the primary demuxer.
+aac: |
+  Raw ADTS AAC demuxer. Reads AAC audio in ADTS frames.
+  Each frame is self-contained with its own header.
+ac3: |
+  Raw AC-3 demuxer. Reads Dolby Digital audio streams.
+  Auto-detects sync words. Supports AC-3 frame parsing.
+eac3: |
+  Raw E-AC-3 demuxer. Reads Dolby Digital Plus audio streams.
+  Enhanced AC-3 with higher bitrates and more channels.
+dts: |
+  Raw DTS demuxer. Reads DTS (DCA) audio streams.
+  Supports DTS core, DTS-ES, and DTS-HD extensions.
+flac: |
+  Raw FLAC demuxer. Reads FLAC audio with metadata.
+  Supports Vorbis comments, cover art, cue sheets, and seeking.
+mp3: |
+  Raw MP3 demuxer. Reads MP3 audio files with ID3 tag support.
+  Supports ID3v1, ID3v2, APEv2 tags and LAME headers.
+ogg: |
+  OGG demuxer. Reads Xiph.org container format.
+  Supports Vorbis, Opus, FLAC, Speex, and Theora codecs.
+wav: |
+  WAV demuxer. Reads Microsoft/IBM audio container.
+  Supports PCM, ADPCM, MP3, AC-3, and many other audio codecs.
+aiff: |
+  Audio IFF demuxer. Reads Apple AIFF format.
+  Supports AIFF-C compressed variants and embedded metadata.
+caf: |
+  Apple CAF demuxer. Reads Core Audio Format.
+  Supports many audio codecs in Apple's modern audio container.
+h264: |
+  Raw H.264 demuxer. Reads H.264 Annex B bitstream.
+  No container — parses NAL units directly from the bitstream.
+hevc: |
+  Raw HEVC demuxer. Reads H.265 Annex B bitstream.
+  No container — parses NAL units directly.
+av1: |
+  Raw AV1 Annex B demuxer. Reads AV1 bitstream without container.
+  Parses OBU (Open Bitstream Units) directly.
+ivf: |
+  IVF demuxer. Reads On2 IVF container for VP8/VP9/AV1.
+  Simple container used in codec testing and development.
+concat: |
+  Concatenation demuxer. Reads a text file listing URLs to play sequentially.
+  Each line is a file path or URL. Supports duration and in/out points.
+concatf: |
+  Concatenation (file) demuxer. File-based concatenation protocol.
+  Safer for filenames with special characters.
+image2: |
+  Image sequence demuxer. Reads numbered image files as a video stream.
+  Pattern: `img%03d.png`. Supports PNG, JPEG, BMP, TIFF, and many more.
+image2pipe: |
+  Piped image sequence demuxer. Reads image data from stdin/pipe.
+  Used for streaming image input from other processes.
+hls: |
+  HLS (Apple HTTP Live Streaming) demuxer. Reads M3U8 playlists and segments.
+  Supports live and VOD HLS streams with adaptive bitrate.
+dash: |
+  DASH demuxer. Reads DASH MPD manifests for adaptive streaming.
+  Supports Dynamic Adaptive Streaming over HTTP.
+rtmp: |
+  RTMP demuxer. Reads from RTMP streaming servers.
+  Adobe's proprietary streaming protocol, still used for live video.
+rtp: |
+  RTP demuxer. Reads Real-Time Transport Protocol streams.
+  UDP-based protocol for real-time media delivery.
+srt: |
+  SRT (Secure Reliable Transport) demuxer. Reads from SRT streaming sources.
+  Open-source low-latency streaming with reliability features.
+avisynth: |
+  AviSynth demuxer. Reads AviSynth script files (.avs) as video input.
+  Windows-only. Provides frame-accurate access via AviSynth scripting.
+apng: |
+  APNG demuxer. Reads Animated PNG files as video.
+  Supports transparency and variable frame timing.
+gif: |
+  GIF demuxer. Reads animated GIF images as video.
+  Limited to 256-color palette per frame. No audio.
+ass: |
+  SSA/ASS subtitle demuxer. Reads SubStation Alpha subtitle files.
+  Supports rich formatting including fonts, colors, and positioning.
+webvtt: |
+  WebVTT demuxer. Reads Web Video Text Tracks subtitle files.
+  W3C standard for HTML5 video subtitles.
+dv: |
+  DV (Digital Video) demuxer. Reads DV25/DV50/DV100 from camcorder tapes.
+  Common for capturing from MiniDV/DVCAM equipment.
+dnxhd: |
+  Raw DNxHD demuxer. Reads Avid DNxHD video elementary streams.
+  Professional broadcast intermediate codec.
+rawvideo: |
+  Raw video demuxer. Reads uncompressed raw video data.
+  Requires `video_size` and `pixel_format` to be set explicitly.
+data: |
+  Raw data demuxer. Reads arbitrary data without interpretation.
+  Generic format for unknown or custom data streams.
+ape: |
+  Monkey's Audio demuxer. Reads APE lossless audio files.
+  High compression ratio lossless codec popular in China.
+tta: |
+  True Audio demuxer. Reads TTA lossless audio files.
+  Simple lossless audio codec with fast decoding.
+wv: |
+  WavPack demuxer. Reads WavPack lossless/hybrid audio files.
+  Supports lossless, lossy, and hybrid modes.
+dsf: |
+  DSF demuxer. Reads DSD Stream Files (DSDIFF-based).
+  Sony's DSD audio format for high-resolution audio.
+spx: |
+  OGG Speex demuxer. Xiph.org Speex speech codec in OGG containers.
+  Optimized for speech at low bitrates. Largely replaced by Opus.
+vobsub: |
+  VobSub subtitle demuxer. Reads DVD bitmap subtitles (.idx+.sub).
+  Paired format with index file and sub/VOB data.

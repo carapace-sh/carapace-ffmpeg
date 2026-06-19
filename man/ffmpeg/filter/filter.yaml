@@ -1,3 +1,270 @@
-example: |
-  A filter in ffmpeg. Filters transform media streams — examples include `scale` (resize video), `volume` (adjust audio),
-  `overlay` (composite video), and hundreds more. Use `ffmpeg -filters` to list all available filters on your system.
+scale: |
+  Scale (resize) the input video. The most commonly used video filter.
+  Width and height can be set in pixels, or use `iw/2`, `ow/dar`, and other expressions.
+  Example: `scale=1280:720` or `scale=1920:-2` (preserve aspect ratio with even height).
+setsar: |
+  Set the Sample Aspect Ratio (SAR) of the video. Changes metadata without resampling.
+  Common values: `1:1` (square pixels), `16:11` (NTSC), `64:45` (PAL).
+setdar: |
+  Set the Display Aspect Ratio (DAR) of the video. Changes metadata without resampling.
+  Common values: `16:9` (widescreen), `4:3` (standard).
+fps: |
+  Force a constant output frame rate. Drops or duplicates frames to achieve the target rate.
+  Example: `fps=30` or `fps=24000/1001` (23.976 fps).
+framerate: |
+  Change frame rate with interpolation. Upsamples or downsamples between specified frame rates.
+  Higher quality than `fps` filter but slower.
+format: |
+  Convert the input video to the specified pixel format.
+  Example: `format=yuv420p` or `format=yuv420p10le`. Essential for codec compatibility.
+aformat: |
+  Convert the input audio to the specified sample format, sample rate, and channel layout.
+  Example: `aformat=sample_fmts=s16:sample_rates=44100:channel_layouts=stereo`.
+copy: |
+  Copy the input video unchanged to the output. Passes frames through without modification.
+  Useful for filtering specific streams in a complex filtergraph.
+acopy: |
+  Copy the input audio unchanged to the output. Passes audio through without modification.
+  Same as `copy` but for audio streams.
+crop: |
+  Crop the input video to the specified dimensions.
+  Example: `crop=1280:720:0:0` crops to 1280x720 starting from top-left.
+cropdetect: |
+  Auto-detect crop size. Determines the optimal crop values to remove black bars.
+  Useful as a first pass to find crop values, then apply `crop` in a second pass.
+pad: |
+  Pad the input video to the specified size, adding colored borders.
+  Example: `pad=1920:1080:(ow-iw)/2:(oh-ih)/2` centers the input in a 1920x1080 canvas.
+overlay: |
+  Overlay one video on top of another. The primary filter for compositing.
+  Example: `overlay=10:20` places the overlay at x=10, y=20 on the main video.
+trim: |
+  Select a continuous section of the input by time or frame number.
+  Example: `trim=start=5:end=10` keeps frames from 5s to 10s.
+atrim: |
+  Select a continuous section of audio by time or sample number.
+  Example: `atrim=start=5:end=10` keeps audio from 5s to 10s.
+setpts: |
+  Set presentation timestamp (PTS) for output frames. Controls timing and speed.
+  Example: `setpts=0.5*PTS` doubles speed, `setpts=2*PTS` halves speed.
+asetpts: |
+  Set PTS for audio output frames. Controls audio timing.
+  Example: `asetpts=0.5*PTS` doubles playback speed.
+volume: |
+  Change input audio volume. Supports linear multiplier, decibels, and expressions.
+  Example: `volume=2.0` (double), `volume=3dB` (increase by 3 dB), `volume=0.5` (halve).
+amix: |
+  Mix multiple audio streams together. Combines audio from different inputs.
+  Example: `amix=inputs=2:duration=longest`.
+amerge: |
+  Merge audio streams into a single multi-channel stream.
+  Example: `amerge=inputs=2` merges 2 stereo streams into 4-channel audio.
+pan: |
+  Remix audio channels with custom coefficients (panning).
+  Example: `pan=stereo|FL=FL+0.5*FC|FR=FR+0.5*FC` mixes center into front channels.
+channelmap: |
+  Remap audio channels to a different layout.
+  Example: `channelmap=1|0|2|3` swaps left and right channels in stereo.
+channelsplit: |
+  Split audio into per-channel streams. Each output contains one channel.
+  Example: `channelsplit=channel_layout=stereo` produces separate left and right streams.
+aresample: |
+  Resample audio data to a different sample rate.
+  Uses libsoxr for high-quality resampling. Example: `aresample=44100` resamples to 44.1 kHz.
+adelay: |
+  Delay one or more audio channels by the specified number of milliseconds.
+  Example: `adelay=500|500` delays both channels by 500ms.
+apad: |
+  Pad audio with silence. Extends audio duration by appending silence.
+  Example: `apad=whole_dur=30000` pads to 30 seconds.
+afade: |
+  Fade in/out the audio volume.
+  Example: `afade=t=in:ss=0:d=5` fades in over 5 seconds, `afade=t=out:st=30:d=5` fades out.
+fade: |
+  Fade in/out the video brightness.
+  Example: `fade=t=in:st=0:d=5` fades in from black over 5 seconds.
+hflip: |
+  Horizontally flip the input video (mirror image).
+  Common for fixing mirrored webcam video.
+vflip: |
+  Vertically flip the input video (upside down).
+rotate: |
+  Rotate the video by an arbitrary angle. Can also adjust the output size.
+  Example: `rotate=PI/2` rotates 90° clockwise.
+transpose: |
+  Transpose (rotate 90°) the video. Direction: 0=CCW+vertical flip, 1=90° CW, 2=90° CCW, 3=CW+vertical flip.
+  Example: `transpose=1` rotates 90° clockwise.
+hqdn3d: |
+  High quality de-noising using 3D (spatial+temporal) filtering.
+  Lightweight denoiser good for live encoding. Example: `hqdn3d=4:3:6:4.5`.
+atadenoise: |
+  Adaptive temporal averaging de-noiser. Good quality for moderate noise.
+  Slower than hqdn3d but better at preserving detail.
+nlmeans: |
+  Non-local means de-noiser. Excellent quality for film grain and moderate noise.
+  Slow but produces very clean output. Example: `nlmeans=s=3.0`.
+bm3d: |
+  Block-Matching 3D de-noiser. State-of-the-art denoising quality.
+  Very slow but produces excellent results. Good for archival restoration.
+eq: |
+  Adjust brightness, contrast, gamma, and saturation.
+  Example: `eq=brightness=0.1:contrast=1.5:gamma=0.8`.
+hue: |
+  Adjust hue and saturation of the input video.
+  Example: `hue=h=30:s=1.5` shifts hue by 30° and increases saturation.
+colorbalance: |
+  Adjust color balance for shadows, midtones, and highlights independently.
+  Fine-grained color correction per luminance range.
+curves: |
+  Adjust component curves (like Photoshop curves). Supports custom and preset curves.
+  Example: `curves=preset=vintage` or `curves=r=0/0.5:g=0/0.5:b=0/0.5`.
+colorspace: |
+  Convert between color spaces (BT.601, BT.709, BT.2020, etc.).
+  Handles primaries, transfer, and matrix conversions.
+unsharp: |
+  Sharpen or blur the video using unsharp mask filter.
+  Example: `unsharp=5:5:1.5` sharpens with 5x5 kernel and 1.5 strength.
+gblur: |
+  Gaussian blur filter. Smooths the image with configurable sigma and radius.
+  Example: `gblur=sigma=2`.
+boxblur: |
+  Box blur filter. Averages pixels within a box area.
+  Example: `boxblur=5:1` blurs with 5px radius and 1 pass.
+avgblur: |
+  Average blur filter. Simple and fast blur.
+  Example: `avgblur=5` applies 5px average blur.
+drawtext: |
+  Draw text on top of video frames using libfreetype. Supports time codes, expressions, and fonts.
+  Example: `drawtext=text='%{localtime}':x=10:y=10:fontsize=24:fontcolor=white`.
+drawbox: |
+  Draw a colored box on the input video.
+  Example: `drawbox=x=10:y=10:w=100:h=100:color=red@0.5`.
+drawgrid: |
+  Draw a colored grid on the input video.
+  Example: `drawgrid=w=100:h=100:color=red@0.5`.
+subtitle: |
+  Render text subtitles (SRT/ASS/SSA) onto input video using libass.
+  Example: `subtitle=subs.srt` or `subtitle=ass/with.ass`.
+ass: |
+  Render ASS subtitles onto input video using the libass library.
+  Supports full ASS styling including fonts, colors, and animations.
+delogo: |
+  Remove a TV station logo by interpolating surrounding pixels.
+  Example: `delogo=x=0:y=0:w=100:h=77` removes a logo at the top-left.
+split: |
+  Pass the input video to multiple outputs. Used to apply different filters to the same source.
+  Example: `[0:v]split=2[v1][v2]` creates two copies of the input.
+asplit: |
+  Pass the audio input to multiple outputs. Audio version of `split`.
+  Example: `[0:a]asplit=2[a1][a2]` creates two copies of the audio.
+hstack: |
+  Stack video inputs horizontally (side by side).
+  All inputs must have the same height. Example: `[v1][v2]hstack=inputs=2`.
+vstack: |
+  Stack video inputs vertically (top and bottom).
+  All inputs must have the same width. Example: `[v1][v2]vstack=inputs=2`.
+xstack: |
+  Stack video inputs in a custom grid layout.
+  Example: `xstack=inputs=4:layout=0_0|w0_0|0_h0|w0_h0` creates a 2x2 grid.
+interleave: |
+  Temporally interleave video inputs. Alternates frames from each input.
+  Example: `interleave=inputs=3` interleaves 3 video sources.
+ainterleave: |
+  Temporally interleave audio inputs. Alternates audio from each input.
+  Example: `ainterleave=inputs=2`.
+concat: |
+  Concatenate video/audio streams. Joins them sequentially.
+  Example: `[v1][v2]concat=n=2:v=1:a=0` concatenates 2 video streams.
+silencedetect: |
+  Detect silence in an audio stream. Outputs silence start/end timestamps.
+  Example: `silencedetect=n=-50dB:d=2` detects silence below -50 dB for 2+ seconds.
+volumedetect: |
+  Detect audio volume levels. Reports mean, max volume, and histogram.
+  Use for normalization planning: `volumedetect` then apply `volume`.
+ebur128: |
+  EBU R128 loudness scanner. Measures integrated loudness, loudness range, and true peak.
+  Used for broadcast loudness compliance.
+loudnorm: |
+  EBU R128 loudness normalization. Normalizes audio to broadcast loudness targets.
+  Example: `loudnorm=I=-16:TP=-1.5:LRA=11`.
+speechnorm: |
+  Speech normalizer. Levels volume for speech content.
+  Good for podcasts and interviews with varying speaker volumes.
+anullsrc: |
+  Null audio source. Generates empty audio frames (silence).
+  Example: `anullsrc=r=44100:cl=stereo` generates silent stereo audio at 44.1 kHz.
+anullsink: |
+  Null audio sink. Discards all input audio data.
+  Used to consume unwanted audio streams in filtergraphs.
+nullsrc: |
+  Null video source. Generates empty video frames (black).
+  Example: `nullsrc=s=256x256:r=25` generates 256x256 black video at 25 fps.
+nullsink: |
+  Null video sink. Discards all input video data.
+  Used to consume unwanted video streams in filtergraphs.
+color: |
+  Generate a solid color video source.
+  Example: `color=c=red:s=320x240:r=25` generates red 320x240 video at 25 fps.
+colorchart: |
+  Generate color chart video source for test patterns.
+smptebars: |
+  Generate SMPTE color bars test pattern.
+  Standard video test signal for calibration and alignment.
+allrgb: |
+  Generate all RGB colors test pattern (4096x4096 pixels).
+allyuv: |
+  Generate all YUV colors test pattern.
+sin: |
+  Generate sine wave audio signal.
+  Example: `sin=frequency=440:duration=5` generates a 440 Hz tone for 5 seconds.
+anoisesrc: |
+  Generate noise audio signal (white, pink, or brown noise).
+  Example: `anoisesrc=d=5:c=pink:r=44100` generates 5s of pink noise.
+sine: |
+  Generate sine wave audio signal. Simpler interface than `sin`.
+  Example: `sine=frequency=1000:duration=5`.
+bench: |
+  Benchmark part of a filtergraph. Measures and reports filter processing time.
+abench: |
+  Benchmark part of an audio filtergraph. Measures and reports filter processing time.
+metadata: |
+  Manipulate frame metadata (display, modify, or delete key-value pairs).
+  Example: `metadata=mode=print:file=metadata.txt`.
+ametadata: |
+  Manipulate audio frame metadata (display, modify, or delete key-value pairs).
+atempo: |
+  Adjust audio tempo (speed) without changing pitch.
+  Example: `atempo=2.0` doubles speed, `atempo=0.5` halves speed. Range: 0.5–100.
+yadif: |
+  Yet Another Deinterlacing Filter. Standard deinterlacer with spatial and temporal modes.
+  Example: `yadif=0` (temporal, default), `yadif=1` (temporal and spatial).
+bwdif: |
+  Bob Weave Deinterlacing Filter. Improved deinterlacer based on yadif.
+  Better quality than yadif with similar performance.
+w3fdif: |
+  Weston 3-Field Deinterlacing Filter. BBC-developed deinterlacer.
+  Good quality with moderate performance. Supports simple and complex modes.
+deinterlace_qsv: |
+  Intel Quick Sync Video deinterlacing. Hardware-accelerated deinterlace.
+  Very fast, low CPU usage on Intel platforms.
+select: |
+  Select frames to pass in the output based on an expression.
+  Example: `select='eq(n,0)+eq(n,100)'` passes only frames 0 and 100.
+aselect: |
+  Select audio frames to pass in the output based on an expression.
+reverse: |
+  Reverse video clip. Entire clip must fit in memory.
+  Example: `reverse` reverses the entire video.
+areverse: |
+  Reverse audio clip. Entire clip must fit in memory.
+loop: |
+  Loop video frames a specified number of times.
+  Example: `loop=loop=3:size=100:start=0` loops first 100 frames 3 times.
+aloop: |
+  Loop audio samples a specified number of times.
+  Example: `aloop=loop=3:size=1024` loops 1024 samples 3 times.
+realtime: |
+  Slow down filtering to match real-time playback speed.
+  Useful when output needs to be processed at original speed (e.g., streaming).
+arealtime: |
+  Slow down audio filtering to match real-time playback speed.

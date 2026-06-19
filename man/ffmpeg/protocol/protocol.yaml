@@ -1,0 +1,118 @@
+file: |
+  Local file protocol. Reads from or writes to files on the local filesystem.
+  The most common protocol: `file:///path/to/video.mp4`. No network overhead.
+pipe: |
+  Pipe protocol. Reads from stdin (index 0) or writes to stdout (index 1).
+  Example: `pipe:0` for stdin, `pipe:1` for stdout. Used for pipeline processing.
+http: |
+  HTTP protocol. Reads media via HTTP(S) from web servers and CDNs.
+  Supports seekable and non-seekable streams. Basic web media delivery.
+https: |
+  HTTPS protocol. HTTP with TLS encryption. Secure web media delivery.
+  Preferred over plain HTTP for encryption and integrity.
+httpproxy: |
+  HTTP proxy protocol. Routes HTTP(S) requests through a proxy server.
+  Set proxy with `http_proxy` environment variable.
+ftp: |
+  FTP protocol. Reads from or writes to FTP servers.
+  Supports seekable reads. Set credentials with `ftp_user`/`ftp_password`.
+rtmp: |
+  RTMP (Real-Time Messaging Protocol). Adobe's streaming protocol for live and on-demand video.
+  Common for live ingest to platforms like YouTube, Twitch, and Facebook.
+rtmpe: |
+  RTMPE (Encrypted RTMP). RTMP with Adobe's proprietary encryption.
+  Used by some CDNs for content protection during streaming.
+rtmps: |
+  RTMPS (Secure RTMP). RTMP over TLS/SSL. Encrypted streaming delivery.
+  Secure alternative to RTMPE using standard TLS.
+rtmpt: |
+  RTMPT (Tunneled RTMP). RTMP tunneled through HTTP to bypass firewalls.
+  Wraps RTMP in HTTP for networks that block non-HTTP traffic.
+rtmpte: |
+  RTMPTE. Tunneled and encrypted RTMP. Combines RTMPT tunneling with RTMPE encryption.
+rtmpts: |
+  RTMPTS. Tunneled RTMP over TLS. Combines RTMPT tunneling with TLS security.
+rtp: |
+  RTP (Real-Time Transport Protocol). UDP-based protocol for real-time media delivery.
+  Used in VoIP (WebRTC), IPTV, and streaming. Low latency but no delivery guarantee.
+srtp: |
+  SRTP (Secure RTP). RTP with encryption and message authentication.
+  Used in secure VoIP and WebRTC media delivery.
+tcp: |
+  TCP (Transmission Control Protocol). Reliable stream transport protocol.
+  Used for custom streaming and server connections. Guaranteed delivery.
+tls: |
+  TLS protocol. TCP with TLS encryption for secure streaming.
+  Used for secure custom streaming and server connections.
+dtls: |
+  DTLS (Datagram TLS). TLS over UDP for secure real-time media.
+  Used in WebRTC for secure RTP transport.
+udp: |
+  UDP (User Datagram Protocol). Connectionless transport for low-latency streaming.
+  No delivery guarantee. Used for RTP, IPTV, and real-time broadcast. Default port: 1234.
+udplite: |
+  UDP-Lite protocol. Like UDP but with partial checksum coverage.
+  Allows corrupted packets to be delivered for error-resilient codecs.
+unix: |
+  Unix domain socket protocol. Reads from or writes to local Unix sockets.
+  Used for IPC with local media servers and streaming daemons.
+srt: |
+  SRT (Secure Reliable Transport). Open-source low-latency streaming protocol.
+  Designed for live contribution over unpredictable networks. Supports encryption and bonding.
+sftp: |
+  SFTP (SSH File Transfer Protocol). Secure file transfer over SSH.
+  Reads from or writes to remote servers with encryption and authentication.
+concat: |
+  Concatenation protocol. Sequences multiple URLs into a single stream.
+  Example: `concat:file1.mp4|file2.mp4|file3.mp4` plays files sequentially.
+concatf: |
+  Concatenation protocol (file-based). Reads a text file listing URLs to concatenate.
+  Each line is a URL. Safer for filenames with special characters.
+subfile: |
+  Subfile protocol. Reads a sub-range of a URL without downloading the full file.
+  Example: `subfile,,start,152775440,end,156000000,,:file.mp4` reads bytes 152775440-156000000.
+crypto: |
+  Crypto protocol. Reads from AES-encrypted files with a specified key.
+  Example: `crypto:file.mp4:key=0x...` decrypts on the fly.
+data: |
+  Data URI protocol. Reads from inline data URLs (RFC 2397).
+  Example: `data:text/plain;base64,SGVsbG8=` decodes the base64 content.
+bluray: |
+  Blu-ray disc protocol. Reads from Blu-ray disc titles directly.
+  Example: `bluray:/mnt/bluray:title=1` reads the first title from a mounted disc.
+cache: |
+  Cache protocol. Caches network streams to a local temporary file for seek support.
+  Example: `cache:http://example.com/stream.mp4` caches the stream locally.
+async: |
+  Async protocol. Wraps another protocol with asynchronous reading.
+  Prefetches data in a background thread to reduce latency.
+fd: |
+  File descriptor protocol. Reads from or writes to a numbered file descriptor.
+  Example: `fd:0` reads from file descriptor 0 (stdin).
+mmsh: |
+  MMSH (Microsoft Media Server HTTP). Streaming protocol for Windows Media.
+  Legacy protocol for ASF content via HTTP.
+mmst: |
+  MMST (Microsoft Media Server TCP). Streaming protocol for Windows Media over TCP.
+  Legacy protocol for direct TCP streaming.
+gopher: |
+  Gopher protocol. Reads from Gopher servers. Legacy internet protocol.
+  Rare, included for protocol completeness.
+gophers: |
+  Gopher over TLS. Secure Gopher protocol.
+  Extremely rare.
+zmq: |
+  ZeroMQ protocol. Sends/receives media via ZeroMQ messaging.
+  Used for programmatic control and inter-process media streaming.
+ipfs: |
+  IPFS (InterPlanetary FileSystem) protocol. Reads content-addressed media from IPFS.
+  Decentralized storage. Requires IPFS daemon running locally.
+ipns: |
+  IPNS (InterPlanetary Name System) protocol. Resolves mutable IPNS names to IPFS content.
+  DNS-like naming for IPFS. Requires IPFS daemon.
+ffrtmphttp: |
+  FFRTMPHTTP. Internal helper for RTMP HTTP tunneling.
+  Used by FFmpeg internally for RTMPT connections.
+ffrtmpcrypt: |
+  FFRTMPCrypt. Internal helper for RTMP encryption.
+  Used by FFmpeg internally for RTMPE connections.

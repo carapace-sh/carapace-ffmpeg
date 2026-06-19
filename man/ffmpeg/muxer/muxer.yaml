@@ -1,0 +1,107 @@
+mp4: |
+  MP4 (MPEG-4 Part 14) muxer. The most widely used multimedia container for output.
+  Supports H.264, HEVC, AAC, and most modern codecs. Options: `movflags`, `brand`, `use_editlist`.
+mov: |
+  QuickTime / MOV muxer. Apple's multimedia container, very similar to MP4.
+  Use for macOS/iOS compatibility. Supports ProRes, AAC, and most codecs.
+avi: |
+  AVI (Audio Video Interleaved) muxer. Microsoft legacy container format.
+  Wide playback compatibility but limited features. Subject to 2 GB file size limit.
+matroska: |
+  Matroska (MKV) muxer. Open-standard container supporting virtually all codecs.
+  Supports chapters, attachments, multiple audio/subtitle tracks, and menus.
+webm: |
+  WebM muxer. Google's subset of Matroska for web video.
+  Only supports VP8/VP9 video and Vorbis/Opus audio. HTML5 compatible.
+flv: |
+  FLV (Flash Video) muxer. Adobe Flash container, still used for RTMP streaming.
+  Supports H.264/AAC or VP6/MP3. Legacy but required for some live platforms.
+mpegts: |
+  MPEG Transport Stream muxer. Container for DVB, ATSC, IPTV, and HLS.
+  Robust for streaming with error recovery. Options: `mpegts_m2ts_mode`, `pes_size`.
+hls: |
+  HLS (Apple HTTP Live Streaming) muxer. Creates M3U8 playlists and .ts segments.
+  Options: `hls_time`, `hls_list_size`, `hls_segment_filename`. Standard for adaptive streaming.
+dash: |
+  DASH (Dynamic Adaptive Streaming over HTTP) muxer. ISO adaptive streaming.
+  Creates MPD manifest and segments. Options: `seg_duration`, `window_size`.
+asf: |
+  ASF (Advanced Streaming Format) muxer. Microsoft container for WMV/WMA.
+  Supports DV DVR-MS extensions. Legacy format.
+dvd: |
+  DVD-VOB muxer. MPEG-2 Program Stream for DVD-Video authoring.
+  Creates VOB-compatible output. Requires MPEG-2 video and AC-3/PCM audio.
+ac3: |
+  Raw AC-3 muxer. Wraps Dolby Digital audio in raw AC-3 format.
+  Output only — no container, just the AC-3 bitstream.
+eac3: |
+  Raw E-AC-3 muxer. Wraps Dolby Digital Plus audio.
+  Enhanced AC-3 bitstream output without container overhead.
+flac: |
+  Raw FLAC muxer. Writes FLAC audio with metadata support.
+  Supports Vorbis comments, cover art, and seeking.
+mp3: |
+  Raw MP3 muxer. Writes MP3 audio with ID3v2 tags.
+  The universal audio output format.
+adts: |
+  ADTS (Audio Data Transport Stream) muxer. Wraps AAC in ADTS frames.
+  Used for streaming AAC audio without a container. Each packet is self-contained.
+ogg: |
+  OGG muxer. Xiph.org container for Vorbis, Opus, FLAC, and Theora.
+  Open and royalty-free. Common for web audio (Vorbis/Opus).
+wav: |
+  WAV muxer. Microsoft/IBM audio container. Common for PCM and other codecs.
+  Supports metadata (RIFF INFO tags). Standard for uncompressed audio output.
+aiff: |
+  Audio IFF muxer. Apple's audio container (big-endian WAV equivalent).
+  Supports AIFF-C compressed variants and metadata.
+caf: |
+  Apple CAF muxer. Core Audio Format supporting many codecs and large files.
+  No 4 GB file size limit of WAV/AIFF. Modern Apple audio container.
+gif: |
+  GIF muxer. Animated GIF output with 256-color palette.
+  No audio support. Limited color depth but universal web playback.
+apng: |
+  APNG muxer. Animated PNG with full color and transparency support.
+  Better quality than GIF. No audio support.
+image2: |
+  Image sequence muxer. Writes individual image files using a numbered pattern.
+  Example: `image2 img%04d.png` writes img0001.png, img0002.png, etc.
+image2pipe: |
+  Piped image sequence muxer. Writes image data to stdout for piped workflows.
+  Used for streaming image output to other processes.
+mpeg1video: |
+  Raw MPEG-1 video muxer. Outputs MPEG-1 video bitstream without container.
+  Legacy format for Video CD compatibility.
+mpeg2video: |
+  Raw MPEG-2 video muxer. Outputs MPEG-2 video bitstream without container.
+  Used in broadcast workflows where raw ES is needed.
+h264: |
+  Raw H.264 muxer. Outputs H.264 Annex B bitstream without container.
+  Useful for extracting raw video elementary streams.
+hevc: |
+  Raw HEVC muxer. Outputs H.265 Annex B bitstream without container.
+  Used for raw elementary stream output.
+ivf: |
+  IVF muxer. Simple container for VP8/VP9/AV1 bitstreams.
+  Common in codec testing and WebM development.
+crc: |
+  CRC testing muxer. Computes CRC of encoded packets for regression testing.
+  No actual output file — used for verification only.
+framecrc: |
+  Frame CRC muxer. Computes per-frame CRC of encoded output.
+  No actual output file — used for regression testing.
+null: |
+  Null muxer. Discards all output. Used for benchmarking encoding speed without I/O.
+md5: |
+  MD5 muxer. Computes MD5 hash of encoded output for regression testing.
+  No actual output file — used for verification.
+fifo: |
+  FIFO queue pseudo-muxer. Buffers packets to handle encoder stalls and timestamp issues.
+  Useful for live streaming where encoder may pause.
+ffmetadata: |
+  FFmpeg metadata muxer. Writes stream/frame metadata in text format.
+  Used for injecting or exporting metadata.
+smjpeg: |
+  SMJPEG muxer. Loki SDL movie format for games.
+  Legacy format, rarely used.

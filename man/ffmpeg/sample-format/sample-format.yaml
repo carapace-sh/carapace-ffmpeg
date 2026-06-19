@@ -1,3 +1,36 @@
-example: |
-  A sample format in ffmpeg. Sample formats define how audio samples are stored (bit depth and planar/interleaved layout).
-  Use `ffmpeg -sample_fmts` to list all available sample formats on your system.
+u8: |
+  Unsigned 8-bit integer, interleaved. The simplest sample format.
+  Range 0-255 with 128 as center. Low dynamic range. Common in legacy audio.
+s16: |
+  Signed 16-bit integer, interleaved. CD-quality audio standard.
+  Range -32768 to 32767. The most common PCM format with good dynamic range.
+s32: |
+  Signed 32-bit integer, interleaved. High-resolution integer audio.
+  Extended dynamic range for professional audio processing. Less common than float.
+flt: |
+  32-bit floating-point, interleaved. Standard format for audio processing.
+  Range -1.0 to 1.0. Preserves full dynamic range during mixing and effects.
+dbl: |
+  64-bit floating-point (double), interleaved. Maximum precision for audio processing.
+  Range -1.0 to 1.0. Used in scientific audio analysis and high-precision workflows.
+s64: |
+  Signed 64-bit integer, interleaved. Very high resolution integer audio.
+  Rarely used; floating-point formats are preferred for high-resolution audio.
+u8p: |
+  Unsigned 8-bit integer, planar. Each channel stored in a separate buffer.
+  Planar layout enables per-channel SIMD processing. Same range as u8.
+s16p: |
+  Signed 16-bit integer, planar. CD-quality with planar channel layout.
+  Separate buffers per channel. Preferred over interleaved s16 for filtering.
+s32p: |
+  Signed 32-bit integer, planar. High-resolution integer with planar layout.
+  Separate buffers per channel. Good for high-dynamic-range processing.
+fltp: |
+  32-bit floating-point, planar. The standard format for internal audio processing.
+  Separate buffers per channel. FFmpeg's preferred internal format. SIMD-friendly.
+dblp: |
+  64-bit floating-point, planar. Maximum precision with planar layout.
+  Separate buffers per channel. Used in high-precision audio analysis.
+s64p: |
+  Signed 64-bit integer, planar. Very high resolution with planar layout.
+  Separate buffers per channel. Rare, floating-point is preferred.

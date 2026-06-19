@@ -1,3 +1,114 @@
-example: |
-  A channel layout in ffmpeg. Channel layouts define the speaker configuration for audio (mono, stereo, 5.1, etc.).
-  Use `ffmpeg -layouts` to list all available channel layouts on your system.
+mono: |
+  Single channel (FC). Monophonic audio with a front center speaker only.
+  Common in voice recordings, podcasts, and telephony.
+stereo: |
+  Two channels (FL+FR). The standard audio layout for music and general content.
+  Front left and front right speakers. Most common consumer audio format.
+2.1: |
+  Three channels (FL+FR+LFE). Stereo with subwoofer (low frequency effects).
+  Adds a dedicated low-frequency channel for bass content.
+3.0: |
+  Three channels (FL+FR+FC). Stereo with a front center for dialogue clarity.
+  Common in cinema and broadcast applications.
+3.0(back): |
+  Three channels (FL+FR+BC). Stereo with a rear center surround channel.
+  Used in some legacy surround configurations.
+4.0: |
+  Four channels (FL+FR+FC+BC). Three front channels with one rear surround.
+  Early surround sound cinema format.
+quad: |
+  Four channels (FL+FR+BL+BR). Quadraphonic audio with front and rear pairs.
+  No center channel. Used in ambiophonic and vintage quad setups.
+quad(side): |
+  Four channels (FL+FR+SL+SR). Front pair with side surround speakers.
+  Common in modern 4-channel configurations without center channel.
+3.1: |
+  Four channels (FL+FR+FC+LFE). Three front channels with subwoofer.
+  Cinema and broadcast front stage with bass management.
+5.0: |
+  Five channels (FL+FR+FC+BL+BR). Standard surround without subwoofer.
+  Cinema surround format without dedicated LFE channel.
+5.0(side): |
+  Five channels (FL+FR+FC+SL+SR). Standard surround with side speakers.
+  ITU-R BS.775 layout with side surrounds instead of rear.
+4.1: |
+  Five channels (FL+FR+FC+LFE+BC). Three front, subwoofer, and back center.
+  Rare layout; prefer 5.1 for most surround applications.
+5.1: |
+  Six channels (FL+FR+FC+LFE+BL+BR). The standard surround sound layout.
+  Used in DVD, Dolby Digital, DTS, and most home theater systems.
+5.1(side): |
+  Six channels (FL+FR+FC+LFE+SL+SR). 5.1 with side surrounds.
+  ITU-R BS.775 standard. Common in small rooms where rear placement is impractical.
+6.0: |
+  Six channels (FL+FR+FC+BC+SL+SR). 5.0 with additional back center.
+  Used in some cinema formats (SDDS, Dolby Digital Surround EX).
+6.0(front): |
+  Six channels (FL+FR+FLC+FRC+SL+SR). Front wide with side surrounds.
+  Adds front left/right-of-center channels for wider front stage.
+3.1.2: |
+  Six channels (FL+FR+FC+LFE+TFL+TFR). 3.1 with front height.
+  Basic Dolby Atmos home layout with two overhead speakers.
+hexagonal: |
+  Six channels (FL+FR+FC+BL+BR+BC). Six speakers in a circular layout with center and back center.
+  Experimental surround layout.
+6.1: |
+  Seven channels (FL+FR+FC+LFE+BC+SL+SR). 5.1 with additional back center.
+  Dolby Digital EX and DTS-ES cinema format.
+6.1(back): |
+  Seven channels (FL+FR+FC+LFE+BL+BR+BC). 5.1 with back center.
+  Alternate 6.1 with rear pair plus back center.
+6.1(front): |
+  Seven channels (FL+FR+LFE+FLC+FRC+SL+SR). Front wide layout with side surrounds.
+  No center channel; uses front left/right-of-center instead.
+7.0: |
+  Seven channels (FL+FR+FC+BL+BR+SL+SR). 5.0 with additional side surrounds.
+  Extended surround with four surround speakers.
+7.0(front): |
+  Seven channels (FL+FR+FC+FLC+FRC+SL+SR). Five front with side surrounds.
+  SDDS-style front stage with wide left/right-of-center.
+7.1: |
+  Eight channels (FL+FR+FC+LFE+BL+BR+SL+SR). The standard 7.1 surround layout.
+  Used in Dolby TrueHD, DTS-HD Master Audio, and high-end home theater.
+7.1(wide): |
+  Eight channels (FL+FR+FC+LFE+BL+BR+FLC+FRC). 7.1 with front wide instead of side.
+  SDDS-style 7.1 with left/right-of-center front channels.
+7.1(wide-side): |
+  Eight channels (FL+FR+FC+LFE+FLC+FRC+SL+SR). Front wide with side surrounds.
+  Combines front-of-center channels with side surround speakers.
+5.1.2: |
+  Eight channels (FL+FR+FC+LFE+SL+SR+TFL+TFR). Dolby Atmos 5.1.2.
+  Standard 5.1 with two front height speakers. Common Dolby Atmos home configuration.
+5.1.2(back): |
+  Eight channels (FL+FR+FC+LFE+BL+BR+TFL+TFR). 5.1.2 with rear surrounds.
+  Rear surround alternative to side surrounds.
+octagonal: |
+  Eight channels (FL+FR+FC+BL+BR+BC+SL+SR). Eight speakers in a full surround layout.
+  Research and experimental surround sound format.
+cube: |
+  Eight channels (FL+FR+BL+BR+TFL+TFR+TBL+TBR). Four corner speakers at ear and ceiling height.
+  Ambisonic-style 3D audio layout.
+5.1.4: |
+  Ten channels (FL+FR+FC+LFE+SL+SR+TFL+TFR+TBL+TBR). Dolby Atmos 5.1.4.
+  5.1 with four height speakers (front and rear overhead).
+7.1.2: |
+  Ten channels (FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR). Dolby Atmos 7.1.2.
+  Full 7.1 with two front height speakers.
+7.1.4: |
+  Twelve channels (FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR+TBL+TBR). Dolby Atmos 7.1.4.
+  Full 7.1 with four height speakers.
+7.2.3: |
+  Twelve channels (FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR+TBC+LFE2). 7.2.3 Atmos variant.
+  Dual subwoofers with top center and two front heights.
+9.1.4: |
+  Fourteen channels (FL+FR+FC+LFE+BL+BR+FLC+FRC+SL+SR+TFL+TFR+TBL+TBR). Extended Atmos.
+  Adds front wide channels to 7.1.4.
+hexadecagonal: |
+  Sixteen channels. Full-perimeter surround with height speakers.
+  Research and immersive audio format.
+binaural: |
+  Two channels (BIL+BIR). Binaural audio for headphone playback.
+  Simulates 3D spatial audio with HRTF processing for headphones.
+downmix: |
+  Two channels (DL+DR). Dolby downmix channels.
+  Fallback stereo mix embedded in some surround bitstreams.

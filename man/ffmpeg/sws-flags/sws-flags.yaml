@@ -1,0 +1,48 @@
+fast_bilinear: |
+  Fast bilinear scaling algorithm. Optimized bilinear interpolation with reduced precision.
+  Faster than standard bilinear but with slightly lower quality. Good for real-time applications.
+bilinear: |
+  Bilinear scaling algorithm. Interpolates between the four nearest pixels.
+  Standard quality for general-purpose scaling. Good balance of speed and quality.
+bicubic: |
+  Bicubic scaling algorithm (default). Uses 4×4 pixel neighborhood for smoother results.
+  Best general-purpose scaler. Produces sharper output than bilinear with less aliasing.
+experimental: |
+  Experimental scaling algorithm. Testing/development scaler with no guaranteed quality.
+  Not recommended for production use.
+neighbor: |
+  Nearest neighbor rescaling algorithm. No interpolation — uses the closest pixel.
+  Fastest scaler. Preserves sharp pixel edges. Ideal for pixel art and 1:1/integer scaling.
+area: |
+  Averaging area rescaling algorithm. Averages source pixels that map to each output pixel.
+  Best quality for downscaling. Reduces aliasing by averaging. Recommended for reduction.
+bicublin: |
+  Bicubic for luma, bilinear for chroma. Mixed algorithm using higher quality for brightness.
+  Saves processing time since chroma needs less precision than luma.
+gauss: |
+  Gaussian rescaling algorithm. Uses Gaussian function for interpolation.
+  Produces smooth, slightly blurred output. Good for noise reduction during scaling.
+sinc: |
+  Sinc rescaling algorithm. Uses sinc (Whittaker-Shannon) interpolation.
+  Theoretically perfect for band-limited signals but can produce ringing artifacts.
+lanczos: |
+  Lanczos rescaling algorithm. Windowed sinc with Lanczos kernel (typically a=3).
+  Very high quality for both upscaling and downscaling. Popular for video production.
+spline: |
+  Natural bicubic spline rescaling algorithm. Uses spline interpolation.
+  Smooth results, similar quality to Lanczos but with different ringing characteristics.
+print_info: |
+  Enable printing/debug logging for the scaler. Outputs scaling parameters to stderr.
+  Debug flag — does not affect scaling quality.
+accurate_rnd: |
+  Enable accurate rounding in the scaler. Uses full-precision rounding instead of fast rounding.
+  Slightly slower but avoids cumulative rounding errors in multi-pass operations.
+full_chroma_int: |
+  Enable full chroma interpolation. Processes chroma at full resolution during scaling.
+  Higher quality chroma handling at the expense of speed.
+full_chroma_inp: |
+  Select full chroma input. Uses full-resolution chroma from the source.
+  Ensures chroma is not pre-filtered before scaling.
+bitexact: |
+  Enable bitexact output from the scaler. Produces deterministic, repeatable results.
+  Required for regression testing and codec conformance verification.

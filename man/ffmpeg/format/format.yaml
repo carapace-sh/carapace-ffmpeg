@@ -1,3 +1,199 @@
-example: |
-  A container format in ffmpeg. Formats define how media data is multiplexed/demultiplexed in a file or stream.
-  Use `ffmpeg -formats` to list all available formats on your system.
+mp4: |
+  MP4 (MPEG-4 Part 14). The most widely used multimedia container format.
+  Supports H.264, HEVC, AAC, and many other codecs. Used for web video, streaming, and mobile.
+  Muxing name: `mp4`.
+mov: |
+  QuickTime / MOV (Apple). Apple's multimedia container format, predecessor to MP4.
+  Nearly identical to MP4 but with some Apple-specific extensions. Muxing name: `mov`.
+avi: |
+  AVI (Audio Video Interleaved). Microsoft's legacy multimedia container.
+  Widely supported but lacks modern features. Limited to 2 GB without workarounds. Muxing name: `avi`.
+mkv: |
+  Matroska. Open-standard multimedia container supporting virtually all audio and video codecs.
+  Supports chapters, menus, multiple subtitle/audio tracks, and attachments. Muxing name: `matroska`.
+webm: |
+  WebM. Google's subset of Matroska for web video, supporting VP8/VP9 video and Vorbis/Opus audio.
+  Optimized for HTML5 video delivery. Muxing name: `webm`.
+flv: |
+  FLV (Flash Video). Container format for Adobe Flash video streaming.
+  Largely obsolete since Flash was discontinued. Still used for RTMP streaming. Muxing name: `flv`.
+mpegts: |
+  MPEG Transport Stream. Container for broadcast and streaming (DVB, ATSC, IPTV).
+  Supports multiplexing multiple programs. Robust error recovery. Muxing name: `mpegts`.
+mpeg: |
+  MPEG-PS (Program Stream). Container for DVD-Video and SVCD.
+  Multiplexes video and audio PES packets. Muxing name: `mpeg` / `vob`.
+dvd: |
+  DVD-VOB. MPEG-2 Program Stream for DVD-Video output.
+  Includes DVD IFO/VOB structure. Muxing name: `dvd`.
+asf: |
+  ASF (Advanced Streaming Format). Microsoft container for WMV/WMA content.
+  Also the basis for RTSP streaming via `asf_stream`. Muxing name: `asf`.
+3gp: |
+  3GP (3GPP). Multimedia container for 3G mobile phones.
+  Subset of MP4 with H.263/AMR-NB. Muxing name: `3gp`.
+3g2: |
+  3GP2 (3GPP2). Multimedia container for 3GPP2 (CDMA) mobile phones.
+  Similar to 3GP but for CDMA2000 networks. Muxing name: `3g2`.
+ogg: |
+  OGG. Xiph.org container for Vorbis, FLAC, Opus, and Theora codecs.
+  Open and royalty-free. Muxing name: `ogg`.
+flac: |
+  Raw FLAC. Container for FLAC (Free Lossless Audio Codec) audio.
+  Lossless audio with metadata support. Both muxing and demuxing.
+wav: |
+  WAV (Waveform Audio File Format). Microsoft/IBM audio container for PCM and other codecs.
+  Very common for uncompressed and lossless audio. Muxing name: `wav`.
+aiff: |
+  Audio IFF (Audio Interchange File Format). Apple's audio container, similar to WAV but big-endian.
+  Common in professional audio production on macOS. Muxing name: `aiff`.
+ac3: |
+  Raw AC-3. Container for Dolby Digital audio streams.
+  Used when audio is not multiplexed with video.
+eac3: |
+  Raw E-AC-3. Container for Dolby Digital Plus audio streams.
+  Enhanced AC-3 with higher bitrate support.
+dts: |
+  Raw DTS. Container for DTS (DCA) audio streams.
+  Used for standalone DTS audio files.
+mp3: |
+  Raw MP3. Container for MPEG-1 Audio Layer III audio.
+  The most universal audio format. Both muxing and demuxing via `mp3`.
+h264: |
+  Raw H.264. Container for raw H.264/AVC Annex B bitstream.
+  No container overhead. Demuxing and muxing of raw NAL units.
+hevc: |
+  Raw HEVC. Container for raw H.265/HEVC Annex B bitstream.
+  No container overhead. Both muxing and demuxing of raw NAL units.
+av1: |
+  Raw AV1 Annex B. Container for raw AV1 bitstream.
+  No container overhead. Demuxing only.
+ivf: |
+  IVF (On2). Simple container for VP8/VP9/AV1 bitstreams.
+  Common in WebM testing and development. Both muxing and demuxing.
+hls: |
+  HLS (Apple HTTP Live Streaming). Segmented streaming format for adaptive bitrate delivery.
+  Creates M3U8 playlist and .ts segments. Muxing name: `hls`.
+dash: |
+  DASH (Dynamic Adaptive Streaming over HTTP). ISO standard for adaptive streaming.
+  Creates MPD manifest and segments. Both muxing and demuxing.
+rtmp: |
+  RTMP (Real-Time Messaging Protocol). Adobe's streaming protocol for Flash media server.
+  Both muxing and demuxing. Deprecated but still used for live ingest.
+gif: |
+  GIF (CompuServe Graphics Interchange Format). Animated image container with 256-color palette.
+  No audio support. Muxing name: `gif`.
+apng: |
+  APNG (Animated Portable Network Graphics). PNG with animation support and full color.
+  No audio support. Both muxing and demuxing.
+image2: |
+  Image sequence. Reads/writes individual image files as a video stream.
+  Supports PNG, JPEG, TIFF, BMP, and many other formats. Pattern: `img%03d.png`.
+image2pipe: |
+  Piped image sequence. Same as image2 but reads from/writes to a pipe.
+  Used for streaming image data through stdin/stdout.
+concat: |
+  Concatenation script. Virtual format that concatenates multiple input files.
+  Reads a text file listing file paths. Demuxing only.
+data: |
+  Raw data. Minimal container that passes data through without parsing.
+  Both muxing and demuxing. Useful for raw codec testing.
+matroska: |
+  Matroska. Open-standard multimedia container supporting virtually all codecs.
+  Supports chapters, attachments, multiple tracks. Muxing name: `matroska`.
+webvtt: |
+  WebVTT (Web Video Text Tracks). W3C standard for timed text tracks in HTML5 video.
+  Supports styling, positioning, and cue identifiers. Both muxing and demuxing.
+ass: |
+  SSA (SubStation Alpha). Text subtitle format with advanced styling.
+  Both muxing and demuxing. Supports colors, fonts, positioning.
+srt: |
+  SubRip. The most common text-based subtitle format with simple time codes.
+  Both muxing and demuxing.
+caf: |
+  Apple CAF (Core Audio Format). Apple's modern audio container supporting many codecs.
+  Both muxing and demuxing. Better than AIFF/WAV for large audio files.
+au: |
+  Sun AU. Sun Microsystems' audio format, common on Unix systems.
+  Both muxing and demuxing. Simple header, commonly uses μ-law encoding.
+amr: |
+  3GPP AMR. Container for Adaptive Multi-Rate speech codec.
+  Both muxing and demuxing. Used in mobile telephony voice recording.
+g722: |
+  Raw G.722. Container for ITU-T G.722 wideband speech audio.
+  Both muxing and demuxing. 7 kHz audio at 64 kbit/s.
+g726: |
+  Raw G.726. Container for ITU-T G.726 ADPCM audio.
+  Both muxing and demuxing. 16/24/32/40 kbit/s bitrates.
+alaw: |
+  PCM A-law. Container for G.711 A-law companded audio.
+  Both muxing and demuxing. Standard in European telephony.
+ilbc: |
+  iLBC (Internet Low Bitrate Codec). Container for narrowband speech codec.
+  Both muxing and demuxing. Designed for VoIP at 13.33/15.2 kbit/s.
+sln: |
+  Signed 16-bit PCM. Raw audio container with no header.
+  Both muxing and demuxing. Common in Asterisk PBX systems.
+f32be: |
+  PCM 32-bit floating-point big-endian. Raw PCM audio format.
+  Both muxing and demuxing. No header, big-endian byte order.
+f32le: |
+  PCM 32-bit floating-point little-endian. Raw PCM audio format.
+  Both muxing and demuxing. No header, little-endian byte order.
+f64be: |
+  PCM 64-bit floating-point big-endian. Raw PCM audio format.
+  Both muxing and demuxing. Double-precision, big-endian.
+f64le: |
+  PCM 64-bit floating-point little-endian. Raw PCM audio format.
+  Both muxing and demuxing. Double-precision, little-endian.
+dirac: |
+  Raw Dirac. Container for Dirac/VC-2 video bitstream.
+  Both muxing and demuxing. Used in broadcast production.
+dnxhd: |
+  Raw DNxHD. Container for Avid DNxHD video.
+  Both muxing and demuxing. Professional intermediates.
+dv: |
+  DV (Digital Video). Container for DV25/DV50/DV100 video from camcorders.
+  Both muxing and demuxing. Legacy but still found in archived footage.
+gsm: |
+  Raw GSM. Container for GSM 06.10 speech audio.
+  Both muxing and demuxing. Used in telephony voice recording.
+film_cpk: |
+  Sega FILM/CPK. Container for Sega CD and Saturn video games.
+  Both muxing and demuxing. Retro game media preservation.
+gxf: |
+  GXF (General eXchange Format). Container for broadcast video server interchange.
+  Both muxing and demuxing. Used in Grass Valley playout servers.
+lrc: |
+  LRC lyrics. Synchronized lyrics file format.
+  Muxing only. Used alongside audio for karaoke-style lyrics display.
+ismv: |
+  ISMV/ISMA (Smooth Streaming). Microsoft's adaptive streaming format for IIS.
+  Muxing only. Creates fragmented MP4 for Smooth Streaming delivery.
+ipod: |
+  iPod H.264 MP4. MP4 variant with iPod-compatible profile constraints.
+  Muxing only. Ensures playback compatibility with older Apple devices.
+f4v: |
+  F4V (Adobe Flash Video). MP4 variant for Adobe Flash video delivery.
+  Muxing only. Largely obsolete since Flash discontinuation.
+crc: |
+  CRC testing. Pseudo-muxer that computes CRC checksums of encoded packets.
+  Muxing only. Used for regression testing and verification.
+framecrc: |
+  Frame CRC. Pseudo-muxer that computes per-frame CRC checksums.
+  Muxing only. Used for regression testing.
+md5: |
+  MD5 testing. Pseudo-muxer that computes MD5 hash of encoded output.
+  Muxing only. Used for regression testing.
+null: |
+  Null format. Discards all output data.
+  Muxing only. Used for benchmarking and testing encoding speed.
+fifo: |
+  FIFO queue. Pseudo-muxer that queues packets before writing.
+  Muxing only. Helps recover from encoder stalls and timestamp issues.
+ffmetadata: |
+  FFmpeg metadata. Text format for writing/reading stream metadata.
+  Both muxing and demuxing. Used to inject per-frame or per-stream metadata.
+avif: |
+  AVIF (AV1 Image File Format). Image format using AV1 compression.
+  Muxing only. Modern image format with excellent compression.

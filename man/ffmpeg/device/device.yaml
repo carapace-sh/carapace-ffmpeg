@@ -1,0 +1,38 @@
+alsa: |
+  ALSA (Advanced Linux Sound Architecture) audio device. Both input and output.
+  Linux native audio interface. Uses `hw:X,Y` device naming (e.g., `hw:0,0`).
+pulse: |
+  PulseAudio audio device. Both input and output.
+  Linux audio server for desktop audio. Uses PulseAudio device names.
+oss: |
+  OSS (Open Sound System) audio device. Both input and output.
+  Legacy Unix audio API. Uses `/dev/dsp` device path.
+sndio: |
+  sndio audio device. Both input and output.
+  OpenBSD audio subsystem. Uses `default` or specific device names.
+jack: |
+  JACK Audio Connection Kit device. Input only.
+  Professional low-latency audio server for Linux/macOS. Connects to JACK ports.
+fbdev: |
+  Linux framebuffer device. Both input and output.
+  Direct video output to the Linux framebuffer (`/dev/fb0`). No X11 required.
+x11grab: |
+  X11 screen capture device (XCB). Input only.
+  Captures the X11 display as video. Example: `-f x11grab -i :0.0+10,20`.
+kmsgrab: |
+  KMS (Kernel Mode Setting) screen capture device. Input only.
+  Direct DRM/KMS capture without X11. Works on Wayland and console. Lower overhead than x11grab.
+iec61883: |
+  IEEE 1394 (FireWire/i.LINK) DV device. Input only.
+  Captures from FireWire-connected DV camcorders. Uses libiec61883.
+video4linux2: |
+  V4L2 (Video4Linux2) device. Both input and output.
+  Linux video capture/output API. Uses `/dev/videoX` device paths.
+v4l2: |
+  Alias for `video4linux2`. V4L2 video device.
+xv: |
+  XVideo (XV) output device. Output only.
+  Displays video using X11 XVideo extension. Hardware-accelerated video output on X11.
+lavfi: |
+  Libavfilter virtual input device. Input only.
+  Creates virtual input from filtergraph sources (e.g., `color=c=red:s=320x240`).

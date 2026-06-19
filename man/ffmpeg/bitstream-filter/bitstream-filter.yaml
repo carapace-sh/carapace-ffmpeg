@@ -1,4 +1,136 @@
-example: |
-  A bitstream filter in ffmpeg. Bitstream filters operate on the compressed bitstream without fully decoding it.
-  They can modify codec-specific parameters, extract or insert data, and transform between codec variants.
-  Use `ffmpeg -bsfs` to list all available bitstream filters on your system.
+aac_adtstoasc: |
+  Convert AAC from ADTS transport to ISO AAC (MP4-compatible). Strips ADTS headers.
+  Needed when extracting AAC from ADTS streams into MP4 containers.
+h264_mp4toannexb: |
+  Convert H.264 from MP4/AVCC format to Annex B format. Adds NAL start codes.
+  Needed when extracting H.264 from MP4 into MPEG-TS or raw bitstream.
+hevc_mp4toannexb: |
+  Convert HEVC from MP4/HVCC format to Annex B format. Adds NAL start codes.
+  Needed when extracting HEVC from MP4 into MPEG-TS or raw bitstream.
+vvc_mp4toannexb: |
+  Convert VVC (H.266) from MP4 format to Annex B format.
+  Needed when extracting VVC from MP4 into MPEG-TS or raw bitstream.
+h264_redundant_pps: |
+  Remove redundant PPS (Picture Parameter Set) NAL units from H.264 stream.
+  Reduces overhead caused by repeated PPS in SPS/PPS changes.
+h264_metadata: |
+  Modify H.264 metadata (SPS/PPS/SEI NAL units). Can insert, remove, or update metadata.
+  Supports changing level, profile, timing info, and reference picture flags.
+hevc_metadata: |
+  Modify HEVC metadata (VPS/SPS/PPS/SEI NAL units). Can insert, remove, or update metadata.
+  Supports changing level, tier, timing info, and reference picture flags.
+av1_metadata: |
+  Modify AV1 metadata (OBU sequence header and frame headers).
+  Supports changing operating point, level, timing info, and frame resolution.
+mpeg2_metadata: |
+  Modify MPEG-2 metadata (sequence and picture headers).
+  Supports changing colour description, video format, and frame rate.
+vvc_metadata: |
+  Modify VVC (H.266) metadata. Can insert, remove, or update parameter sets.
+dca_core: |
+  Extract the DTS core substream from DTS-HD audio. Strips extension data.
+  Needed when the decoder only supports core DTS and not DTS-HD.
+eac3_core: |
+  Extract the AC-3 core substream from E-AC-3 (Dolby Digital Plus) audio.
+  Required for decoders that only support standard AC-3.
+truehd_core: |
+  Extract the TrueHD core from MLP/Dolby TrueHD audio.
+  Reduces to the core TrueHD stream without extension data.
+dts2pts: |
+  Generate PTS (Presentation Time Stamp) from DTS (Decode Time Stamp).
+  Fixes presentation ordering when PTS is missing or incorrect.
+dump_extra: |
+  Dump extradata from bitstream packets. Outputs stream metadata for debugging.
+  Useful for analyzing codec-specific header data.
+chomp: |
+  Remove trailing padding bytes from packets. Trims zero-padded ends.
+  Useful for packet-level sanitization.
+noise: |
+  Add random noise to bitstream packets for testing and fuzzing.
+  Each byte has a configurable probability of being flipped.
+null: |
+  Pass bitstream through unchanged. Does nothing to the packets.
+  Used for testing or as a no-op placeholder in filter chains.
+extract_extradata: |
+  Extract codec extradata from the bitstream. Moves in-band data to stream-level header.
+  Some containers require extradata in the stream header rather than inline.
+filter_units: |
+  Filter NAL units by type. Keep or remove specific NAL unit types.
+  Example: `filter_units=remove_types=6` removes SEI NAL units from H.264.
+trace_headers: |
+  Trace bitstream headers for debugging. Prints detailed parsing of each NAL unit.
+  Use for codec-level debugging: `ffmpeg -i input.mp4 -bsf:v trace_headers -f null -`.
+showinfo: |
+  Show packet information for debugging. Displays size, timestamps, and flags.
+  Dumps per-packet metadata to stderr for bitstream-level analysis.
+av1_frame_merge: |
+  Merge AV1 temporal units that were split across packets.
+  Combines fragmented AV1 data into complete frames for processing.
+av1_frame_split: |
+  Split AV1 frames into individual OBUs (Open Bitstream Units).
+  Used when downstream expects one OBU per packet.
+vp9_metadata: |
+  Modify VP9 metadata. Can insert or update VP9 frame header fields.
+  Supports changing color space, color range, and frame parallelism.
+vp9_superframe: |
+  Merge VP9 frames into VP9 superframes. Groups sequentially dependent frames.
+  Required for some VP9 muxers and hardware decoders.
+vp9_superframe_split: |
+  Split VP9 superframes into individual frames. Reverses the superframe grouping.
+  Needed for frame-accurate VP9 processing.
+vp9_raw_reorder: |
+  Reorder VP9 frames for output. Fixes frame reordering in VP9 bitstreams.
+mpeg4_unpack_bframes: |
+  Unpack B-frames from MPEG-4 Part 2 DivX-style packed bitstream.
+  Fixes DivX-style packed B-frames (where multiple B-frames are in one packet).
+imxdump: |
+  Dump IMX (D-10) format bitstream. Adds MXF-compatible padding.
+  Used in broadcast MXF workflows with IMX codec.
+mjpeg2jpeg: |
+  Convert MJPEG-B to standard JPEG. Removes MJPEG-B start codes.
+  Needed for JPEG extraction from Motion JPEG-B streams.
+mjpegadump: |
+  Dump MJPEG-A bitstream. Adds QuickTime MJPEG-A table headers.
+  Used for MJPEG-A compatible output in QuickTime containers.
+mov2textsub: |
+  Convert MOV text subtitle track to text. Extracts text from MP4 tx3g subtitle packets.
+text2movsub: |
+  Convert text subtitles to MOV subtitle format. Wraps text into MP4 tx3g subtitle packets.
+dovi_rpu: |
+  Manipulate Dolby Vision RPU (Reference Processing Unit) data in HEVC streams.
+  Can remove, convert, or modify Dolby Vision metadata.
+dv_error_marker: |
+  Mark DV (Digital Video) error concealment areas. Flags sections with errors.
+hapqa_extract: |
+  Extract HAP QA from HAP format. Separates HAP QA codec variant.
+eia608_to_smpte436m: |
+  Convert EIA-608 closed captions to SMPTE 436M (VANC) format.
+  Embeds CEA-608 captions into VANC space for broadcast workflows.
+smpte436m_to_eia608: |
+  Convert SMPTE 436M (VANC) captions to EIA-608 format.
+  Extracts CEA-608 captions from VANC space.
+lcevc_metadata: |
+  Manipulate LCEVC (Low Complexity Enhancement Video Coding) metadata.
+  Insert or remove LCEVC enhancement layer metadata.
+media100_to_mjpegb: |
+  Convert Media100 format to MJPEG-B. Transforms Media100 codec data.
+pcm_rechunk: |
+  Re-chunk PCM audio packets to a fixed size. Adjusts packet boundaries.
+  Useful for containers requiring specific PCM packet sizes.
+pgs_frame_merge: |
+  Merge PGS (Presentation Graphic Stream) subtitle segments into frames.
+  Groups related PGS segments for Blu-ray subtitle processing.
+apv_metadata: |
+  Modify APV (Advanced Professional Video) metadata. Insert or update APV parameters.
+opus_metadata: |
+  Modify Opus metadata. Can update Opus head and comment headers.
+  Supports changing gain, channel mapping, and stream count.
+remove_extra: |
+  Remove extradata from bitstream packets. Moves stream-level header data inline.
+  Opposite of `extract_extradata`.
+setts: |
+  Set PTS and DTS timestamps on packets. Overrides timing information.
+  Useful for fixing broken or zero timestamps in a bitstream.
+evc_frame_merge: |
+  Merge EVC (Essential Video Coding) NAL units into complete frames.
+  Combines fragmented EVC data for frame-level processing.

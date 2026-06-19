@@ -1,3 +1,24 @@
-example: |
-  A hardware acceleration method in ffmpeg. Hardware accelerators use GPU or dedicated hardware to speed up
-  video decoding or encoding. Use `ffmpeg -hwaccels` to list all available hardware accelerators on your system.
+vdpau: |
+  VDPAU (Video Decode and Presentation API for Unix). NVIDIA GPU video decoding on Linux.
+  Legacy API for older NVIDIA GPUs. Use NVDEC/CUVID on newer hardware.
+cuda: |
+  CUDA (Compute Unified Device Architecture). NVIDIA GPU acceleration for video decoding/encoding.
+  Enables NVDEC/NVENC hardware acceleration. Requires NVIDIA driver and CUDA runtime.
+vaapi: |
+  VAAPI (Video Acceleration API). Cross-vendor hardware video acceleration on Linux.
+  Works with Intel, AMD, and some other GPU drivers. The primary Linux HW accel API.
+qsv: |
+  Intel Quick Sync Video. Hardware video encoding/decoding using Intel integrated GPU.
+  Built into Intel Core processors (Sandy Bridge and later). Low CPU overhead for transcoding.
+drm: |
+  DRM (Direct Rendering Manager). Linux kernel subsystem for GPU management.
+  Used in DRM/KMS screen capture (`kmsgrab`) and DMA-BUF buffer sharing.
+opencl: |
+  OpenCL (Open Computing Language). GPU compute acceleration for filters and processing.
+  Enables GPU-accelerated filters (e.g., `avgblur_opencl`, `unsharp_opencl`). Cross-vendor.
+vulkan: |
+  Vulkan. Modern GPU compute and graphics API for hardware-accelerated video processing.
+  Supports Vulkan-based filters, encoding, and decoding. Cross-vendor, cross-platform.
+amf: |
+  AMF (Advanced Media Framework). AMD GPU hardware video encoding/decoding.
+  AMD's equivalent to NVENC/NVDEC. Requires AMD driver and AMF runtime.

@@ -1,3 +1,180 @@
 copy: |
   Copy the codec of the input stream without re-encoding. The stream data is passed through unchanged.
   Use `copy` when you want to preserve the original quality and avoid transcoding overhead.
+libx264: |
+  Open-source H.264/AVC encoder via libx264. Produces high-quality video with wide compatibility.
+  Both encodes and decodes. Supports CRF, ABR, and lossless modes.
+libx265: |
+  Open-source H.265/HEVC encoder via libx265. Better compression than H.264 at slower encoding speed.
+  Both encodes and decodes. Supports CRF, ABR, and lossless modes.
+libaom-av1: |
+  Open-source AV1 codec via libaom. Royalty-free codec with excellent compression.
+  Both encodes and decodes. Very slow encoding, moderate decoding speed.
+libvpx: |
+  Open-source VP8 codec via libvpx. Royalty-free WebM video codec.
+  Both encodes and decodes. Moderate quality and speed.
+libvpx-vp9: |
+  Open-source VP9 codec via libvpx. Improved compression over VP8.
+  Both encodes and decodes. Used in WebM/YouTube workflows.
+h264: |
+  H.264/AVC video codec. The most widely used video codec for encoding and decoding.
+  Decodes all H.264 profiles (baseline, main, high). Decoding is very fast.
+hevc: |
+  H.265/HEVC video codec. Better compression efficiency than H.264.
+  Decodes HEVC main and main 10 profiles. Used for 4K/UHD content.
+av1: |
+  AV1 video codec from the Alliance for Open Media. Royalty-free next-generation codec.
+  Decoding only in native FFmpeg. Use libaom-av1 or libdav1d for decoding.
+mpeg4: |
+  MPEG-4 Part 2 video codec. Legacy codec still found in DivX/Xvid content.
+  Both encodes and decodes. Largely superseded by H.264 for new content.
+mpeg1video: |
+  MPEG-1 video codec. Used in Video CD and early digital video.
+  Both encodes and decodes. Very fast decoding, wide compatibility.
+mpeg2video: |
+  MPEG-2 video codec. Used in DVD, broadcast TV, and SVCD.
+  Both encodes and decodes. Essential for broadcast and legacy workflows.
+vp8: |
+  VP8 video codec. Royalty-free codec used in WebM containers.
+  Both encodes and decodes. Good software decoding speed.
+vp9: |
+  VP9 video codec. Improved successor to VP8, used in YouTube/WebM.
+  Both encodes and decodes. Better compression than VP8.
+theora: |
+  Theora video codec. Open-source codec from Xiph.org.
+  Both encodes (via libtheora) and decodes. Largely obsolete — use VP9 or AV1.
+ffv1: |
+  FFV1 lossless video codec. Mathematically lossless, used for archival and preservation.
+  Both encodes and decodes. Supports multi-threading and error resilience.
+huffyuv: |
+  Huffyuv lossless video codec. Popular for video capture and intermediate work.
+  Both encodes and decodes. Good speed, moderate compression.
+ffvhuff: |
+  Huffyuv FFmpeg variant. Lossless video with FFmpeg-specific improvements.
+  Both encodes and decodes. Better compression than original Huffyuv.
+dnxhd: |
+  Avid DNxHD professional video codec. Fixed bitrate intermediate for broadcast editing.
+  Both encodes and decodes. Supports 1080p and 720p profiles.
+prores: |
+  Apple ProRes video codec. Visually lossless intermediate for professional production.
+  Both encodes and decodes. Multiple quality profiles from Proxy to 4444.
+mjpeg: |
+  Motion JPEG codec. Each frame independently JPEG-compressed.
+  Both encodes and decodes. Low latency, easy editing, large files.
+png: |
+  PNG video codec. Lossless image per frame, supports alpha channel.
+  Both encodes and decodes. Good for image sequences and compositing.
+bmp: |
+  BMP (Windows bitmap) image codec. Simple uncompressed image format.
+  Both encodes and decodes. Widely compatible, large files.
+gif: |
+  GIF image codec. Animated GIF with 256-color palette, no audio.
+  Both encodes and decodes. Limited color depth but universal web support.
+tiff: |
+  TIFF image codec. Supports various bit depths and color spaces.
+  Both encodes and decodes. Common in scientific and medical imaging.
+exr: |
+  OpenEXR image codec. HDR image format for VFX and animation.
+  Both encodes and decodes. Supports float/half-float pixels.
+jpeg2000: |
+  JPEG 2000 image/video codec. Wavelet-based with lossless and lossy modes.
+  Both encodes and decodes. Used in digital cinema (DCI).
+libopenjpeg: |
+  JPEG 2000 via OpenJPEG library. Open-source implementation.
+  Both encodes and decodes. Reference implementation for DCI formats.
+rawvideo: |
+  Raw uncompressed video. No codec overhead, extremely large files.
+  Both encodes and decodes. Use only when uncompressed output is required.
+aac: |
+  AAC (Advanced Audio Coding). Most widely used lossy audio codec.
+  Both encodes and decodes. Standard audio codec for MP4, HLS, and streaming.
+libmp3lame: |
+  MP3 via libmp3lame. The standard MP3 encoding library.
+  Encodes only. Most widely supported lossy audio format.
+mp3: |
+  MP3 (MPEG-1 Audio Layer III). Universally supported lossy audio codec.
+  Decodes all MP3. Encoding via libmp3lame.
+flac: |
+  FLAC (Free Lossless Audio Codec). Lossless audio with fast decoding.
+  Both encodes and decodes. Typically achieves 50-70% compression ratio.
+alac: |
+  ALAC (Apple Lossless Audio Codec). Apple's lossless codec.
+  Both encodes and decodes. Used in Apple ecosystem (m4a, iTunes).
+opus: |
+  Opus audio codec. State-of-the-art lossy codec for speech and music.
+  Both encodes and decodes. Superior quality at any bitrate. Recommended for streaming.
+libopus: |
+  Opus via libopus library. Reference implementation of Opus codec.
+  Both encodes and decodes. Recommended for production Opus encoding.
+vorbis: |
+  Vorbis audio codec. Open-source lossy codec from Xiph.org.
+  Both encodes and decodes. Good quality, used in OGG/WebM.
+ac3: |
+  AC-3 (Dolby Digital). Audio codec for DVD, broadcast, and cinema.
+  Both encodes and decodes. Supports up to 5.1 channels.
+eac3: |
+  E-AC-3 (Dolby Digital Plus). Enhanced AC-3 with higher bitrate and more channels.
+  Both encodes and decodes. Used in HD broadcast and streaming.
+dts: |
+  DTS (DCA) audio codec. Surround sound for DVD and Blu-ray.
+  Both encodes and decodes. Supports up to 7.1 channels.
+mp2: |
+  MP2 (MPEG-1 Audio Layer II). Audio codec for broadcast TV and DVD.
+  Both encodes and decodes. Wide broadcast compatibility.
+pcm_s16le: |
+  PCM signed 16-bit little-endian. CD-quality uncompressed audio.
+  Both encodes and decodes. The most common PCM format.
+pcm_s24le: |
+  PCM signed 24-bit little-endian. High-resolution uncompressed audio.
+  Both encodes and decodes. Used in professional audio production.
+pcm_s32le: |
+  PCM signed 32-bit little-endian. Uncompressed 32-bit integer audio.
+  Both encodes and decodes. High dynamic range for professional audio.
+pcm_f32le: |
+  PCM 32-bit floating-point little-endian. Floating-point audio for processing.
+  Both encodes and decodes. Preserves full range during mixing.
+pcm_f64le: |
+  PCM 64-bit floating-point little-endian. Double precision for audio analysis.
+  Both encodes and decodes. Maximum precision.
+pcm_alaw: |
+  PCM A-law (G.711 A-law). Companded audio for European telephone networks.
+  Both encodes and decodes. 8-bit at 64 kbit/s.
+pcm_mulaw: |
+  PCM mu-law (G.711 mu-law). Companded audio for North American/Japanese telephone networks.
+  Both encodes and decodes. 8-bit at 64 kbit/s.
+g722: |
+  G.722 ADPCM audio codec. ITU-T wideband speech codec at 64 kbit/s.
+  Both encodes and decodes. Used in VoIP and video conferencing.
+g726: |
+  G.726 ADPCM audio codec. ITU-T codec at 16/24/32/40 kbit/s.
+  Both encodes and decodes. Used in telephony systems.
+libgsm: |
+  GSM 06.10 speech codec via libgsm. Full-rate mobile telephony codec at 13 kbit/s.
+  Both encodes and decodes. Used in voice recording applications.
+libgsm_ms: |
+  GSM Microsoft variant via libgsm. Microsoft's GSM codec variant.
+  Both encodes and decodes. Used in Windows voice applications.
+amr_nb: |
+  AMR-NB (Adaptive Multi-Rate Narrowband). Speech codec for 3GPP mobile telephony.
+  Both encodes (via libopencore-amrnb) and decodes. Bitrates 4.75-12.2 kbit/s.
+amr_wb: |
+  AMR-WB (Adaptive Multi-Rate Wideband). Wideband speech codec for 3GPP.
+  Decodes natively, encodes via libopencore-amrwb. Bitrates 6.6-23.85 kbit/s.
+srt: |
+  SubRip subtitle format. The most common text-based subtitle format.
+  Encodes and decodes. Simple time-coded text, widely supported.
+ass: |
+  SSA/ASS subtitle format. Advanced SubStation Alpha with rich formatting.
+  Both encodes and decodes. Supports colors, fonts, animations, and positioning.
+ssa: |
+  SubStation Alpha subtitle format. Predecessor to ASS with basic formatting.
+  Both encodes and decodes. Legacy subtitle format.
+dvdsub: |
+  DVD subtitle codec. Bitmap-based subtitles for DVD-Video.
+  Both encodes and decodes. Limited to DVD positioning and timing.
+dvbsub: |
+  DVB subtitle codec. Bitmap-based subtitles for DVB broadcast streams.
+  Both encodes and decodes. Common in European broadcast TV.
+pgssub: |
+  PGS subtitle codec. Presentation Graphic Stream subtitles for Blu-ray.
+  Decodes only. High-resolution bitmap subtitles.

@@ -1,3 +1,168 @@
-example: |
-  A pixel format in ffmpeg. Pixel formats define how color channels are stored in video frames.
-  Use `ffmpeg -pix_fmts` to list all available pixel formats on your system.
+yuv420p: |
+  Planar YUV 4:2:0, 8-bit. The most common pixel format for video compression.
+  Chroma is subsampled horizontally and vertically by a factor of 2. 12 bits per pixel.
+yuv422p: |
+  Planar YUV 4:2:2, 8-bit. Higher chroma resolution than 4:2:0.
+  Chroma is subsampled horizontally by 2 only. 16 bits per pixel. Common in professional video.
+yuv444p: |
+  Planar YUV 4:4:4, 8-bit. Full chroma resolution with no subsampling.
+  24 bits per pixel. Used in production and archival where chroma detail is critical.
+yuyv422: |
+  Packed YUV 4:2:2, 8-bit (YUYV/YUY2). Interleaved format with chroma shared between adjacent pixels.
+  16 bits per pixel. Common in video capture hardware.
+uyvy422: |
+  Packed YUV 4:2:2, 8-bit (UYVY). Interleaved with U/V before Y samples.
+  16 bits per pixel. Common in broadcast and SDI workflows.
+nv12: |
+  Semi-planar YUV 4:2:0, 8-bit. Y plane separate, UV interleaved in one plane.
+  12 bits per pixel. Native format for many hardware encoders (Intel QSV, VAAPI).
+nv21: |
+  Semi-planar YUV 4:2:0, 8-bit. Like NV12 with reversed U/V order.
+  12 bits per pixel. Common in Android camera APIs.
+rgb24: |
+  Packed RGB 8:8:8, 24-bit. Three bytes per pixel in R-G-B order.
+  No alpha channel. Common in image processing and display.
+bgr24: |
+  Packed BGR 8:8:8, 24-bit. Three bytes per pixel in B-G-R order.
+  Common in Windows/DirectShow video pipelines.
+rgba: |
+  Packed RGBA 8:8:8:8, 32-bit. RGB with alpha channel.
+  Alpha is stored last. Supports transparency.
+bgra: |
+  Packed BGRA 8:8:8:8, 32-bit. BGR with alpha channel.
+  Native format for Windows GDI and many UI frameworks.
+argb: |
+  Packed ARGB 8:8:8:8, 32-bit. Alpha channel first, then RGB.
+  Used in Apple QuickDraw and some macOS/Core Animation contexts.
+abgr: |
+  Packed ABGR 8:8:8:8, 32-bit. Alpha channel first, then BGR.
+  Used in some OpenGL and Android frameworks.
+gray: |
+  Grayscale 8-bit. Single luma channel with no chroma.
+  8 bits per pixel. Used for image processing and monochrome video.
+gray16be: |
+  Grayscale 16-bit big-endian. Higher depth luma with no chroma.
+  16 bits per pixel. Used in scientific imaging and high-depth workflows.
+gray16le: |
+  Grayscale 16-bit little-endian. Higher depth luma with no chroma.
+  16 bits per pixel. Most common 16-bit gray format on x86 systems.
+yuv420p10le: |
+  Planar YUV 4:2:0, 10-bit little-endian. High-depth extension of yuv420p.
+  15 bits per pixel. Standard format for 10-bit H.264/HEVC encoding.
+yuv420p10be: |
+  Planar YUV 4:2:0, 10-bit big-endian. High-depth 4:2:0.
+  Used on big-endian systems; rare on modern x86/ARM.
+yuv422p10le: |
+  Planar YUV 4:2:2, 10-bit little-endian. High-depth professional video format.
+  20 bits per pixel. Used in 10-bit broadcast and production workflows.
+yuv444p10le: |
+  Planar YUV 4:4:4, 10-bit little-endian. Full chroma 10-bit format.
+  30 bits per pixel. Used in high-quality mastering and HDR pipelines.
+yuv420p12le: |
+  Planar YUV 4:2:0, 12-bit little-endian. Extended depth 4:2:0.
+  Used in HDR mastering and some camera raw formats.
+yuv422p12le: |
+  Planar YUV 4:2:2, 12-bit little-endian. Extended depth professional video.
+  Used in camera-native and high-end production formats.
+yuv420p16le: |
+  Planar YUV 4:2:0, 16-bit little-endian. Full 16-bit 4:2:0.
+  24 bits per pixel. Used in processing pipelines and high-depth intermediate formats.
+yuv422p16le: |
+  Planar YUV 4:2:2, 16-bit little-endian. Full 16-bit 4:2:2.
+  32 bits per pixel. Used in processing pipelines and high-depth intermediates.
+yuv444p16le: |
+  Planar YUV 4:4:4, 16-bit little-endian. Full 16-bit 4:4:4.
+  48 bits per pixel. Maximum quality intermediate format.
+gbrp: |
+  Planar GBR 8-bit. Separate R, G, B planes in planar layout.
+  24 bits per pixel. Preferred over rgb24 for scaling and processing.
+gbrp10le: |
+  Planar GBR 10-bit little-endian. 10-bit per channel planar RGB.
+  30 bits per pixel. Used in 10-bit RGB processing pipelines.
+gbrp16le: |
+  Planar GBR 16-bit little-endian. Full 16-bit per channel planar RGB.
+  48 bits per pixel. High-dynamic-range and processing intermediate.
+rgb48le: |
+  Packed RGB 16:16:16, 48-bit little-endian. High-bit-depth packed RGB.
+  48 bits per pixel. Used in high-depth image workflows.
+bgr48le: |
+  Packed BGR 16:16:16, 48-bit little-endian. High-bit-depth packed BGR.
+  48 bits per pixel. Used in Windows high-depth pipelines.
+rgb565le: |
+  Packed RGB 5:6:5, 16-bit little-endian. 5-bit R, 6-bit G, 5-bit B.
+  Compact format used in embedded displays and low-bandwidth applications.
+rgb555le: |
+  Packed RGB 5:5:5, 15-bit little-endian. 5 bits per channel, 1 bit unused.
+  Legacy format from early Windows video.
+bgr565le: |
+  Packed BGR 5:6:5, 16-bit little-endian. BGR version of rgb565le.
+  Used in some embedded and Android display pipelines.
+yuva420p: |
+  Planar YUVA 4:2:0, 8-bit. YUV 4:2:0 with alpha channel.
+  20 bits per pixel. Used when transparency is needed with 4:2:0 chroma.
+yuva422p: |
+  Planar YUVA 4:2:2, 8-bit. YUV 4:2:2 with alpha channel.
+  24 bits per pixel. Professional video with transparency support.
+yuva444p: |
+  Planar YUVA 4:4:4, 8-bit. Full chroma YUV with alpha channel.
+  32 bits per pixel. Maximum 8-bit quality with transparency.
+yuva420p10le: |
+  Planar YUVA 4:2:0, 10-bit little-endian. 10-bit 4:2:0 with alpha.
+  Used in 10-bit video with transparency.
+yuva444p10le: |
+  Planar YUVA 4:4:4, 10-bit little-endian. Full chroma 10-bit with alpha.
+  High-quality 10-bit video with transparency.
+ya8: |
+  Packed YA 8:8, 16-bit. Grayscale with alpha.
+  16 bits per pixel. Simple grayscale transparency format.
+pal8: |
+  8-bit paletted format. Up to 256 colors in a palette lookup table.
+  Bits per pixel varies. Used in GIF and some legacy image formats.
+monow: |
+  1-bit monochrome white. Single bit per pixel (white or black).
+  Used in fax transmission and 1-bit image formats.
+monob: |
+  1-bit monochrome black. Single bit per pixel (inverted polarity from monow).
+  Used in fax and 1-bit image formats.
+0rgb: |
+  Packed 0RGB 8:8:8:8, 32-bit. Unused first byte, then RGB.
+  32 bits per pixel. Used in some Apple/CoreVideo pipelines.
+0bgr: |
+  Packed 0BGR 8:8:8:8, 32-bit. Unused first byte, then BGR.
+  32 bits per pixel. Used in some display frameworks.
+rgb0: |
+  Packed RGB0 8:8:8:8, 32-bit. RGB with unused trailing byte.
+  32 bits per pixel. Display framework intermediate.
+bgr0: |
+  Packed BGR0 8:8:8:8, 32-bit. BGR with unused trailing byte.
+  32 bits per pixel. Windows Direct3D surface format.
+yuv440p: |
+  Planar YUV 4:4:0, 8-bit. Full horizontal chroma, subsampled vertically.
+  16 bits per pixel. Rare, used in some JPEG and codec internals.
+yuvj420p: |
+  Planar YUV 4:2:0, 8-bit (full range). Same layout as yuv420p but with full-range luma (0-255).
+  Deprecated in favor of using yuv420p with color range metadata.
+yuvj422p: |
+  Planar YUV 4:2:2, 8-bit (full range). Same layout as yuv422p but with full-range luma.
+  Deprecated in favor of using yuv422p with color range metadata.
+yuvj444p: |
+  Planar YUV 4:4:4, 8-bit (full range). Same layout as yuv444p but with full-range luma.
+  Deprecated in favor of using yuv444p with color range metadata.
+vaapi: |
+  VAAPI hardware surface. Opaque format for GPU memory via VAAPI.
+  Actual pixel format depends on the VAAPI driver. Zero bits reported.
+dxva2_vld: |
+  DXVA2 hardware surface. Opaque format for GPU memory via DirectX Video Acceleration.
+  Windows-only hardware decoding surface.
+qsv: |
+  Intel Quick Sync Video hardware surface. Opaque GPU memory for QSV operations.
+  Actual pixel format depends on the QSV session.
+d3d11: |
+  Direct3D 11 hardware surface. Opaque GPU texture for DXGI/D3D11 operations.
+  Windows-only hardware decoding surface.
+drm_prime: |
+  DRM PRIME hardware surface. Opaque format for Linux DRM/DMA-BUF GPU memory.
+  Used for zero-copy GPU memory sharing on Linux.
+vulkan: |
+  Vulkan hardware surface. Opaque format for GPU memory via Vulkan compute/graphics.
+  Used for GPU-accelerated video processing via Vulkan.
