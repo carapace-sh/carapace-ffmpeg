@@ -258,20 +258,27 @@ func streamTypeActions(specCtx *streamspec.CompletionContext, prefixToReplace st
 	for _, form := range specCtx.ValidForms {
 		switch {
 		case form.Prefix == "":
-			// numeric index — skip, user types these directly
 			continue
-		case form.Prefix == "#" || strings.HasSuffix(form.Prefix, ":"):
-			unsuffixed = append(unsuffixed, form.Prefix, form.Description)
-		default:
+		case form.Suffix != "":
 			suffixed = append(suffixed, form.Prefix, form.Description)
+		default:
+			unsuffixed = append(unsuffixed, form.Prefix, form.Description)
 		}
 	}
 	var actions []carapace.Action
 	if len(suffixed) > 0 {
-		actions = append(actions, carapace.ActionValuesDescribed(suffixed...).Suffix(":").NoSpace(':'))
+		suffix := ":"
+		for _, form := range specCtx.ValidForms {
+			if form.Suffix != "" {
+				suffix = form.Suffix
+				break
+			}
+		}
+		suffixedAction := carapace.ActionValuesDescribed(suffixed...).Uid("ffmpeg", "stream-specifier").Suffix(suffix).NoSpace(rune(suffix[0]))
+		actions = append(actions, suffixedAction)
 	}
 	if len(unsuffixed) > 0 {
-		actions = append(actions, carapace.ActionValuesDescribed(unsuffixed...))
+		actions = append(actions, carapace.ActionValuesDescribed(unsuffixed...).Uid("ffmpeg", "stream-specifier"))
 	}
 	combined := carapace.Batch(actions...).ToA()
 	return combined.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
