@@ -160,7 +160,26 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	case argstream.ValueDiscard:
 		return ffmpeg.ActionDiscard()
 	case argstream.ValueBSF:
-		return ffmpeg.ActionBitstreamFilters()
+		opts := ffmpeg.BsfOpts{}.Default()
+		if ctx.CurrentOption != nil {
+			spec := ctx.CurrentOption.StreamSpecifier
+			if spec == "" {
+				if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+					spec = optDef.ImplicitSpec
+				}
+			}
+			if spec != "" && len(spec) > 0 {
+				switch spec[0] {
+				case 'a':
+					opts = ffmpeg.BsfOpts{Audio: true}
+				case 'v', 'V':
+					opts = ffmpeg.BsfOpts{Video: true}
+				case 's':
+					opts = ffmpeg.BsfOpts{Subtitle: true}
+				}
+			}
+		}
+		return ffmpeg.ActionBitstreamFilters(opts)
 	case argstream.ValuePrintGraphFmt:
 		return ffmpeg.ActionPrintGraphsFormats()
 	case argstream.ValueTarget:

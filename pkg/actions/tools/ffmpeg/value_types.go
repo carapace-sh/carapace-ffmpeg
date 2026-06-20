@@ -471,11 +471,71 @@ func ActionDiscard() carapace.Action {
 	).Tag("discard values").Uid("ffmpeg", "discard")
 }
 
+type BsfOpts struct {
+	Audio    bool
+	Video    bool
+	Subtitle bool
+}
+
+func (o BsfOpts) Default() BsfOpts {
+	o.Audio = true
+	o.Video = true
+	o.Subtitle = true
+	return o
+}
+
+// bsfStreamType classifies a bitstream filter name as audio, video, or
+// subtitle based on the codec name embedded in the BSF name.
+// Generic BSFs (null, noise, etc.) that apply to any stream type return all true.
+func bsfStreamType(name string) (audio, video, subtitle bool) {
+	switch {
+	// Audio BSFs
+	case strings.HasPrefix(name, "aac_"),
+		strings.HasPrefix(name, "eac3_"),
+		strings.HasPrefix(name, "opus_"),
+		strings.HasPrefix(name, "truehd_"),
+		strings.HasPrefix(name, "ahx_"),
+		strings.HasPrefix(name, "pcm_"),
+		name == "dca_core":
+		return true, false, false
+	// Subtitle BSFs
+	case strings.HasPrefix(name, "pgs_"),
+		strings.HasPrefix(name, "mov2textsub"),
+		strings.HasPrefix(name, "text2movsub"):
+		return false, false, true
+	// Video BSFs
+	case strings.Contains(name, "h264"),
+		strings.Contains(name, "hevc"),
+		strings.Contains(name, "vvc"),
+		strings.Contains(name, "av1_"),
+		strings.Contains(name, "vp9"),
+		strings.Contains(name, "vp8"),
+		strings.Contains(name, "mpeg2"),
+		strings.Contains(name, "mpeg4"),
+		strings.Contains(name, "prores"),
+		strings.Contains(name, "mjpeg"),
+		strings.Contains(name, "evc"),
+		strings.Contains(name, "apv"),
+		strings.Contains(name, "hap"),
+		strings.Contains(name, "lcevc"),
+		strings.Contains(name, "dovi"),
+		strings.Contains(name, "dv_"),
+		strings.Contains(name, "media100"),
+		strings.Contains(name, "imxdump"),
+		strings.Contains(name, "smpte436m"),
+		strings.Contains(name, "eia608"):
+		return false, true, false
+	// Generic BSFs — applicable to any stream type
+	default:
+		return true, true, true
+	}
+}
+
 // ActionBitstreamFilters completes bitstream filters
 //
 //	dca_core
 //	dts2pts
-func ActionBitstreamFilters() carapace.Action {
+func ActionBitstreamFilters(opts BsfOpts) carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-bsfs")(func(output []byte) carapace.Action {
 		_, content, ok := strings.Cut(string(output), ":")
 		if !ok {
@@ -487,6 +547,15 @@ func ActionBitstreamFilters() carapace.Action {
 		for _, line := range lines {
 			line = strings.TrimSpace(line)
 			if line != "" {
+				audio, video, subtitle := bsfStreamType(line)
+				if (audio && !opts.Audio) || (video && !opts.Video) || (subtitle && !opts.Subtitle) {
+					// BSF applies to a type that's excluded — skip only if
+					// it doesn't also apply to an included type.
+					included := (audio && opts.Audio) || (video && opts.Video) || (subtitle && opts.Subtitle)
+					if !included {
+						continue
+					}
+				}
 				vals = append(vals, line)
 			}
 		}
@@ -781,7 +850,7 @@ func ActionHelpTopics() carapace.Action {
 			case "filter":
 				return ActionFilters(FilterOpts{}.Default())
 			case "bsf":
-				return ActionBitstreamFilters()
+				return ActionBitstreamFilters(BsfOpts{}.Default())
 			case "protocol":
 				return ActionProtocols()
 			default:
