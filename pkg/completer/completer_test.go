@@ -1,7 +1,7 @@
 package completer
 
 import (
-	"os/exec"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -24,7 +24,6 @@ func TestProbeAllWithInputURLs(t *testing.T) {
 		InputURLs: []string{"/nonexistent/file.mp4"},
 	}
 	streams := ProbeAll(ctx)
-	// nonexistent file returns nil streams, which is fine
 	if streams != nil {
 		t.Errorf("expected nil streams for nonexistent file, got %v", streams)
 	}
@@ -88,44 +87,38 @@ func TestActionStreamIndexWithProbedStreams(t *testing.T) {
 		{Index: 2, CodecType: "audio"},
 	}
 
-	// Test that stream indices for audio type are returned
 	indices := probe.StreamIndices(streams, "audio")
 	if len(indices) != 2 || indices[0] != "1" || indices[1] != "2" {
 		t.Errorf("StreamIndices for audio = %v, want [1 2]", indices)
 	}
 
-	// Test that stream indices for video type are returned
 	indices = probe.StreamIndices(streams, "video")
 	if len(indices) != 1 || indices[0] != "0" {
 		t.Errorf("StreamIndices for video = %v, want [0]", indices)
 	}
 }
 
-func generateMultistreamMKV(t *testing.T) string {
+// testdataPath resolves a path to a file in the project's testdata/ directory.
+// Skips the test if the file doesn't exist (run `go generate ./testdata/` to create it).
+func testdataPath(t *testing.T, filename string) string {
 	t.Helper()
-
-	dir := t.TempDir()
-	path := filepath.Join(dir, "test.mkv")
-
-	cmd := exec.Command("ffmpeg", "-hide_banner", "-y",
-		"-f", "lavfi", "-i", "color=c=black:s=2x2:d=0.01:r=1",
-		"-f", "lavfi", "-i", "sine=frequency=440:duration=0.01:r=8000",
-		"-f", "lavfi", "-i", "sine=frequency=880:duration=0.01:r=8000",
-		"-map", "0:v", "-map", "1:a", "-map", "2:a",
-		"-metadata:s:a:0", "language=eng",
-		"-metadata:s:a:1", "language=fre",
-		"-c:v", "libx264", "-preset", "ultrafast", "-tune", "stillimage", "-crf", "51",
-		"-c:a", "pcm_s16le",
-		path,
-	)
-	if err := cmd.Run(); err != nil {
-		t.Skipf("skipping: ffmpeg not available or failed: %v", err)
+	// Try relative to the test binary location first (project root).
+	candidates := []string{
+		filepath.Join("testdata", filename),
+		filepath.Join("..", "..", "testdata", filename),
 	}
-	return path
+	for _, p := range candidates {
+		if _, err := os.Stat(p); err == nil {
+			abs, _ := filepath.Abs(p)
+			return abs
+		}
+	}
+	t.Skipf("skipping: testdata/%s not found (run `go generate ./testdata/`)", filename)
+	return ""
 }
 
-func TestProbeAllWithGeneratedFile(t *testing.T) {
-	path := generateMultistreamMKV(t)
+func TestProbeAllWithMultistream(t *testing.T) {
+	path := testdataPath(t, "multistream.mkv")
 	ctx := &argstream.CompletionContext{
 		InputURLs: []string{path},
 	}
@@ -145,23 +138,93 @@ func TestProbeAllWithGeneratedFile(t *testing.T) {
 }
 
 func TestProbeAllDeduplicatesURLs(t *testing.T) {
-	path := generateMultistreamMKV(t)
+	path := testdataPath(t, "multistream.mkv")
 	ctx := &argstream.CompletionContext{
 		InputURLs: []string{path, path},
 	}
 	streams := ProbeAll(ctx)
-	// Same URL listed twice should only be probed once
 	if len(streams) < 3 {
 		t.Fatalf("expected at least 3 streams, got %d", len(streams))
 	}
-	// Shouldn't double the streams
 	if len(streams) > 3 {
 		t.Errorf("expected at most 3 streams (deduplicated), got %d", len(streams))
 	}
 }
 
+func TestProbeAllWithSubtitles(t *testing.T) {
+	path := testdataPath(t, "subtitles.mkv")
+	ctx := &argstream.CompletionContext{
+		InputURLs: []string{path},
+	}
+	streams := ProbeAll(ctx)
+	if len(streams) < 3 {
+		t.Fatalf("expected at least 3 streams, got %d", len(streams))
+	}
+	found := false
+	for _, s := range streams {
+		if s.CodecType == "subtitle" {
+			found = true
+			if s.Tags["language"] != "eng" {
+				t.Errorf("subtitle language = %q, want 'eng'", s.Tags["language"])
+			}
+		}
+	}
+	if !found {
+		t.Error("expected subtitle stream in subtitles.mkv")
+	}
+}
+
+func TestProbeAllWithAudioOnly(t *testing.T) {
+	path := testdataPath(t, "audio_only.wav")
+	ctx := &argstream.CompletionContext{
+		InputURLs: []string{path},
+	}
+	streams := ProbeAll(ctx)
+	if len(streams) < 1 {
+		t.Fatalf("expected at least 1 stream, got %d", len(streams))
+	}
+	if streams[0].CodecType != "audio" {
+		t.Errorf("stream 0 CodecType = %q, want 'audio'", streams[0].CodecType)
+	}
+}
+
+func TestProbeAllWithAttachment(t *testing.T) {
+	path := testdataPath(t, "attachment.mkv")
+	ctx := &argstream.CompletionContext{
+		InputURLs: []string{path},
+	}
+	streams := ProbeAll(ctx)
+	found := false
+	for _, s := range streams {
+		if s.CodecType == "attachment" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("expected attachment stream in attachment.mkv")
+	}
+}
+
+func TestProbeAllWith5Point1(t *testing.T) {
+	path := testdataPath(t, "surround.mkv")
+	ctx := &argstream.CompletionContext{
+		InputURLs: []string{path},
+	}
+	streams := ProbeAll(ctx)
+	// Just verify the audio stream exists with codec_type audio.
+	found := false
+	for _, s := range streams {
+		if s.CodecType == "audio" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("expected audio stream in surround.mkv")
+	}
+}
+
 func TestActionStreamIndexWithRealStreams(t *testing.T) {
-	path := generateMultistreamMKV(t)
+	path := testdataPath(t, "multistream.mkv")
 	streams, _ := probe.Probe(path)
 	if len(streams) < 3 {
 		t.Skipf("skipping: not enough streams (%d)", len(streams))
@@ -171,17 +234,15 @@ func TestActionStreamIndexWithRealStreams(t *testing.T) {
 		CurrentKind: streamspec.KindStreamType,
 	}
 
-	// Video type spec "v:" → should return index "0"
 	action := actionStreamIndex(specCtx, "v:", streams, "")
 	_ = action
 
-	// Audio type spec "a:" → should return indices "1", "2"
 	action = actionStreamIndex(specCtx, "a:", streams, "")
 	_ = action
 }
 
 func TestActionMetadataValueWithRealStreams(t *testing.T) {
-	path := generateMultistreamMKV(t)
+	path := testdataPath(t, "multistream.mkv")
 	streams, _ := probe.Probe(path)
 	if len(streams) < 3 {
 		t.Skipf("skipping: not enough streams (%d)", len(streams))
@@ -191,7 +252,6 @@ func TestActionMetadataValueWithRealStreams(t *testing.T) {
 		MetadataKey: "language",
 	}
 
-	// Should not return empty action since streams have language tags
 	action := actionMetadataValue(specCtx, streams, "")
 	_ = action
 }
