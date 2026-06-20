@@ -427,3 +427,137 @@ func TestProbeNonexistentFile(t *testing.T) {
 		t.Errorf("Probe() for nonexistent file = %v, want nil", streams)
 	}
 }
+
+func TestStreamIDs(t *testing.T) {
+	streams := []StreamInfo{
+		{Index: 0, ID: "512", CodecType: "video"},
+		{Index: 1, ID: "513", CodecType: "audio"},
+		{Index: 2, ID: "", CodecType: "audio"},
+	}
+
+	ids := StreamIDs(streams)
+	seen := map[string]bool{}
+	for _, id := range ids {
+		seen[id] = true
+	}
+	if !seen["512"] {
+		t.Errorf("StreamIDs missing decimal '512' in %v", ids)
+	}
+	if !seen["0x200"] {
+		t.Errorf("StreamIDs missing hex '0x200' for decimal 512 in %v", ids)
+	}
+	if !seen["513"] {
+		t.Errorf("StreamIDs missing decimal '513' in %v", ids)
+	}
+	if !seen["0x201"] {
+		t.Errorf("StreamIDs missing hex '0x201' for decimal 513 in %v", ids)
+	}
+	if seen[""] {
+		t.Error("StreamIDs should not include empty ID")
+	}
+}
+
+func TestStreamIDsEmpty(t *testing.T) {
+	if got := StreamIDs(nil); len(got) != 0 {
+		t.Errorf("StreamIDs(nil) = %v, want empty", got)
+	}
+	if got := StreamIDs([]StreamInfo{{Index: 0, ID: ""}}); len(got) != 0 {
+		t.Errorf("StreamIDs with empty ID = %v, want empty", got)
+	}
+}
+
+func TestStreamIDsDedup(t *testing.T) {
+	streams := []StreamInfo{
+		{Index: 0, ID: "100"},
+		{Index: 1, ID: "100"},
+	}
+	ids := StreamIDs(streams)
+	count := 0
+	for _, id := range ids {
+		if id == "100" {
+			count++
+		}
+	}
+	if count != 1 {
+		t.Errorf("StreamIDs has %d occurrences of '100', want 1: %v", count, ids)
+	}
+}
+
+func TestStreamIDsHexInput(t *testing.T) {
+	streams := []StreamInfo{
+		{Index: 0, ID: "0x1F3"},
+	}
+	ids := StreamIDs(streams)
+	if len(ids) != 1 || ids[0] != "0x1F3" {
+		t.Errorf("StreamIDs with hex ID = %v, want [0x1F3]", ids)
+	}
+}
+
+func TestFormatIDAsHex(t *testing.T) {
+	tests := []struct {
+		id   string
+		want string
+	}{
+		{"512", "0x200"},
+		{"0", "0x0"},
+		{"1", "0x1"},
+		{"0x200", ""},
+		{"0X1F3", ""},
+		{"notanumber", ""},
+		{"", ""},
+	}
+	for _, tt := range tests {
+		got := formatIDAsHex(tt.id)
+		if got != tt.want {
+			t.Errorf("formatIDAsHex(%q) = %q, want %q", tt.id, got, tt.want)
+		}
+	}
+}
+func generateMpegTS(t *testing.T) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.ts")
+
+	cmd := exec.Command("ffmpeg", "-hide_banner", "-y",
+		"-f", "lavfi", "-i", "color=c=black:s=2x2:d=0.01:r=1",
+		"-f", "lavfi", "-i", "sine=frequency=440:duration=0.01:r=8000",
+		"-map", "0:v", "-map", "1:a",
+		"-c:v", "libx264", "-preset", "ultrafast", "-crf", "51",
+		"-c:a", "mp2",
+		path,
+	)
+	if err := cmd.Run(); err != nil {
+		t.Skipf("skipping: ffmpeg not available or failed: %v", err)
+	}
+	return path
+}
+
+func TestProbeMPEGTS(t *testing.T) {
+	path := generateMpegTS(t)
+
+	streams, err := Probe(path)
+	if err != nil {
+		t.Fatalf("Probe() error = %v", err)
+	}
+	if len(streams) < 2 {
+		t.Fatalf("expected at least 2 streams, got %d", len(streams))
+	}
+
+	// MPEG-TS should have stream IDs (PIDs)
+	ids := StreamIDs(streams)
+	if len(ids) == 0 {
+		t.Error("expected stream IDs in MPEG-TS, got none")
+	}
+
+	// Verify that hex-format IDs are present (0x100, 0x101, etc.)
+	foundHex := false
+	for _, id := range ids {
+		if id == "0x100" || id == "0x101" {
+			foundHex = true
+		}
+	}
+	if !foundHex {
+		t.Errorf("expected hex stream IDs 0x100 or 0x101 in MPEG-TS, got %v", ids)
+	}
+}

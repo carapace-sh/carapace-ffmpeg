@@ -52,6 +52,7 @@ type SpecifierForm struct {
 	Prefix      string `json:"prefix"`
 	Description string `json:"description"`
 	Suffix      string `json:"suffix,omitempty"`
+	NeedsValue  bool   `json:"needsValue,omitempty"`
 }
 
 type CompletionContext struct {

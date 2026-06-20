@@ -344,8 +344,9 @@ func actionStreamSpecifierAfter(specifierPart string, streams []probe.StreamInfo
 				streamspec.ExpectedGroupIndex,
 				streamspec.ExpectedGroupID:
 				actions = append(actions, carapace.ActionValues().Suffix(":").NoSpace(':'))
-			case streamspec.ExpectedProgramID,
-				streamspec.ExpectedStreamIDValue:
+			case streamspec.ExpectedStreamIDValue:
+				actions = append(actions, actionStreamID(specCtx, streams, prefixToReplace))
+			case streamspec.ExpectedProgramID:
 				actions = append(actions, carapace.ActionValues().Suffix(":").NoSpace(':'))
 			}
 		}
@@ -362,13 +363,15 @@ func actionStreamSpecifierAfter(specifierPart string, streams []probe.StreamInfo
 // (e.g. "g:", "m:") get no additional suffix; others get Suffix(":")
 // since all specifier types can be followed by additional specifiers.
 func streamTypeActions(specCtx *streamspec.CompletionContext, prefixToReplace string) carapace.Action {
-	var suffixed, unsuffixed []string
+	var suffixed, unsuffixed, needsValue []string
 	for _, form := range specCtx.ValidForms {
 		switch {
 		case form.Prefix == "":
 			continue
 		case form.Suffix != "":
 			suffixed = append(suffixed, form.Prefix, form.Description)
+		case form.NeedsValue:
+			needsValue = append(needsValue, form.Prefix, form.Description)
 		default:
 			unsuffixed = append(unsuffixed, form.Prefix, form.Description)
 		}
@@ -388,27 +391,34 @@ func streamTypeActions(specCtx *streamspec.CompletionContext, prefixToReplace st
 	if len(unsuffixed) > 0 {
 		actions = append(actions, carapace.ActionValuesDescribed(unsuffixed...).Uid("ffmpeg", "stream-specifier"))
 	}
+	if len(needsValue) > 0 {
+		actions = append(actions, carapace.ActionValuesDescribed(needsValue...).Uid("ffmpeg", "stream-specifier").NoSpace('*'))
+	}
 	combined := carapace.Batch(actions...).ToA()
 	return combined.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
 }
 
 // ActionStreamSpecifiers returns completions for stream specifier types.
 func ActionStreamSpecifiers() carapace.Action {
-	return carapace.ActionValuesDescribed(
-		"v", "video streams",
-		"V", "video streams (excluding attached pictures)",
-		"a", "audio streams",
-		"s", "subtitle streams",
-		"d", "data streams",
-		"t", "attachment streams",
-		"g", "stream group",
-		"p", "program",
-		"#", "stream by ID",
-		"i", "stream by ID (alternate)",
-		"m", "metadata",
-		"disp", "disposition",
-		"u", "usable configuration",
-	).Uid("ffmpeg", "stream-specifier").Suffix(":").NoSpace(':')
+	return carapace.Batch(
+		carapace.ActionValuesDescribed(
+			"v", "video streams",
+			"V", "video streams (excluding attached pictures)",
+			"a", "audio streams",
+			"s", "subtitle streams",
+			"d", "data streams",
+			"t", "attachment streams",
+			"g", "stream group",
+			"p", "program",
+			"i", "stream by ID (alternate)",
+			"m", "metadata",
+			"disp", "disposition",
+			"u", "usable configuration",
+		).Uid("ffmpeg", "stream-specifier").Suffix(":").NoSpace(':'),
+		carapace.ActionValuesDescribed(
+			"#", "stream by ID",
+		).Uid("ffmpeg", "stream-specifier").NoSpace('*'),
+	).ToA()
 }
 
 // ActionStreamSpecifierParts returns context-aware stream specifier completions
@@ -444,8 +454,9 @@ func ActionStreamSpecifierPartsWithStreams(specifierPart string, partialValue st
 				streamspec.ExpectedGroupIndex,
 				streamspec.ExpectedGroupID:
 				actions = append(actions, carapace.ActionValues().Suffix(":").NoSpace(':'))
-			case streamspec.ExpectedProgramID,
-				streamspec.ExpectedStreamIDValue:
+			case streamspec.ExpectedStreamIDValue:
+				actions = append(actions, actionStreamIDParts(specCtx, streams, partialValue))
+			case streamspec.ExpectedProgramID:
 				actions = append(actions, carapace.ActionValues().Suffix(":").NoSpace(':'))
 			}
 		}
@@ -479,6 +490,50 @@ func actionStreamIndex(specCtx *streamspec.CompletionContext, specifierPart stri
 	return carapace.ActionValues()
 }
 
+// actionStreamID returns completions for stream IDs (# and i: specifier forms),
+// using probed stream info when available to list actual stream IDs.
+func actionStreamID(specCtx *streamspec.CompletionContext, streams []probe.StreamInfo, prefixToReplace string) carapace.Action {
+	if len(streams) > 0 {
+		ids := probe.StreamIDs(streams)
+		if len(ids) > 0 {
+			action := carapace.ActionValues(ids...)
+			if specCtx.PartialIdent != "" {
+				action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
+			}
+			return action.Suffix(":").NoSpace(':')
+		}
+	}
+	return carapace.ActionMessage("no stream IDs found (stream IDs are available in containers like MPEG-TS)").Suffix(":").NoSpace(':')
+}
+
+// actionStreamIDParts returns stream ID completions for the ActionMultiParts path.
+// For the # form, IDs are prefixed with # so they match carapace's prefix
+// filtering within ActionMultiParts (e.g. c.Value="#0x1" must match "#0x100").
+// For the i: form, the # prefix is not needed since the i: is in a separate part.
+func actionStreamIDParts(specCtx *streamspec.CompletionContext, streams []probe.StreamInfo, partialValue string) carapace.Action {
+	if len(streams) > 0 {
+		ids := probe.StreamIDs(streams)
+		if len(ids) > 0 {
+			filterValue := specCtx.PartialIdent
+			// When the # prefix is part of the MultiParts current value (not yet
+			// consumed by a colon separator), prefix IDs with # so they match
+			// carapace's Invoke filtering against c.Value.
+			if specCtx.CurrentKind == streamspec.KindStreamID && strings.HasPrefix(partialValue, "#") {
+				filterValue = "#" + specCtx.PartialIdent
+				var prefixed []string
+				for _, id := range ids {
+					prefixed = append(prefixed, "#"+id)
+				}
+				ids = prefixed
+			}
+			action := carapace.ActionValues(ids...)
+			action = action.Invoke(carapace.Context{Value: filterValue}).ToA()
+			return action.Suffix(":").NoSpace(':')
+		}
+	}
+	return carapace.ActionMessage("no stream IDs found (stream IDs are available in containers like MPEG-TS)").Suffix(":").NoSpace(':')
+}
+
 // actionMetadataValue returns completions for metadata values, using probed stream info
 // when available to list actual tag values from input streams.
 func actionMetadataValue(specCtx *streamspec.CompletionContext, streams []probe.StreamInfo, prefixToReplace string) carapace.Action {
@@ -492,7 +547,7 @@ func actionMetadataValue(specCtx *streamspec.CompletionContext, streams []probe.
 			return action.Suffix(":").NoSpace(':')
 		}
 	}
-	return carapace.ActionValues().Suffix(":").NoSpace(':')
+	return carapace.ActionMessage("no stream IDs found (stream IDs are available in containers like MPEG-TS)").Suffix(":").NoSpace(':')
 }
 
 // actionMetadataValueParts returns metadata value completions for the ActionMultiParts path.
@@ -505,7 +560,7 @@ func actionMetadataValueParts(specCtx *streamspec.CompletionContext, streams []p
 			return action.Suffix(":").NoSpace(':')
 		}
 	}
-	return carapace.ActionValues().Suffix(":").NoSpace(':')
+	return carapace.ActionMessage("no stream IDs found (stream IDs are available in containers like MPEG-TS)").Suffix(":").NoSpace(':')
 }
 
 // actionDispositionName returns disposition completions, preferring probed stream info
