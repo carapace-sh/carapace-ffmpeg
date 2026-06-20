@@ -114,7 +114,14 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	case argstream.ValueCodec:
 		return codecAction(ctx)
 	case argstream.ValueFormat:
-		return ffmpeg.ActionFormats()
+		opts := ffmpeg.FormatOpts{Demuxing: true, Muxing: true}
+		switch ctx.Scope {
+		case argstream.ScopeInputFile:
+			opts.Muxing = false
+		case argstream.ScopeOutputFile:
+			opts.Demuxing = false
+		}
+		return ffmpeg.ActionFormats(opts)
 	case argstream.ValuePixelFormat:
 		return ffmpeg.ActionPixelFormats()
 	case argstream.ValueSampleFmt:
@@ -123,7 +130,7 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 		return ffmpeg.ActionChannelLayouts()
 	case argstream.ValueFilter:
 		isComplex := ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi"
-		return ActionFilterValue(filterValue, isComplex)
+		return ActionFilterValue(filterValue, isComplex, filterOptsFromContext(ctx))
 	case argstream.ValueVideoSize:
 		return ffmpeg.ActionVideoSizes()
 	case argstream.ValueVideoRate:
@@ -131,7 +138,26 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	case argstream.ValueBoolean:
 		return ffmpeg.ActionBoolean()
 	case argstream.ValueDisposition:
-		return ffmpeg.ActionDispositions()
+		opts := ffmpeg.DispositionOpts{}.Default()
+		if ctx.CurrentOption != nil {
+			spec := ctx.CurrentOption.StreamSpecifier
+			if spec == "" {
+				if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+					spec = optDef.ImplicitSpec
+				}
+			}
+			if spec != "" && len(spec) > 0 {
+				switch spec[0] {
+				case 'a':
+					opts = ffmpeg.DispositionOpts{Audio: true}
+				case 'v', 'V':
+					opts = ffmpeg.DispositionOpts{Video: true}
+				case 's':
+					opts = ffmpeg.DispositionOpts{Subtitle: true}
+				}
+			}
+		}
+		return ffmpeg.ActionDispositions(opts)
 	case argstream.ValueBitrate:
 		return ffmpeg.ActionBitrates()
 	case argstream.ValueMapSpec:
@@ -153,7 +179,26 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	case argstream.ValueDiscard:
 		return ffmpeg.ActionDiscard()
 	case argstream.ValueBSF:
-		return ffmpeg.ActionBitstreamFilters()
+		opts := ffmpeg.BsfOpts{}.Default()
+		if ctx.CurrentOption != nil {
+			spec := ctx.CurrentOption.StreamSpecifier
+			if spec == "" {
+				if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+					spec = optDef.ImplicitSpec
+				}
+			}
+			if spec != "" && len(spec) > 0 {
+				switch spec[0] {
+				case 'a':
+					opts = ffmpeg.BsfOpts{Audio: true}
+				case 'v', 'V':
+					opts = ffmpeg.BsfOpts{Video: true}
+				case 's':
+					opts = ffmpeg.BsfOpts{Subtitle: true}
+				}
+			}
+		}
+		return ffmpeg.ActionBitstreamFilters(opts)
 	case argstream.ValuePrintGraphFmt:
 		return ffmpeg.ActionPrintGraphsFormats()
 	case argstream.ValueTarget:
@@ -476,7 +521,7 @@ func actionDispositionName(specCtx *streamspec.CompletionContext, streams []prob
 			return action.Suffix(":").NoSpace(':')
 		}
 	}
-	action := ffmpeg.ActionDispositions()
+	action := ffmpeg.ActionDispositions(ffmpeg.DispositionOpts{}.Default())
 	action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
 	return action.Suffix(":").NoSpace(':')
 }
@@ -491,14 +536,15 @@ func actionDispositionNameParts(_ *streamspec.CompletionContext, streams []probe
 			return action.Suffix(":").NoSpace(':')
 		}
 	}
-	action := ffmpeg.ActionDispositions()
+	action := ffmpeg.ActionDispositions(ffmpeg.DispositionOpts{}.Default())
 	action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
 	return action.Suffix(":").NoSpace(':')
 }
 
 // ActionFilterValue returns completions for filter values using the filtergraph parser.
 // isComplex indicates whether link labels are allowed (-filter_complex, -lavfi).
-func ActionFilterValue(value string, isComplex bool) carapace.Action {
+// filterOpts controls which filter types are offered (audio, video, source/sink).
+func ActionFilterValue(value string, isComplex bool, filterOpts ffmpeg.FilterOpts) carapace.Action {
 	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		fgCtx := filtergraph.ParseForCompletion(value)
 		fgCtx.IsComplex = isComplex
@@ -514,7 +560,7 @@ func ActionFilterValue(value string, isComplex bool) carapace.Action {
 		for _, token := range fgCtx.ExpectedTokens {
 			switch token {
 			case filtergraph.ExpectedFilterName:
-				action := ffmpeg.ActionFilters()
+				action := ffmpeg.ActionFilters(filterOpts)
 				// Invoke with PartialIdent (or empty) as the Value so carapace
 				// filters filter names correctly, then prefix back the
 				// preceding filtergraph text.
@@ -550,10 +596,44 @@ func ActionFilterValue(value string, isComplex bool) carapace.Action {
 		}
 
 		if len(actions) == 0 {
-			return ffmpeg.ActionFilters().NoSpace()
+			return ffmpeg.ActionFilters(filterOpts).NoSpace()
 		}
 		return carapace.Batch(actions...).ToA()
 	})
+}
+
+// FilterOptsFromContext derives FilterOpts from the completion context's
+// stream specifier or implicit spec, matching the codec action pattern.
+func FilterOptsFromContext(ctx *argstream.CompletionContext) ffmpeg.FilterOpts {
+	opts := ffmpeg.FilterOpts{}.Default()
+	if ctx.CurrentOption == nil {
+		return opts
+	}
+	spec := ctx.CurrentOption.StreamSpecifier
+	if spec == "" {
+		if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+			spec = optDef.ImplicitSpec
+		}
+	}
+	if spec != "" && len(spec) > 0 {
+		switch spec[0] {
+		case 'a':
+			opts.Audio = true
+			opts.Video = false
+		case 'v', 'V':
+			opts.Audio = false
+			opts.Video = true
+		case 's':
+			opts.Audio = false
+			opts.Video = false
+		}
+	}
+	return opts
+}
+
+// filterOptsFromContext is an alias for FilterOptsFromContext for internal use.
+func filterOptsFromContext(ctx *argstream.CompletionContext) ffmpeg.FilterOpts {
+	return FilterOptsFromContext(ctx)
 }
 
 // ActionDecoderOnlyCodec returns codec completions restricted to decoders.

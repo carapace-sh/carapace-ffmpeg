@@ -1,0 +1,7 @@
+# Generated media files for testing — run `go generate ./testdata/`
+*
+!.gitignore
+!generate.go
+!generate.sh
+!subtitles.srt
+!attachment.txt

@@ -202,11 +202,22 @@ func ActionEncoders(opts EncoderOpts) carapace.Action {
 	}).Tag("encoders").UidF(Uid("encoder"))
 }
 
+type FormatOpts struct {
+	Demuxing bool
+	Muxing   bool
+}
+
+func (o FormatOpts) Default() FormatOpts {
+	o.Demuxing = true
+	o.Muxing = true
+	return o
+}
+
 // ActionFormats completes formats
 //
 //	aax (CRI AAX)
 //	ac3 (raw AC-3)
-func ActionFormats() carapace.Action {
+func ActionFormats(opts FormatOpts) carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-formats")(func(output []byte) carapace.Action {
 		_, content, ok := strings.Cut(string(output), " ---")
 		if !ok {
@@ -219,6 +230,9 @@ func ActionFormats() carapace.Action {
 		vals := make([]string, 0)
 		for _, line := range lines {
 			if matches := r.FindStringSubmatch(line); matches != nil {
+				if (matches[1] == "D" && !opts.Demuxing) || (matches[2] == "E" && !opts.Muxing) {
+					continue
+				}
 				s := style.Default
 				switch {
 				case matches[1] == "D" && matches[2] == "E":
@@ -305,11 +319,22 @@ func ActionChannelLayouts() carapace.Action {
 	}).Tag("channel layouts").UidF(Uid("channel-layout"))
 }
 
+type FilterOpts struct {
+	Audio bool
+	Video bool
+}
+
+func (o FilterOpts) Default() FilterOpts {
+	o.Audio = true
+	o.Video = true
+	return o
+}
+
 // ActionFilters completes filters
 //
 //	acrusher (Reduce audio bit resolution.)
 //	acue (Delay filtering to match a cue.)
-func ActionFilters() carapace.Action {
+func ActionFilters(opts FilterOpts) carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-filters")(func(output []byte) carapace.Action {
 		_, content, ok := strings.Cut(string(output), " ------")
 		if !ok {
@@ -317,12 +342,31 @@ func ActionFilters() carapace.Action {
 		}
 
 		lines := strings.Split(content, "\n")
-		r := regexp.MustCompile(`^ .{2,3} (?P<name>[^ ]+) +[^ ]+ *(?P<description>.*)$`)
+		r := regexp.MustCompile(`^ .{2,3} (?P<name>[^ ]+) +(?P<io>[^ ]+) *(?P<description>.*)$`)
 
 		vals := make([]string, 0)
 		for _, line := range lines {
 			if matches := r.FindStringSubmatch(line); matches != nil {
-				vals = append(vals, matches[1], matches[2])
+				ioType := matches[2]
+				parts := strings.Split(ioType, "->")
+				inputType := parts[0]
+				outputType := ""
+				if len(parts) > 1 {
+					outputType = parts[1]
+				}
+				isAudio := strings.Contains(inputType, "A") || strings.Contains(outputType, "A")
+				isVideo := strings.Contains(inputType, "V") || strings.Contains(outputType, "V")
+				isDynamic := strings.Contains(inputType, "N") || strings.Contains(outputType, "N")
+
+				switch {
+				case isAudio && !opts.Audio:
+					continue
+				case isVideo && !opts.Video:
+					continue
+				case !isAudio && !isVideo && !isDynamic:
+					continue
+				}
+				vals = append(vals, matches[1], matches[3])
 			}
 		}
 		return carapace.ActionValuesDescribed(vals...)
@@ -427,11 +471,71 @@ func ActionDiscard() carapace.Action {
 	).Tag("discard values").Uid("ffmpeg", "discard")
 }
 
+type BsfOpts struct {
+	Audio    bool
+	Video    bool
+	Subtitle bool
+}
+
+func (o BsfOpts) Default() BsfOpts {
+	o.Audio = true
+	o.Video = true
+	o.Subtitle = true
+	return o
+}
+
+// bsfStreamType classifies a bitstream filter name as audio, video, or
+// subtitle based on the codec name embedded in the BSF name.
+// Generic BSFs (null, noise, etc.) that apply to any stream type return all true.
+func bsfStreamType(name string) (audio, video, subtitle bool) {
+	switch {
+	// Audio BSFs
+	case strings.HasPrefix(name, "aac_"),
+		strings.HasPrefix(name, "eac3_"),
+		strings.HasPrefix(name, "opus_"),
+		strings.HasPrefix(name, "truehd_"),
+		strings.HasPrefix(name, "ahx_"),
+		strings.HasPrefix(name, "pcm_"),
+		name == "dca_core":
+		return true, false, false
+	// Subtitle BSFs
+	case strings.HasPrefix(name, "pgs_"),
+		strings.HasPrefix(name, "mov2textsub"),
+		strings.HasPrefix(name, "text2movsub"):
+		return false, false, true
+	// Video BSFs
+	case strings.Contains(name, "h264"),
+		strings.Contains(name, "hevc"),
+		strings.Contains(name, "vvc"),
+		strings.Contains(name, "av1_"),
+		strings.Contains(name, "vp9"),
+		strings.Contains(name, "vp8"),
+		strings.Contains(name, "mpeg2"),
+		strings.Contains(name, "mpeg4"),
+		strings.Contains(name, "prores"),
+		strings.Contains(name, "mjpeg"),
+		strings.Contains(name, "evc"),
+		strings.Contains(name, "apv"),
+		strings.Contains(name, "hap"),
+		strings.Contains(name, "lcevc"),
+		strings.Contains(name, "dovi"),
+		strings.Contains(name, "dv_"),
+		strings.Contains(name, "media100"),
+		strings.Contains(name, "imxdump"),
+		strings.Contains(name, "smpte436m"),
+		strings.Contains(name, "eia608"):
+		return false, true, false
+	// Generic BSFs — applicable to any stream type
+	default:
+		return true, true, true
+	}
+}
+
 // ActionBitstreamFilters completes bitstream filters
 //
 //	dca_core
 //	dts2pts
-func ActionBitstreamFilters() carapace.Action {
+func ActionBitstreamFilters(opts BsfOpts) carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-bsfs")(func(output []byte) carapace.Action {
 		_, content, ok := strings.Cut(string(output), ":")
 		if !ok {
@@ -443,6 +547,15 @@ func ActionBitstreamFilters() carapace.Action {
 		for _, line := range lines {
 			line = strings.TrimSpace(line)
 			if line != "" {
+				audio, video, subtitle := bsfStreamType(line)
+				if (audio && !opts.Audio) || (video && !opts.Video) || (subtitle && !opts.Subtitle) {
+					// BSF applies to a type that's excluded — skip only if
+					// it doesn't also apply to an included type.
+					included := (audio && opts.Audio) || (video && opts.Video) || (subtitle && opts.Subtitle)
+					if !included {
+						continue
+					}
+				}
 				vals = append(vals, line)
 			}
 		}
@@ -490,17 +603,56 @@ func ActionTargets() carapace.Action {
 	).Tag("targets").Uid("ffmpeg", "target")
 }
 
+type DispositionOpts struct {
+	Audio    bool
+	Video    bool
+	Subtitle bool
+}
+
+func (o DispositionOpts) Default() DispositionOpts {
+	o.Audio = true
+	o.Video = true
+	o.Subtitle = true
+	return o
+}
+
 // ActionDispositions completes stream disposition names
 //
 //	default
 //	dub
-func ActionDispositions() carapace.Action {
-	return carapace.ActionValues(
-		"default", "dub", "original", "comment", "lyrics", "karaoke",
-		"forced", "hearing_impaired", "visual_impaired", "clean_effects",
-		"attached_pic", "timed_thumbnails", "non_diegetic", "captions",
-		"descriptions", "metadata", "dependent", "still_image", "multilayer",
-	).Tag("dispositions").Uid("ffmpeg", "disposition")
+func ActionDispositions(opts DispositionOpts) carapace.Action {
+	var dispositions []string
+	for _, d := range []struct {
+		name     string
+		audio    bool
+		video    bool
+		subtitle bool
+	}{
+		{"default", true, true, true},
+		{"dub", true, true, true},
+		{"original", true, true, true},
+		{"comment", true, true, true},
+		{"lyrics", true, true, true},
+		{"karaoke", true, false, false},
+		{"forced", true, true, true},
+		{"hearing_impaired", true, false, false},
+		{"visual_impaired", true, false, false},
+		{"clean_effects", true, false, false},
+		{"attached_pic", false, true, false},
+		{"timed_thumbnails", false, true, false},
+		{"non_diegetic", true, true, true},
+		{"captions", true, true, true},
+		{"descriptions", true, true, true},
+		{"metadata", true, true, true},
+		{"dependent", true, true, true},
+		{"still_image", false, true, false},
+		{"multilayer", false, true, false},
+	} {
+		if (d.audio && opts.Audio) || (d.video && opts.Video) || (d.subtitle && opts.Subtitle) {
+			dispositions = append(dispositions, d.name)
+		}
+	}
+	return carapace.ActionValues(dispositions...).Tag("dispositions").Uid("ffmpeg", "disposition")
 }
 
 // ActionBoolean completes boolean value options
@@ -735,9 +887,9 @@ func ActionHelpTopics() carapace.Action {
 			case "muxer":
 				return ActionMuxers()
 			case "filter":
-				return ActionFilters()
+				return ActionFilters(FilterOpts{}.Default())
 			case "bsf":
-				return ActionBitstreamFilters()
+				return ActionBitstreamFilters(BsfOpts{}.Default())
 			case "protocol":
 				return ActionProtocols()
 			default:
