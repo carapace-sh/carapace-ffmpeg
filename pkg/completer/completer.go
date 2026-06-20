@@ -1,6 +1,7 @@
 package completer
 
 import (
+	"net/url"
 	"slices"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/filtergraph"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/probe"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/streamspec"
+	"github.com/carapace-sh/carapace/pkg/uid"
 )
 
 // ContextToArgs converts carapace.Context to the args and trailingSpace
@@ -54,6 +56,18 @@ func ActionPartialOption(ctx *argstream.CompletionContext, profile *argstream.To
 	return carapace.Batch(actions...).ToA()
 }
 
+// optionUid returns a UidF function that resolves option names to their canonical name.
+// Strips the leading `-` prefix and looks up the canonical name from the profile's option index.
+func optionUid(profile *argstream.ToolProfile) func(s string, uc uid.Context) (*url.URL, error) {
+	return func(s string, uc uid.Context) (*url.URL, error) {
+		name := strings.TrimPrefix(s, "-")
+		if def := profile.LookupOption(name); def != nil {
+			name = def.CanonicalName
+		}
+		return ffmpeg.Uid("option")(name, uc)
+	}
+}
+
 // ActionOptionNamesWithSpecSuffix returns option name completions for the given profile.
 // Options that accept stream specifiers get Suffix(":") so the user
 // can continue typing the specifier within the same token.
@@ -76,8 +90,8 @@ func ActionOptionNamesWithSpecSuffix(ctx *argstream.CompletionContext, profile *
 		}
 	}
 
-	specAction := carapace.ActionStyledValuesDescribed(specOptions...).Suffix(":").NoSpace(':')
-	noSpecAction := carapace.ActionStyledValuesDescribed(noSpecOptions...)
+	specAction := carapace.ActionStyledValuesDescribed(specOptions...).UidF(optionUid(profile)).Suffix(":").NoSpace(':')
+	noSpecAction := carapace.ActionStyledValuesDescribed(noSpecOptions...).UidF(optionUid(profile))
 	return carapace.Batch(specAction, noSpecAction).ToA()
 }
 
@@ -96,7 +110,7 @@ func ActionOptionNames(ctx *argstream.CompletionContext, profile *argstream.Tool
 		}
 		vals = append(vals, "-"+name, def.Description, def.Style())
 	}
-	return carapace.ActionStyledValuesDescribed(vals...)
+	return carapace.ActionStyledValuesDescribed(vals...).UidF(optionUid(profile))
 }
 
 // ActionOptions returns completions for option names appropriate to the current scope.
