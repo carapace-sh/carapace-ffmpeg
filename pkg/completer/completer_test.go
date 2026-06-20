@@ -2,6 +2,7 @@ package completer
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -281,6 +282,71 @@ func TestActionMetadataValueWithRealStreams(t *testing.T) {
 	_ = action
 }
 
+func TestActionStreamIDWithProbedStreams(t *testing.T) {
+	streams := []probe.StreamInfo{
+		{Index: 0, ID: "512", CodecType: "video"},
+		{Index: 1, ID: "513", CodecType: "audio"},
+	}
+
+	specCtx := &streamspec.CompletionContext{
+		CurrentKind: streamspec.KindStreamID,
+	}
+
+	action := actionStreamID(specCtx, streams, "")
+	_ = action
+
+	action = actionStreamID(specCtx, nil, "")
+	_ = action
+}
+
+func TestActionStreamIDPartsWithHashPrefix(t *testing.T) {
+	streams := []probe.StreamInfo{
+		{Index: 0, ID: "0x100", CodecType: "video"},
+		{Index: 1, ID: "0x101", CodecType: "audio"},
+	}
+
+	specCtx := &streamspec.CompletionContext{
+		CurrentKind:  streamspec.KindStreamID,
+		PartialIdent: "",
+	}
+
+	action := actionStreamIDParts(specCtx, streams, "#")
+	_ = action
+
+	specCtx.PartialIdent = "0x1"
+	action = actionStreamIDParts(specCtx, streams, "#0x1")
+	_ = action
+}
+
+func TestActionStreamIDPartsWithIPrefix(t *testing.T) {
+	streams := []probe.StreamInfo{
+		{Index: 0, ID: "0x100", CodecType: "video"},
+		{Index: 1, ID: "0x101", CodecType: "audio"},
+	}
+
+	specCtx := &streamspec.CompletionContext{
+		CurrentKind:  streamspec.KindStreamID,
+		PartialIdent: "0x1",
+	}
+
+	action := actionStreamIDParts(specCtx, streams, "0x1")
+	_ = action
+}
+
+func TestActionStreamIDWithNoIDs(t *testing.T) {
+	streams := []probe.StreamInfo{
+		{Index: 0, CodecType: "video"},
+		{Index: 1, CodecType: "audio"},
+	}
+
+	specCtx := &streamspec.CompletionContext{
+		CurrentKind: streamspec.KindStreamID,
+	}
+
+	action := actionStreamID(specCtx, streams, "")
+	_ = action
+}
+
 func TestFilterOptsFromContext(t *testing.T) {
 	tests := []struct {
 		name string
@@ -351,4 +417,81 @@ func TestFilterOptsFromContext(t *testing.T) {
 			}
 		})
 	}
+}
+
+func generateMpegTS(t *testing.T) string {
+	t.Helper()
+
+	dir := t.TempDir()
+	path := filepath.Join(dir, "test.ts")
+
+	cmd := exec.Command("ffmpeg", "-hide_banner", "-y",
+		"-f", "lavfi", "-i", "color=c=black:s=2x2:d=0.01:r=1",
+		"-f", "lavfi", "-i", "sine=frequency=440:duration=0.01:r=8000",
+		"-map", "0:v", "-map", "1:a",
+		"-c:v", "libx264", "-preset", "ultrafast", "-crf", "51",
+		"-c:a", "mp2",
+		path,
+	)
+	if err := cmd.Run(); err != nil {
+		t.Skipf("skipping: ffmpeg not available or failed: %v", err)
+	}
+	return path
+}
+
+func TestProbeAllWithStreamIDs(t *testing.T) {
+	path := generateMpegTS(t)
+	ctx := &argstream.CompletionContext{
+		InputURLs: []string{path},
+	}
+	streams := ProbeAll(ctx)
+	if len(streams) < 2 {
+		t.Fatalf("expected at least 2 streams, got %d", len(streams))
+	}
+
+	// MPEG-TS files should have stream IDs (PIDs)
+	ids := probe.StreamIDs(streams)
+	if len(ids) == 0 {
+		t.Error("expected stream IDs in MPEG-TS container, got none")
+	}
+
+	// Verify that StreamIDs returns hex format for decimal PIDs
+	found := false
+	for _, id := range ids {
+		if id == "0x100" || id == "0x101" {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected hex stream ID 0x100 or 0x101 in MPEG-TS, got %v", ids)
+	}
+
+	// Verify that the StreamInfo has the ID field populated
+	for _, s := range streams {
+		if s.ID == "" {
+			t.Errorf("stream %d has empty ID in MPEG-TS container", s.Index)
+		}
+	}
+}
+
+func TestActionStreamIDWithMPEGTS(t *testing.T) {
+	path := generateMpegTS(t)
+	streams, _ := probe.Probe(path)
+	if len(streams) < 2 {
+		t.Skipf("skipping: not enough streams (%d)", len(streams))
+	}
+
+	// Verify stream IDs are present
+	ids := probe.StreamIDs(streams)
+	if len(ids) == 0 {
+		t.Skipf("skipping: no stream IDs found")
+	}
+
+	specCtx := &streamspec.CompletionContext{
+		CurrentKind: streamspec.KindStreamID,
+	}
+
+	action := actionStreamID(specCtx, streams, "")
+	_ = action
 }

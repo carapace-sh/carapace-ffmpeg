@@ -68,4 +68,12 @@ ffmpeg -hide_banner -y \
   -c:a flac \
   tagged_audio.flac
 
+ffmpeg -hide_banner -y \
+  -f lavfi -i "color=c=black:s=2x2:d=0.01:r=1" \
+  -f lavfi -i "sine=frequency=440:duration=0.01:r=8000" \
+  -map 0:v -map 1:a \
+  -c:v libx264 -preset ultrafast -crf 51 \
+  -c:a mp2 \
+  streams.ts
+
 echo "Done generating test media files."

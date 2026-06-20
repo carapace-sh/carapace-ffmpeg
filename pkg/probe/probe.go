@@ -2,6 +2,7 @@ package probe
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"os/exec"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 // StreamInfo holds metadata for a single stream probed from a media file.
 type StreamInfo struct {
 	Index       int               `json:"index"`
+	ID          string            `json:"id,omitempty"`
 	CodecName   string            `json:"codec_name"`
 	CodecType   string            `json:"codec_type"`
 	SampleFmt   string            `json:"sample_fmt,omitempty"`
@@ -117,6 +119,39 @@ func StreamIndices(streams []StreamInfo, codecType string) []string {
 		}
 	}
 	return vals
+}
+
+// StreamIDs returns unique stream IDs for use with the # and i: stream specifier forms.
+// Each ID is formatted as both hex (0xNNNN) and decimal, since ffmpeg accepts either.
+// Only streams with a non-empty ID are included.
+func StreamIDs(streams []StreamInfo) []string {
+	seen := make(map[string]bool)
+	var vals []string
+	for _, s := range streams {
+		if s.ID == "" || seen[s.ID] {
+			continue
+		}
+		seen[s.ID] = true
+		id := s.ID
+		vals = append(vals, id)
+		if idHex := formatIDAsHex(id); idHex != "" {
+			vals = append(vals, idHex)
+		}
+	}
+	return vals
+}
+
+// formatIDAsHex converts a decimal stream ID string to hex format (e.g. "512" -> "0x200").
+// Returns empty string if the ID is not a valid decimal integer or is already hex.
+func formatIDAsHex(id string) string {
+	if strings.HasPrefix(id, "0x") || strings.HasPrefix(id, "0X") {
+		return ""
+	}
+	n, err := strconv.Atoi(id)
+	if err != nil {
+		return ""
+	}
+	return fmt.Sprintf("0x%X", n)
 }
 
 // ActiveDispositions returns disposition names that are set (non-zero) in any stream.

@@ -76,6 +76,28 @@ func TestCompletionStreamID(t *testing.T) {
 	if ctx.CurrentKind != KindStreamID {
 		t.Errorf("expected KindStreamID, got %v", ctx.CurrentKind)
 	}
+	assertHasExpected(t, ctx, ExpectedStreamIDValue)
+	assertHasExpected(t, ctx, ExpectedSpecifierType)
+	if ctx.PartialIdent != "0x1" {
+		t.Errorf("expected PartialIdent '0x1', got %q", ctx.PartialIdent)
+	}
+}
+
+func TestCompletionStreamIDPartial(t *testing.T) {
+	ctx := ParseForCompletion("#")
+	assertHasExpected(t, ctx, ExpectedStreamIDValue)
+	if ctx.CurrentKind != KindStreamID {
+		t.Errorf("expected KindStreamID, got %v", ctx.CurrentKind)
+	}
+}
+
+func TestCompletionStreamIDAlternatePartial(t *testing.T) {
+	ctx := ParseForCompletion("i:0x1")
+	assertHasExpected(t, ctx, ExpectedStreamIDValue)
+	assertHasExpected(t, ctx, ExpectedSpecifierType)
+	if ctx.CurrentKind != KindStreamID {
+		t.Errorf("expected KindStreamID, got %v", ctx.CurrentKind)
+	}
 }
 
 func TestCompletionMetadataValueWithAdditionalSpecifier(t *testing.T) {

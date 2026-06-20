@@ -17,7 +17,7 @@ func allForms() []SpecifierForm {
 		{Prefix: "t", Description: "all attachment streams", Suffix: ":"},
 		{Prefix: "g", Description: "stream group by index or ID", Suffix: ":"},
 		{Prefix: "p", Description: "program by ID", Suffix: ":"},
-		{Prefix: "#", Description: "stream by ID"},
+		{Prefix: "#", Description: "stream by ID", NeedsValue: true},
 		{Prefix: "i", Description: "stream by ID (alternate)", Suffix: ":"},
 		{Prefix: "m", Description: "stream by metadata key", Suffix: ":"},
 		{Prefix: "disp", Description: "stream by disposition", Suffix: ":"},
@@ -95,6 +95,10 @@ func (p *compParser) addForm(prefix, desc string, suffixes ...string) {
 		suffix = suffixes[0]
 	}
 	p.ctx.ValidForms = append(p.ctx.ValidForms, SpecifierForm{Prefix: prefix, Description: desc, Suffix: suffix})
+}
+
+func (p *compParser) addFormNeedsValue(prefix, desc string) {
+	p.ctx.ValidForms = append(p.ctx.ValidForms, SpecifierForm{Prefix: prefix, Description: desc, NeedsValue: true})
 }
 
 func (p *compParser) addTopLevelForms() {
@@ -200,6 +204,8 @@ func (p *compParser) parseSpecifier() {
 		}
 		p.scanHexOrDecimalID()
 		if p.atCursorOrEnd() {
+			p.addExpected(ExpectedStreamIDValue)
+			p.addExpected(ExpectedSpecifierType)
 			return
 		}
 		if p.peek() == ':' {
@@ -223,6 +229,8 @@ func (p *compParser) parseSpecifier() {
 			}
 			p.scanHexOrDecimalID()
 			if p.atCursorOrEnd() {
+				p.addExpected(ExpectedStreamIDValue)
+				p.addExpected(ExpectedSpecifierType)
 				return
 			}
 			if p.peek() == ':' {
@@ -268,7 +276,7 @@ func (p *compParser) parseGroupSpecifier() {
 	if p.atCursorOrEnd() {
 		p.addExpected(ExpectedGroupIndex)
 		p.addExpected(ExpectedGroupID)
-		p.addForm("#", "group by ID")
+		p.addFormNeedsValue("#", "group by ID")
 		p.addForm("i", "group by ID (alternate)", ":")
 		return
 	}
@@ -294,6 +302,10 @@ func (p *compParser) parseGroupSpecifier() {
 		p.scanIntegerForCompletion()
 	}
 	if p.atCursorOrEnd() {
+		if p.ctx.PartialIdent != "" {
+			p.addExpected(ExpectedGroupIndex)
+			p.addExpected(ExpectedGroupID)
+		}
 		return
 	}
 	if p.peek() == ':' {
@@ -309,6 +321,7 @@ func (p *compParser) parseProgramSpecifier() {
 	}
 	p.scanHexOrDecimalID()
 	if p.atCursorOrEnd() {
+		p.addExpected(ExpectedProgramID)
 		return
 	}
 	if p.peek() == ':' {
