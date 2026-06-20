@@ -130,7 +130,7 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 		return ffmpeg.ActionChannelLayouts()
 	case argstream.ValueFilter:
 		isComplex := ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi"
-		return ActionFilterValue(filterValue, isComplex)
+		return ActionFilterValue(filterValue, isComplex, filterOptsFromContext(ctx))
 	case argstream.ValueVideoSize:
 		return ffmpeg.ActionVideoSizes()
 	case argstream.ValueVideoRate:
@@ -505,7 +505,8 @@ func actionDispositionNameParts(_ *streamspec.CompletionContext, streams []probe
 
 // ActionFilterValue returns completions for filter values using the filtergraph parser.
 // isComplex indicates whether link labels are allowed (-filter_complex, -lavfi).
-func ActionFilterValue(value string, isComplex bool) carapace.Action {
+// filterOpts controls which filter types are offered (audio, video, source/sink).
+func ActionFilterValue(value string, isComplex bool, filterOpts ffmpeg.FilterOpts) carapace.Action {
 	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		fgCtx := filtergraph.ParseForCompletion(value)
 		fgCtx.IsComplex = isComplex
@@ -521,7 +522,7 @@ func ActionFilterValue(value string, isComplex bool) carapace.Action {
 		for _, token := range fgCtx.ExpectedTokens {
 			switch token {
 			case filtergraph.ExpectedFilterName:
-				action := ffmpeg.ActionFilters()
+				action := ffmpeg.ActionFilters(filterOpts)
 				// Invoke with PartialIdent (or empty) as the Value so carapace
 				// filters filter names correctly, then prefix back the
 				// preceding filtergraph text.
@@ -557,10 +558,44 @@ func ActionFilterValue(value string, isComplex bool) carapace.Action {
 		}
 
 		if len(actions) == 0 {
-			return ffmpeg.ActionFilters().NoSpace()
+			return ffmpeg.ActionFilters(filterOpts).NoSpace()
 		}
 		return carapace.Batch(actions...).ToA()
 	})
+}
+
+// FilterOptsFromContext derives FilterOpts from the completion context's
+// stream specifier or implicit spec, matching the codec action pattern.
+func FilterOptsFromContext(ctx *argstream.CompletionContext) ffmpeg.FilterOpts {
+	opts := ffmpeg.FilterOpts{}.Default()
+	if ctx.CurrentOption == nil {
+		return opts
+	}
+	spec := ctx.CurrentOption.StreamSpecifier
+	if spec == "" {
+		if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+			spec = optDef.ImplicitSpec
+		}
+	}
+	if spec != "" && len(spec) > 0 {
+		switch spec[0] {
+		case 'a':
+			opts.Audio = true
+			opts.Video = false
+		case 'v', 'V':
+			opts.Audio = false
+			opts.Video = true
+		case 's':
+			opts.Audio = false
+			opts.Video = false
+		}
+	}
+	return opts
+}
+
+// filterOptsFromContext is an alias for FilterOptsFromContext for internal use.
+func filterOptsFromContext(ctx *argstream.CompletionContext) ffmpeg.FilterOpts {
+	return FilterOptsFromContext(ctx)
 }
 
 // ActionDecoderOnlyCodec returns codec completions restricted to decoders.

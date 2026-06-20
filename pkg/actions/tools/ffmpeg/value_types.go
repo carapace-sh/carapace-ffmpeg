@@ -319,11 +319,22 @@ func ActionChannelLayouts() carapace.Action {
 	}).Tag("channel layouts").UidF(Uid("channel-layout"))
 }
 
+type FilterOpts struct {
+	Audio bool
+	Video bool
+}
+
+func (o FilterOpts) Default() FilterOpts {
+	o.Audio = true
+	o.Video = true
+	return o
+}
+
 // ActionFilters completes filters
 //
 //	acrusher (Reduce audio bit resolution.)
 //	acue (Delay filtering to match a cue.)
-func ActionFilters() carapace.Action {
+func ActionFilters(opts FilterOpts) carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-filters")(func(output []byte) carapace.Action {
 		_, content, ok := strings.Cut(string(output), " ------")
 		if !ok {
@@ -331,12 +342,31 @@ func ActionFilters() carapace.Action {
 		}
 
 		lines := strings.Split(content, "\n")
-		r := regexp.MustCompile(`^ .{2,3} (?P<name>[^ ]+) +[^ ]+ *(?P<description>.*)$`)
+		r := regexp.MustCompile(`^ .{2,3} (?P<name>[^ ]+) +(?P<io>[^ ]+) *(?P<description>.*)$`)
 
 		vals := make([]string, 0)
 		for _, line := range lines {
 			if matches := r.FindStringSubmatch(line); matches != nil {
-				vals = append(vals, matches[1], matches[2])
+				ioType := matches[2]
+				parts := strings.Split(ioType, "->")
+				inputType := parts[0]
+				outputType := ""
+				if len(parts) > 1 {
+					outputType = parts[1]
+				}
+				isAudio := strings.Contains(inputType, "A") || strings.Contains(outputType, "A")
+				isVideo := strings.Contains(inputType, "V") || strings.Contains(outputType, "V")
+				isDynamic := strings.Contains(inputType, "N") || strings.Contains(outputType, "N")
+
+				switch {
+				case isAudio && !opts.Audio:
+					continue
+				case isVideo && !opts.Video:
+					continue
+				case !isAudio && !isVideo && !isDynamic:
+					continue
+				}
+				vals = append(vals, matches[1], matches[3])
 			}
 		}
 		return carapace.ActionValuesDescribed(vals...)
@@ -749,7 +779,7 @@ func ActionHelpTopics() carapace.Action {
 			case "muxer":
 				return ActionMuxers()
 			case "filter":
-				return ActionFilters()
+				return ActionFilters(FilterOpts{}.Default())
 			case "bsf":
 				return ActionBitstreamFilters()
 			case "protocol":

@@ -73,7 +73,7 @@ func init() {
 				case argstream.ExpectedFilterValue:
 					isComplex := ctx.CurrentOption != nil &&
 						(ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi")
-					actions = append(actions, completer.ActionFilterValue(c.Value, isComplex))
+					actions = append(actions, completer.ActionFilterValue(c.Value, isComplex, completer.FilterOptsFromContext(ctx)))
 				}
 			}
 

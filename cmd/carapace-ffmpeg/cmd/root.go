@@ -113,7 +113,7 @@ func actionOptionValue(ctx *argstream.CompletionContext, c carapace.Context) car
 func actionFilterValue(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
 	isComplex := ctx.CurrentOption != nil &&
 		(ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi")
-	return completer.ActionFilterValue(c.Value, isComplex)
+	return completer.ActionFilterValue(c.Value, isComplex, completer.FilterOptsFromContext(ctx))
 }
 
 // actionCodec returns codec completions scoped to the current position.
