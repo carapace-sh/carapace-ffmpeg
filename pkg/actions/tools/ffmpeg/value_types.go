@@ -603,17 +603,56 @@ func ActionTargets() carapace.Action {
 	).Tag("targets").Uid("ffmpeg", "target")
 }
 
+type DispositionOpts struct {
+	Audio    bool
+	Video    bool
+	Subtitle bool
+}
+
+func (o DispositionOpts) Default() DispositionOpts {
+	o.Audio = true
+	o.Video = true
+	o.Subtitle = true
+	return o
+}
+
 // ActionDispositions completes stream disposition names
 //
 //	default
 //	dub
-func ActionDispositions() carapace.Action {
-	return carapace.ActionValues(
-		"default", "dub", "original", "comment", "lyrics", "karaoke",
-		"forced", "hearing_impaired", "visual_impaired", "clean_effects",
-		"attached_pic", "timed_thumbnails", "non_diegetic", "captions",
-		"descriptions", "metadata", "dependent", "still_image", "multilayer",
-	).Tag("dispositions").Uid("ffmpeg", "disposition")
+func ActionDispositions(opts DispositionOpts) carapace.Action {
+	var dispositions []string
+	for _, d := range []struct {
+		name     string
+		audio    bool
+		video    bool
+		subtitle bool
+	}{
+		{"default", true, true, true},
+		{"dub", true, true, true},
+		{"original", true, true, true},
+		{"comment", true, true, true},
+		{"lyrics", true, true, true},
+		{"karaoke", true, false, false},
+		{"forced", true, true, true},
+		{"hearing_impaired", true, false, false},
+		{"visual_impaired", true, false, false},
+		{"clean_effects", true, false, false},
+		{"attached_pic", false, true, false},
+		{"timed_thumbnails", false, true, false},
+		{"non_diegetic", true, true, true},
+		{"captions", true, true, true},
+		{"descriptions", true, true, true},
+		{"metadata", true, true, true},
+		{"dependent", true, true, true},
+		{"still_image", false, true, false},
+		{"multilayer", false, true, false},
+	} {
+		if (d.audio && opts.Audio) || (d.video && opts.Video) || (d.subtitle && opts.Subtitle) {
+			dispositions = append(dispositions, d.name)
+		}
+	}
+	return carapace.ActionValues(dispositions...).Tag("dispositions").Uid("ffmpeg", "disposition")
 }
 
 // ActionBoolean completes boolean value options

@@ -138,7 +138,26 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	case argstream.ValueBoolean:
 		return ffmpeg.ActionBoolean()
 	case argstream.ValueDisposition:
-		return ffmpeg.ActionDispositions()
+		opts := ffmpeg.DispositionOpts{}.Default()
+		if ctx.CurrentOption != nil {
+			spec := ctx.CurrentOption.StreamSpecifier
+			if spec == "" {
+				if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+					spec = optDef.ImplicitSpec
+				}
+			}
+			if spec != "" && len(spec) > 0 {
+				switch spec[0] {
+				case 'a':
+					opts = ffmpeg.DispositionOpts{Audio: true}
+				case 'v', 'V':
+					opts = ffmpeg.DispositionOpts{Video: true}
+				case 's':
+					opts = ffmpeg.DispositionOpts{Subtitle: true}
+				}
+			}
+		}
+		return ffmpeg.ActionDispositions(opts)
 	case argstream.ValueBitrate:
 		return ffmpeg.ActionBitrates()
 	case argstream.ValueMapSpec:
@@ -502,7 +521,7 @@ func actionDispositionName(specCtx *streamspec.CompletionContext, streams []prob
 			return action.Suffix(":").NoSpace(':')
 		}
 	}
-	action := ffmpeg.ActionDispositions()
+	action := ffmpeg.ActionDispositions(ffmpeg.DispositionOpts{}.Default())
 	action = action.Invoke(carapace.Context{Value: specCtx.PartialIdent}).Prefix(prefixToReplace).ToA()
 	return action.Suffix(":").NoSpace(':')
 }
@@ -517,7 +536,7 @@ func actionDispositionNameParts(_ *streamspec.CompletionContext, streams []probe
 			return action.Suffix(":").NoSpace(':')
 		}
 	}
-	action := ffmpeg.ActionDispositions()
+	action := ffmpeg.ActionDispositions(ffmpeg.DispositionOpts{}.Default())
 	action = action.Invoke(carapace.Context{Value: partialValue}).ToA()
 	return action.Suffix(":").NoSpace(':')
 }
