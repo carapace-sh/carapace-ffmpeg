@@ -6,14 +6,38 @@ Go library for parsing ffmpeg CLI argument streams, stream specifiers, filter gr
 
 ## Commands
 
+### Build & Test
+
 ```sh
 go test ./...                              # run all tests
 go test ./pkg/streamspec/                   # streamspec tests only
 go test ./pkg/filtergraph/                  # filtergraph tests only
 go test ./pkg/mapvalue/                     # mapvalue tests only
 go test ./pkg/argstream/                    # argstream tests only
+go test ./pkg/completer/                    # completer tests only
+go test ./pkg/probe/                        # probe tests only
+go test ./pkg/actions/tools/ffmpeg/         # action tests only (requires ffmpeg on PATH)
 go build ./...                              # build all packages
 ```
+
+### CI Checks (mirrors `.github/workflows/go.yml`)
+
+```sh
+go build -v ./...                                       # build
+go test -v -coverprofile=profile.cov ./...               # test with coverage
+[ "$(gofmt -d -s . | tee -a /dev/stderr)" = "" ]         # format check (fails if any diffs)
+staticcheck ./...                                        # lint
+```
+
+Both `gofmt` and `staticcheck` are enforced in CI. Do not skip them.
+
+### Test Data Generation
+
+```sh
+go generate ./testdata/                     # generate test media files (requires ffmpeg on PATH)
+```
+
+Creates 7 files in `testdata/`: `multistream.mkv`, `subtitles.mkv`, `surround.mkv`, `pixfmt.mkv`, `audio_only.wav`, `attachment.mkv`, `tagged_audio.flac`. Tests that use these files will skip if they're missing.
 
 ### Debug CLI (`cmd/carapace-ffmpeg-debug/`)
 
@@ -28,33 +52,45 @@ go run ./cmd/carapace-ffmpeg-debug argstream -- -i input.mp4 -c:v libx264 output
 go run ./cmd/carapace-ffmpeg-debug argstream-complete -- -i input.mp4 -c:v            # argstream completion context as JSON
 ```
 
-### Completer CLI (`cmd/carapace-ffmpeg/`)
+### Completer CLIs
 
 ```sh
-go run ./cmd/carapace-ffmpeg _carapace spec                    # generate carapace spec
-go run ./cmd/carapace-ffmpeg _carapace bash '' ''              # complete at empty position
-go run ./cmd/carapace-ffmpeg _carapace bash '-c:v' '' '-c:v' 'libx'  # complete codec value
+# ffmpeg
+go run ./cmd/carapace-ffmpeg _carapace spec                    # generate carapace spec YAML
+go run ./cmd/carapace-ffmpeg _carapace export '' ''              # complete at empty position (JSON)
+go run ./cmd/carapace-ffmpeg _carapace export '-c:v' '' '-c:v' 'libx'  # complete codec value (JSON)
+
+# ffplay
+go run ./cmd/carapace-ffplay _carapace spec
+go run ./cmd/carapace-ffplay _carapace export '' ''
+
+# ffprobe
+go run ./cmd/carapace-ffprobe _carapace spec
+go run ./cmd/carapace-ffprobe _carapace export '' ''
 ```
 
-### Completer CLI (`cmd/carapace-ffplay/`)
-
-```sh
-go run ./cmd/carapace-ffplay _carapace spec                    # generate carapace spec
-go run ./cmd/carapace-ffplay _carapace bash '' ''              # complete at empty position
-```
-
-### Completer CLI (`cmd/carapace-ffprobe/`)
-
-```sh
-go run ./cmd/carapace-ffprobe _carapace spec                    # generate carapace spec
-go run ./cmd/carapace-ffprobe _carapace bash '' ''              # complete at empty position
-```
-
-No Makefile, no linter config.
+The `_carapace spec` command generates YAML that references the `man/` directory for extended descriptions. The spec + man pages together form the completion definition consumed by carapace.
 
 ## Architecture
 
-Four CLIs, a shared completer package, and four independent parser packages with carapace completion actions.
+Four CLIs, a shared completer package, a probe package, and four independent parser packages with carapace completion actions.
+
+```
+cmd/carapace-ffmpeg/          Completer CLI for ffmpeg
+cmd/carapace-ffplay/          Completer CLI for ffplay
+cmd/carapace-ffprobe/         Completer CLI for ffprobe
+cmd/carapace-ffmpeg-debug/    Debug/diagnostic CLI (JSON output)
+pkg/argstream/                 Argument stream parser (options, -i, URLs, scope tracking)
+pkg/streamspec/                Stream specifier parser (v, a:1, disp:default, etc.)
+pkg/filtergraph/               Filter graph parser (chains, filters, options, link labels)
+pkg/mapvalue/                  -map value parser (0:v, -0:a:1, [out], etc.)
+pkg/completer/                 Shared completion dispatch logic
+pkg/probe/                     ffprobe wrapper for stream-aware completion
+pkg/actions/tools/ffmpeg/     Carapace action functions for ffmpeg value types
+man/ffmpeg/                    YAML descriptions for completion value types
+skills/ffmpeg/                 AI agent reference documentation (not compiled Go)
+testdata/                      Generated media files for integration tests
+```
 
 ### Completer CLIs (`cmd/carapace-ffmpeg/`, `cmd/carapace-ffplay/`, `cmd/carapace-ffprobe/`)
 
@@ -103,6 +139,8 @@ Testing/debug CLI exposing raw parser output as JSON. Each subcommand has a `-co
 - **`completion.go`** — Completion context types (`ExpectedToken`, `CompletionContext`).
 - **`mapvalue_test.go`** — Tests.
 
+Note: `mapvalue` is the only parser package that lacks `ast.go` and `format.go` — the `MapValue` struct is defined directly in `parser.go` since the AST is a flat structure (no nested nodes).
+
 ### Argument Stream (`pkg/argstream/`)
 
 - **`parser.go`** — Full parser. `Parse(args)` → `*Program` AST (uses `DefaultFFmpegProfile`). `ParseWithProfile(args, profile)` allows ffplay/ffprobe profiles. Tokenizes an argument list into global options, input options, input files, output options, and output files. Tracks scope based on `-i` markers, option definitions, and `ToolProfile.HasOutputSection`.
@@ -113,18 +151,61 @@ Testing/debug CLI exposing raw parser output as JSON. Each subcommand has a `-co
 - **`ffplay_options.go`** — Static option definitions for ffplay. `buildFFplayOptionIndex()` returns the ffplay option index.
 - **`ffprobe_options.go`** — Static option definitions for ffprobe. `buildFFprobeOptionIndex()` returns the ffprobe option index.
 - **`profile.go`** — `ToolProfile` struct with `Name`, `HasOutputSection`, and `OptionIndex`. Defines `DefaultFFmpegProfile`, `DefaultFFplayProfile`, `DefaultFFprobeProfile`. `LookupOption()` method looks up options in the profile's index.
+- **`profile_test.go`** — Tests for profile properties, option isolation, and completion context behavior.
 - **`span.go`** — `Span` type.
 - **`argstream_test.go`** / **`completion_test.go`** — Tests.
 
 ### Completer (`pkg/completer/`)
 
-- **`completer.go`** — Shared completion actions used by all three completer CLIs. Provides `ContextToArgs()`, `IsMidTokenOptionWithSpec()`, `ActionOptions()`, `ActionOptionNames()`, `ActionOptionNamesWithSpecSuffix()`, `ActionOptionValue()`, `ActionStreamSpecifier()`, `ActionStreamSpecifiers()`, `ActionFilterValue()`, `ActionDecoderOnlyCodec()` (for ffplay/ffprobe). Takes a `*argstream.ToolProfile` parameter to support tool-specific option sets.
+- **`completer.go`** — Shared completion actions used by all three completer CLIs. Key functions:
+  - `ContextToArgs(c carapace.Context) (args []string, trailingSpace bool)` — converts carapace context to argstream input.
+  - `IsMidTokenOptionWithSpec(value, profile)` — detects mid-token `-c:v` style partial input.
+  - `ActionOptions` / `ActionOptionNames` / `ActionOptionNamesWithSpecSuffix` — option name completions (spec-accepting options get `Suffix(":")` + `NoSpace(':')`).
+  - `ActionOptionValue(ctx, codecAction, filterValue)` — giant switch on `ValueType` dispatching to the correct ffmpeg action.
+  - `ActionStreamSpecifier` / `ActionStreamSpecifierWithStreams` — stream specifier completion; `WithStreams` variant uses probed stream info for index-aware completion.
+  - `ActionFilterValue(value, isComplex, filterOpts)` — filtergraph-aware completion (filter names, options, values, link labels, chain separators).
+  - `FilterOptsFromContext(ctx)` — derives audio/video filter scope from stream specifier or implicit spec.
+  - `ActionDecoderOnlyCodec(ctx)` — decoder-only codec completions (for ffplay/ffprobe).
+  - `ProbeAll(ctx)` — probes all `InputURLs` via `ffprobe` and merges stream info for stream-aware completion.
+  - `ActionStreamSpecifierParts` / `ActionStreamSpecifierPartsWithStreams` — mid-token `ActionMultiParts(":")` path for specifier parts.
+- **`completer_test.go`** — Unit tests for internal helpers + integration tests using `testdata/` media files (probing, stream indexing, metadata).
+
+### Probe (`pkg/probe/`)
+
+Wraps `ffprobe` CLI to extract stream metadata from local media files for stream-aware completion.
+
+- **`probe.go`** — `Probe(inputURL)` runs `ffprobe -hide_banner -show_streams -show_format -of json=c=1 -- <file>`, parses output, merges format-level tags into stream-level tags. Returns `nil` (no error) for non-local files or failures. `isLocalFile()` rejects URLs (`http://`, `pipe:`, `lavfi:`, `-`, etc.) — only probes local files.
+- **`StreamInfo`** struct: `Index`, `CodecName`, `CodecType`, `SampleFmt`, `PixFmt`, `Disposition` (map), `Tags` (map).
+- **`MetadataValues(streams, key)`** — case-insensitive tag key lookup, returns unique values.
+- **`StreamIndices(streams, codecType)`** — returns index strings filtered by codec type.
+- **`ActiveDispositions(streams)`** — returns disposition names that are non-zero in any stream.
+- **`probe_test.go`** — Unit tests for helper functions + integration tests that generate tiny media files on-the-fly via `ffmpeg -f lavfi` in `t.TempDir()`, then probe them.
 
 ### Actions (`pkg/actions/tools/ffmpeg/`)
 
-- **`value_types.go`** — Carapace completion actions for ffmpeg value types. Dynamic actions use `carapace.ActionExecCommand("ffmpeg", "-hide_banner", ...)` to shell out to `ffmpeg` (codecs, encoders, decoders, formats, pixel formats, sample formats, channel layouts, filters, hwaccels, bitstream filters). Static actions use `carapace.ActionValues`/`ActionValuesDescribed` (video sizes, frame rates, log levels, booleans, bitrates, dispositions, targets, etc.). All actions use `.Tag()` and `.Uid()`/`.UidF()` for caching/identification.
-- **`helpers.go`** — Empty file (placeholder for parsing helpers; currently unused).
-- **`uid.go`** — `Uid()` factory function that builds `ffmpeg://` scheme UIDs for carapace's action deduplication system. Used via `.UidF(Uid("host"))` or `.Uid("ffmpeg", "host")`. Accepts optional key-value pairs as query parameters.
+Carapace completion actions for ffmpeg value types. All actions use `.Tag()` and `.Uid()`/`.UidF()` for caching/identification.
+
+- **`value_types.go`** — Exported action functions. **Dynamic actions** shell out to `ffmpeg -hide_banner` (codecs, encoders, decoders, formats, pixel/sample formats, channel layouts, filters, hwaccels, bitstream filters, demuxers, muxers, protocols, devices). **Static actions** use `carapace.ActionValues`/`ActionValuesDescribed` (video sizes, frame rates, log levels, booleans, bitrates, dispositions, targets, etc.). Most dynamic actions accept an `*Opts` struct to filter by stream type/audio/video/muxing/demuxing.
+- **`value_types_test.go`** — Tests using carapace's `sandbox.Action()` framework. Disposition tests use `Expect` (exact positive assertions on static values). Filter/BSF tests use `ExpectNot` (negative assertions) because result sets are large/dynamic from live `ffmpeg` output.
+- **`filter_options.go`** — `parseFilterHelp(output string)` parses `ffmpeg -h filter=<name>` output into `[]FilterOption` (name, type, description, enum values). Used by filter option completion.
+- **`filter_options_test.go`** — Tests with hardcoded `ffmpeg -h filter=<name>` output as const string fixtures.
+- **`helpers.go`** — Empty file (placeholder; currently unused).
+- **`uid.go`** — `Uid(host string, opts ...string)` returns a closure that builds `ffmpeg://` scheme URLs for carapace's action deduplication. Dynamic actions use `UidF(Uid("host"))`, static actions use `Uid("ffmpeg", "host")`.
+
+#### Opts structs pattern
+
+Dynamic action functions accept an `*Opts` struct with boolean filter fields. Each has a `Default()` method that sets all fields to `true`:
+
+| Struct | Fields | Used by |
+|--------|---------|----------|
+| `CodecOpts` | Attachment, Audio, Data, Subtitle, Video | `ActionCodecs`, `ActionEncodableCodecs`, `ActionDecodableCodecs` |
+| `DecoderOpts` | Audio, Subtitle, Video | `ActionDecoders` |
+| `EncoderOpts` | Audio, Subtitle, Video | `ActionEncoders` |
+| `FormatOpts` | Demuxing, Muxing | `ActionFormats` |
+| `FilterOpts` | Audio, Video | `ActionFilters` |
+| `BsfOpts` | Audio, Video, Subtitle | `ActionBitstreamFilters` (stream type inferred from BSF name prefix) |
+| `DispositionOpts` | Audio, Video, Subtitle | `ActionDispositions` (per-disposition applicability) |
+| `DeviceOpts` | Demuxing, Muxing | `ActionDevices` |
 
 ### Man Pages (`man/ffmpeg/`)
 
@@ -160,7 +241,7 @@ special_chars: |
 
 ### Skills (`skills/ffmpeg/`)
 
-A compound skill with a `SKILL.md` routing table and `references/` directory containing deep reference documentation on ffmpeg's CLI model. Not part of the Go codebase — used by AI agents working on this repo. References cover: stream model, option syntax, option scopes, stream specifiers, filtergraphs, mapping, and value types.
+A compound skill with a `SKILL.md` routing table and `references/` directory containing deep reference documentation on ffmpeg's CLI model. Not part of the Go codebase — used by AI agents working on this repo. References cover: stream model, option syntax, option scopes, stream specifiers, filtergraphs, mapping, value types, ffplay, and ffprobe.
 
 ## Key Patterns & Gotchas
 
@@ -195,7 +276,7 @@ The completion parser in `argstream/completion_parser.go` also has code paths (l
 - `true` — cursor is at a new blank position after the last token; expect new options/URLs.
 - `false` — cursor is mid-token within the last argument; the last arg is the partial text being completed.
 
-Getting this wrong produces wrong `ExpectedTokens`. The `contextToArgs()` function in the completer CLI handles the conversion from carapace's `Context.Args`/`Context.Value` to the `(args, trailingSpace)` pair.
+Getting this wrong produces wrong `ExpectedTokens`. The `ContextToArgs()` function in the completer package handles the conversion from carapace's `Context.Args`/`Context.Value` to the `(args, trailingSpace)` pair.
 
 ### Implicit stream specifiers for aliases
 
@@ -223,7 +304,7 @@ The completer CLI (`cmd/carapace-ffmpeg/cmd/root.go`) does NOT use cobra's flag 
 
 ### Mid-token option+specifier completion
 
-When the user is typing `-c:v` as a single token (no space after the colon), the completer detects this with `isMidTokenOptionWithSpec()` and switches to `ActionMultiParts(":")` to handle the colon-separated parts within the single token. This is separate from the shell-split case where `:` arrives as a separate argument.
+When the user is typing `-c:v` as a single token (no space after the colon), the completer detects this with `IsMidTokenOptionWithSpec()` and switches to `ActionMultiParts(":")` to handle the colon-separated parts within the single token. This is separate from the shell-split case where `:` arrives as a separate argument.
 
 ### UIDs use `ffmpeg://` scheme
 
@@ -231,19 +312,48 @@ All completion actions use `ffmpeg://` UIDs (defined in `pkg/actions/tools/ffmpe
 
 ### Codec completion differs by scope
 
-`actionCodec()` in `root.go` returns different results depending on scope:
+`actionCodec()` in the completer dispatches different results depending on scope:
 - **Global/Input scope**: codecs + decoders (decoding context)
 - **Output scope**: codecs + encoders (encoding context)
 
+Within each scope, `FilterOptsFromContext()` derives audio/video filter scope from the stream specifier or implicit spec on the current option.
+
+### Probe powers stream-aware completion
+
+`ProbeAll()` in `pkg/completer/` calls `probe.Probe()` on each `InputURL` from the completion context. The resulting `[]probe.StreamInfo` is passed to `ActionStreamSpecifierWithStreams()` to offer index-aware completions (e.g., `a:0`, `a:1` for a file with two audio streams) and metadata-based completions (language tags, disposition names). Probe only runs on local files — URLs like `http://`, `pipe:`, `lavfi:` are silently skipped (returns `nil`, no error).
+
 ### `actionMapValue()` is a stub
 
-The map value completion action in `root.go` currently returns an empty `carapace.ActionValues()`. The `pkg/mapvalue/` parser exists but its completion support isn't wired into the completer CLI yet.
+The map value completion action in the completer currently returns an empty `carapace.ActionValues()`. The `pkg/mapvalue/` parser exists but its completion support isn't wired into the completer CLI yet.
+
+### Completion dispatch flow
+
+```
+carapace.Context
+  → ContextToArgs() → (args, trailingSpace)
+  → argstream.ParseForCompletionWithProfile(args, trailingSpace, profile)
+  → argstream.CompletionContext {ExpectedTokens, Scope, CurrentOption, ...}
+  → ProbeAll(ctx) → []probe.StreamInfo
+  → switch on ExpectedToken:
+      Expected*Option → ActionOptions
+      ExpectedInputURL/OutputURL → ActionFiles
+      ExpectedOptionValue → ActionOptionValue (switch on ValueType)
+      ExpectedStreamSpecifier → ActionStreamSpecifierWithStreams
+      ExpectedFilterValue → ActionFilterValue
+      ExpectedMapValue → (stub)
+```
 
 ## Code Conventions
 
 - **Standard library only for parsers**: The four parser packages (`streamspec`, `filtergraph`, `mapvalue`, `argstream`) use only Go standard library. No external dependencies in these packages.
 - **Carapace + Cobra for CLIs and actions**: External deps (`carapace`, `carapace-spec`, `cobra`) are only in `cmd/` and `pkg/actions/`.
 - **Test style**: Table-driven tests with `testing.T` only. No testify or other assertion libraries. Helper functions like `assertHasExpected()` defined locally in test files.
-- **No test files for actions or debug CLI**: `pkg/actions/tools/ffmpeg/` and `cmd/carapace-ffmpeg-debug/` have no test files.
+- **Action test style**: Tests in `pkg/actions/tools/ffmpeg/` use carapace's `sandbox.Action()` framework. Static value tests use `Expect` (exact positive assertions). Dynamic action tests use `ExpectNot` (negative assertions — verify absent values) because the live `ffmpeg` output set varies by installation.
+- **Integration test media**: `pkg/completer/` and `pkg/probe/` tests use `testdata/` files generated by `go generate ./testdata/`. Tests skip if files are missing. `pkg/probe/` tests can also generate tiny files on-the-fly in `t.TempDir()` via `ffmpeg -f lavfi`.
+- **No test files for debug CLI**: `cmd/carapace-ffmpeg-debug/` has no test files.
 - **JSON serialization**: AST and completion context types implement `MarshalText()` or have `json` struct tags for the debug CLI's JSON output.
-- **Parser pattern**: Each parser package follows the same structure: `parser.go` (full parser), `completion_parser.go` (completion parser), `completion.go` (context types), `ast.go` (AST types), `span.go` (spans), optional `format.go` (AST→string).
+- **Parser package pattern**: Each parser package follows the same structure: `parser.go` (full parser), `completion_parser.go` (completion parser), `completion.go` (context types), `ast.go` (AST types), `span.go` (spans), optional `format.go` (AST→string). Exception: `mapvalue` lacks `ast.go` and `format.go` (flat AST struct in `parser.go`).
+
+## Release
+
+GoReleaser builds 4 binaries: `carapace-ffmpeg`, `carapace-ffmpeg-debug`, `carapace-ffplay`, `carapace-ffprobe`. Distribution channels: Homebrew tap (`rsteube/homebrew-tap`), Scoop bucket, AUR (`carapace-ffmpeg-bin`), nfpm (apk/deb/rpm/termux.deb), Gemfury. Releases are triggered by tag pushes in CI.

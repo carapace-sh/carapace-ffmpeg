@@ -283,9 +283,9 @@ func TestActionMetadataValueWithRealStreams(t *testing.T) {
 
 func TestFilterOptsFromContext(t *testing.T) {
 	tests := []struct {
-		name    string
-		ctx     *argstream.CompletionContext
-		want    ffmpeg.FilterOpts
+		name string
+		ctx  *argstream.CompletionContext
+		want ffmpeg.FilterOpts
 	}{
 		{
 			"nil option returns default",
