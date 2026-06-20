@@ -75,7 +75,11 @@ func buildFFplayOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "filter_threads", ShortName: "filter_threads", Description: "threads for filter pipeline (0=auto)", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueInt},
 		{CanonicalName: "enable_vulkan", ShortName: "enable_vulkan", Description: "use Vulkan renderer", Scope: ScopePerFileOpt, Type: TypeBoolean},
 		{CanonicalName: "vulkan_params", ShortName: "vulkan_params", Description: "Vulkan configuration (key:value pairs)", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueVulkanParams},
-		{CanonicalName: "hwaccel", ShortName: "hwaccel", Description: "use HW accelerated decoding", Scope: ScopePerFileOpt, Type: TypeBoolean},
+		{CanonicalName: "hwaccel", ShortName: "hwaccel", Description: "use HW accelerated decoding", Scope: ScopePerStreamOpt, Type: TypeBoolean},
+		{CanonicalName: "rdftspeed", ShortName: "rdftspeed", Description: "rdft speed in milliseconds", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueInt},
+		{CanonicalName: "drp", ShortName: "drp", Description: "let decoder reorder pts 0=off 1=on -1=auto", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
+		{CanonicalName: "lowres", ShortName: "lowres", Description: "decode at 1=1/2, 2=1/4, 3=1/8 resolutions", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueInt, AcceptsSpec: true},
+		{CanonicalName: "find_stream_info", ShortName: "find_stream_info", Description: "read and decode the streams to fill missing information with heuristics", Scope: ScopeInputOnlyOpt, Type: TypeBoolean},
 		{CanonicalName: "video_bg", ShortName: "video_bg", Description: "video background: color, tiles, none", Scope: ScopePerFileOpt, Type: TypeValue, ValueType: ValueString},
 	}
 
