@@ -2,5 +2,6 @@
 *
 !.gitignore
 !generate.go
+!generate.sh
 !subtitles.srt
 !attachment.txt

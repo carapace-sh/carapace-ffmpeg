@@ -223,6 +223,31 @@ func TestProbeAllWith5Point1(t *testing.T) {
 	}
 }
 
+func TestProbeAllWithTaggedAudio(t *testing.T) {
+	path := testdataPath(t, "tagged_audio.flac")
+	ctx := &argstream.CompletionContext{
+		InputURLs: []string{path},
+	}
+	streams := ProbeAll(ctx)
+	if len(streams) < 1 {
+		t.Fatalf("expected at least 1 stream, got %d", len(streams))
+	}
+	if streams[0].CodecType != "audio" {
+		t.Errorf("stream 0 CodecType = %q, want 'audio'", streams[0].CodecType)
+	}
+	expectedTags := map[string]string{
+		"title":  "Neon Drive",
+		"artist": "RetroVision",
+		"album":  "Midnight Protocol",
+		"genre":  "Synthwave",
+	}
+	for key, want := range expectedTags {
+		if got := streams[0].Tags[key]; got != want {
+			t.Errorf("tag %q = %q, want %q", key, got, want)
+		}
+	}
+}
+
 func TestActionStreamIndexWithRealStreams(t *testing.T) {
 	path := testdataPath(t, "multistream.mkv")
 	streams, _ := probe.Probe(path)
