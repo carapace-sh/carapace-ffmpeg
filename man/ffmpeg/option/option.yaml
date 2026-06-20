@@ -1,0 +1,881 @@
+y: |
+  When set, ffmpeg silently replaces existing output files instead of prompting
+  for confirmation. Essential for scripted or automated workflows where interactive
+  prompts would block execution. Without this flag, ffmpeg asks `y/N` before overwriting.
+n: |
+  Prevents ffmpeg from ever overwriting existing output files. If the output file
+  already exists, ffmpeg exits with an error immediately. Acts as a safety guard against
+  accidental data loss in production pipelines.
+loglevel: |
+  Controls the verbosity of console output. Lower levels suppress higher ones:
+  `quiet` suppresses everything, `panic` only shows crash-level errors, `fatal` shows
+  unrecoverable errors, `error` adds recoverable errors, `warning` (default) adds warnings,
+  `info` adds progress messages, `verbose` adds operational details, `debug` adds
+  internals, and `trace` shows everything. The short form `-v` is commonly used.
+report: |
+  Dumps the full log and command-line invocation to a timestamped file
+  (`ffmpeg-YYYYMMDD-HHMMSS.log`) in the current directory. Also sets loglevel to `verbose`
+  unless overridden. Useful for bug reports and post-mortem debugging.
+hide_banner: |
+  Suppresses the startup banner that normally prints version, build flags, and library
+  versions. Keeps automated pipelines and cron jobs clean. Despite being listed as
+  a value option, it accepts the same boolean values as other boolean flags.
+benchmark: |
+  Reports CPU time spent in each processing stage (encoding, decoding, filtering, muxing)
+  after the transcode completes. Measures wall-clock time per stage for high-level
+  performance analysis. Pairs with `-benchmark_all` for per-task granularity.
+benchmark_all: |
+  Extends `-benchmark` with per-task timing within each processing stage. Shows time
+  spent in individual encoding, decoding, and filtering operations rather than just
+  the aggregate. Use when you need to pinpoint which specific operation is slow.
+stats: |
+  Periodically prints encoding progress to stderr — frame number, current bitrate,
+  encoding speed, and other statistics. The reporting interval defaults to 0.5 seconds
+  and can be adjusted with `-stats_period`.
+cpuflags: |
+  Overrides the auto-detected CPU instruction set. Forces ffmpeg to use (or avoid)
+  specific SIMD extensions such as `mmx`, `sse`, `avx`, or `none` to disable all
+  SIMD. Primarily used for debugging SIMD-related crashes or testing fallback code paths.
+cpucount: |
+  Overrides the number of CPU cores ffmpeg uses for thread allocation. Set to `0`
+  to restore auto-detection. Useful for benchmarking with a fixed thread count or
+  constraining resource usage on shared systems.
+max_alloc: |
+  Sets an upper bound on any single memory allocation in bytes. If ffmpeg attempts
+  to allocate more than this limit, it aborts instead of consuming excessive memory.
+  Acts as a safety net in production environments. Default is effectively unlimited.
+filter_complex: |
+  Defines a multi-input, multi-output filtergraph. Unlike per-stream filters
+  (`-vf`/`-af`), complex filtergraphs allow linking filters across streams using labeled
+  pads (`[in]`/`[out]`). Necessary for overlaying, mixing, splitting streams, or any
+  operation where one filter's output feeds multiple downstream filters.
+filter_complex_threads: |
+  Controls the number of threads available to a complex filtergraph. Default `0`
+  auto-detects from the CPU count. Increase for graphs with many parallel branches;
+  decrease to reduce contention when the encoding threads are already saturated.
+filter_complex_script: |
+  Reads a complex filtergraph description from a file instead of the command line.
+  Deprecated — use `-filter_complex` with a file protocol or shell quoting instead.
+lavfi: |
+  Alternate name for `-filter_complex`. Historically tied to the libavfilter library name.
+  Functionally identical.
+filter_threads: |
+  Thread count for simple (non-complex) filtergraphs used by `-vf` and `-af`.
+  Default `0` auto-detects. Simple filtergraphs have a single input and single output
+  per stream, so they need fewer threads than complex ones.
+filter_buffered_frames: |
+  Caps how many decoded frames can sit in a filter chain's internal buffer simultaneously.
+  Limits memory consumption in deeply chained or slow-consuming filter pipelines.
+  Default is sufficient for most use cases.
+auto_conversion_filters: |
+  When enabled (default), ffmpeg automatically inserts format conversion filters
+  (pixel format, sample rate, channel layout) between incompatible filter pads. Disabling
+  this causes an error instead when format mismatches occur, which helps catch
+  incorrect filter chains during development.
+print_graphs: |
+  Outputs the filtergraph execution structure to stderr — how filters are connected,
+  scheduled, and which frames flow where. A debugging tool for verifying that a
+  complex filtergraph was parsed and wired as intended.
+print_graphs_file: |
+  Like `-print_graphs` but writes to a file instead of stderr.
+print_graphs_format: |
+  Chooses the output format for `-print_graphs` and `-print_graphs_file`.
+progress: |
+  Writes machine-readable encoding progress (frame count, bitrate, speed, total size)
+  at regular intervals to a file or URL. Common in GUI wrappers to drive progress bars.
+  Use `pipe:` for stdout or a Unix domain socket for live monitoring.
+stdin: |
+  Controls whether ffmpeg reads from standard input. When `0`, key presses like `q`
+  to quit are ignored and ffmpeg won't block if stdin is `/dev/null`. Useful for
+  background processes or containers where stdin is absent.
+timelimit: |
+  Caps the total CPU user time in seconds. Once the accumulated user-time exceeds this
+  limit, ffmpeg exits. Useful for benchmarking with consistent run durations, not wall-clock
+  time.
+dump: |
+  Prints every input packet's header (stream index, size, PTS, DTS, flags) to stderr.
+  Adds `-hex` to also dump the packet payload. Useful for diagnosing demuxing or
+  timestamp issues.
+hex: |
+  When combined with `-dump`, also prints each packet's payload as a hex+ASCII dump.
+  Very verbose — typically used only for debugging specific packet contents.
+frame_drop_threshold: |
+  A floating-point threshold in seconds. Frames arriving later than this after their
+  presentation time may be dropped. Used in real-time streaming to prevent runaway
+  latency when the encoder cannot keep up with the source rate.
+copyts: |
+  Preserves input timestamps in the output without the normal recalculation. By default
+  ffmpeg adjusts timestamps so the output starts near zero; this flag disables that
+  adjustment. Commonly paired with `-start_at_zero`.
+start_at_zero: |
+  When used with `-copyts`, shifts timestamps so the first frame starts at time 0.
+  Without this, raw copied timestamps may start at an arbitrary value from the input,
+  which confuses some players.
+copytb: |
+  Chooses which timebase to use when stream-copying. `0` uses the decoder timebase,
+  `1` uses the demuxer timebase, and `-1` (default) picks automatically. Mismatched
+  timebases can cause timestamp drift or player compatibility issues.
+dts_delta_threshold: |
+  If the difference between consecutive DTS values exceeds this threshold (seconds),
+  ffmpeg treats it as a timestamp discontinuity and may reset internal timing. Helps
+  recover gracefully from broken or segmented input.
+dts_error_threshold: |
+  Similar to `-dts_delta_threshold` but for PTS-based error detection. When timestamp
+  errors exceed this value, ffmpeg may reset its timestamp handling logic.
+xerror: |
+  Exits immediately on any encoding error instead of continuing with potentially
+  degraded output. Guarantees that either a fully valid output is produced or nothing
+  at all. Slightly stricter than `-abort_on` which targets specific conditions.
+abort_on: |
+  Conditionally aborts encoding based on output state. `empty_output` aborts when no
+  packets reach the muxer at all; `empty_output_stream` aborts when at least one output
+  stream is empty. More targeted than `-xerror` for catching partial failures.
+stats_period: |
+  Sets how often (in seconds) ffmpeg updates progress statistics and `-progress` output.
+  Default is 0.5s. Shorter intervals give snappier feedback but add minor overhead.
+debug_ts: |
+  Prints per-packet and per-frame PTS/DTS timestamps and stream indices to stderr.
+  Very verbose — intended for diagnosing timestamp problems. Each decoded frame and
+  each output packet gets a line.
+max_error_rate: |
+  Fraction of total input duration that may contain errors before ffmpeg returns a
+  non-zero exit code. Default is `0.25` (25%). Set to `1.0` or higher to always exit
+  with code 0 regardless of error count.
+vstats: |
+  Writes per-frame video encoding statistics (frame type, size, quality, bitrate)
+  to a file named `vstats_HHMMSS.log` in the current directory.
+vstats_file: |
+  Like `-vstats` but writes to the specified file path instead of the auto-generated
+  filename.
+vstats_version: |
+  Selects the vstats output format version. Version 2 includes additional fields.
+sdp_file: |
+  Writes the SDP (Session Description Protocol) description to the specified file.
+  Required by some RTP players to discover the stream endpoints. Only useful when
+  outputting via RTP.
+ignore_unknown: |
+  Silently skips streams with unrecognized codec types during stream copy, rather than
+  erroring. Keeps the transcode running when input contains unusual or proprietary
+  data streams.
+copy_unknown: |
+  Attempts to stream-copy streams even when their codec type is not recognized by
+  ffmpeg. Preserves them as-is in the output container, useful for remuxing files
+  with private or experimental stream types.
+recast_media: |
+  Allows decoding a stream using a decoder meant for a different media type (e.g.,
+  decoding video data as audio). Mostly a debugging tool — produces nonsensical output
+  in normal use.
+vsync: |
+  Deprecated in favor of `-fps_mode`. Controls how ffmpeg synchronizes output frame
+  timing: `cfr` duplicates/drops to maintain constant rate, `vfr` preserves variable
+  timestamps, `auto` chooses per-stream, and `drop` passes through but drops all frames.
+init_hw_device: |
+  Creates a hardware device context for GPU-accelerated transcoding. Takes the form
+  `type[=name][:device]`, e.g. `cuda=dev0.0`, `vaapi=/dev/dri/renderD128`, `vulkan`.
+  The device can then be referenced by name in `-filter_hw_device` and codec options.
+filter_hw_device: |
+  Specifies which initialized hardware device the filtergraph should use for
+  hardware-accelerated filter operations. Must reference a device created with
+  `-init_hw_device`.
+vaapi_device: |
+  Convenience shortcut to initialize a VAAPI hardware device. Equivalent to
+  `-init_hw_device vaapi=vaapi0:device`. Simplifies the common case of single-GPU
+  VAAPI transcoding on Linux.
+qsv_device: |
+  Convenience shortcut to initialize an Intel Quick Sync Video (QSV) hardware device.
+  Equivalent to `-init_hw_device qsv=qsv0:device`.
+h: |
+  Prints help text. With no argument, shows general usage. With an argument, shows
+  help for a specific topic: `-h full` for complete options, `-h filter=scale` for
+  a filter, `-h encoder=libx264` for a codec, `-h muxer=mp4` for a format, etc.
+version: |
+  Prints the ffmpeg version string, build configuration, and enabled library versions
+  then exits.
+L: |
+  Prints the license under which ffmpeg was built plus the licenses of linked libraries.
+  Important for compliance verification in commercial deployments.
+buildconf: |
+  Prints the `./configure` flags that were used to compile the binary. Shows which
+  features, codecs, protocols, and hardware accelerators are enabled.
+formats: |
+  Lists all supported container formats with their I/O capabilities
+  (`D` = demuxing, `E` = muxing) then exits.
+codecs: |
+  Lists all supported codecs with capabilities: `D` = decoding, `E` = encoding,
+  type letter (`V`/`A`/`S`/`D`/`T`), name, and description. Then exits.
+decoders: |
+  Lists all available decoders with their type and description then exits.
+encoders: |
+  Lists all available encoders with their type and description then exits.
+bsfs: |
+  Lists all available bitstream filters then exits. Bitstream filters operate on
+  raw encoded data to add, remove, or transform codec-specific metadata without
+  re-encoding.
+protocols: |
+  Lists all supported I/O protocols (file, http, pipe, rtp, etc.) and whether each
+  supports input, output, or both. Then exits.
+filters: |
+  Lists all available libavfilter filters with their directional type
+  (`A`udio, `V`ideo, `N` = dynamic), I/O configuration, and description. Then exits.
+pix_fmts: |
+  Lists all supported pixel formats with component count, bit depth, and flags
+  (input/output/hardware). Then exits.
+layouts: |
+  Lists standard channel layout names and their individual channel compositions
+  (e.g., `stereo` = `FL+FR`, `5.1` = `FL+FR+FC+LFE+BL+BR`). Then exits.
+sample_fmts: |
+  Lists all supported audio sample format names and their bit depths
+  (e.g., `s16` = 16-bit signed, `fltp` = 32-bit float planar). Then exits.
+colors: |
+  Lists named colors recognized by ffmpeg options and filters (e.g., `red`,
+  `chartreuse`, `aliceblue`). Then exits.
+dispositions: |
+  Lists all recognized stream disposition flags (e.g., `default`, `forced`,
+  `hearing_impaired`, `visual_impaired`). Then exits.
+hwaccels: |
+  Lists all compiled-in hardware acceleration backends (cuda, vaapi, qsv, vulkan, etc.)
+  then exits.
+devices: |
+  Lists all available capture devices and output sinks with their I/O capabilities.
+  Then exits.
+muxers: |
+  Lists all available output format (muxer) plugins and their descriptions then exits.
+demuxers: |
+  Lists all available input format (demuxer) plugins and their descriptions then exits.
+sources: |
+  Queries the specified device (e.g., `alsa`, `v4l2`) for available input sources
+  then exits. Requires a device type as its value.
+sinks: |
+  Queries the specified device for available output destinations then exits.
+  Requires a device type as its value.
+f: |
+  Overrides the auto-detected container format. As an input option, forces the demuxer;
+  as an output option, forces the muxer. Useful when the file extension or probing
+  fails to identify the correct format.
+t: |
+  Limits processing to the specified duration from the start of the input (or from
+  `-ss` if given). Accepts `HH:MM:SS.mmm`, `MM:SS.mmm`, or plain seconds (`90`).
+  As an output option, stops muxing after this duration; as an input option, stops
+  reading.
+to: |
+  Sets the absolute end position in the output timeline. Unlike `-t` (a duration),
+  this is a specific timestamp. Accepts the same time formats. Mutually exclusive
+  with `-t` for output.
+ss: |
+  Seeks to the given time position. As an input option (before `-i`), performs a fast
+  seek to the nearest keyframe; as an output option, decodes and discards frames until
+  the timestamp is reached. Input seeking is much faster.
+bitexact: |
+  Forces bitexact output, disabling any source of randomness or platform-dependent
+  behavior in the encoding pipeline. Used for reproducible builds and regression testing
+  where the output must be byte-identical across runs.
+thread_queue_size: |
+  Caps the packet buffer between the demuxer thread and the rest of the pipeline.
+  Increase for high-bitrate inputs that produce packets faster than encoding can
+  consume. Default is typically 8.
+probesize: |
+  Controls how many bytes ffmpeg reads to detect format and stream information.
+  Larger values improve detection for files with delayed metadata, but slow startup.
+  Default is 5 MB.
+analyzeduration: |
+  How long ffmpeg spends analyzing input to determine stream properties.
+  Longer values catch more accurate information from formats that place metadata
+  late in the file. Default is roughly 5 seconds.
+sws_flags: |
+  Selects the scaling algorithm used by libswscale when converting between pixel
+  formats or resolutions. Common values: `fast_bilinear`, `bilinear`, `bicubic`,
+  `lanczos`, `spline`. Higher quality algorithms are slower.
+i: |
+  Specifies an input source. Each `-i` introduces a new input file. Options placed
+  before an `-i` apply to that input; options after all inputs apply to the next output.
+  Accepts file paths, `pipe:0`, URLs (`http://`, `rtmp://`), and special sources
+  (`lavfi://`, `/dev/video0`).
+sseof: |
+  Like `-ss` but the position is relative to the end of the input. Negative values
+  seek backwards from EOF. Useful for processing only the tail of a file without
+  knowing its exact duration.
+seek_timestamp: |
+  Changes how `-ss` seeks: by DTS timestamp instead of the default byte-level seek.
+  Can improve accuracy on certain containers (MPEG-TS) but may be slower.
+accurate_seek: |
+  Enables frame-accurate seeking by decoding from the nearest keyframe and discarding
+  frames before the target timestamp. When disabled, the output starts from the nearest
+  keyframe, which may be slightly before the requested time.
+isync: |
+  Specifies which input (by zero-based index) should serve as the synchronization
+  reference when multiple inputs are processed. Affects how timestamps across inputs
+  are aligned.
+itsoffset: |
+  Shifts input timestamps by the given duration. Positive values delay the input,
+  negative values advance it. Applied after demuxing, before decoding. Useful for
+  synchronizing multiple inputs that start at different times.
+re: |
+  Simulates real-time reading at the input's native frame rate. Equivalent to
+  `-readrate 1`. Essential for live streaming or testing how ffmpeg handles
+  real-time timing constraints without an actual live source.
+readrate: |
+  Controls the input read speed as a multiplier of native rate. `1` reads at native
+  speed (like `-re`), `0.5` at half speed, `2` at double. Useful for throttling
+  batch processing or simulating live conditions.
+readrate_initial_burst: |
+  Allows an initial burst of frames to be read at full speed before the rate limit
+  kicks in. Prevents the pipeline from stalling during the startup phase before
+  the encoder has enough frames to begin output.
+readrate_catchup: |
+  Sets a temporary higher read rate to use when the input has fallen behind schedule.
+  Allows catching up to real-time after a momentary stall, then returns to the
+  configured rate.
+dump_attachment: |
+  Writes the data of an attachment stream (fonts, cover art) to a file. Accepts
+  stream specifiers to target a specific attachment stream by index or type.
+stream_loop: |
+  Number of times to loop the input. `0` means no looping, `-1` loops infinitely.
+  When looping, timestamps are adjusted to appear continuous. Commonly used in
+  testing to generate long outputs from short clips.
+find_stream_info: |
+  When enabled (default), ffmpeg proactively decodes a few frames to fill in missing
+  stream properties (codec profile, pixel format, etc.). Disabling (`0`) skips this
+  for faster startup, but some downstream options may fail if stream info is incomplete.
+map: |
+  Explicitly selects which input streams appear in the output. Each `-map` argument
+  takes a stream specifier like `0:v:0` (first video from first input) or `0:a` (all
+  audio from first input). Prefix with `-` to exclude. Without any `-map`, ffmpeg
+  picks the best stream of each type automatically.
+map_metadata: |
+  Controls how container-level metadata (title, artist, etc.) propagates from
+  input to output. Accepts a stream specifier suffix. `-1` disables metadata copying.
+  By default, global metadata is copied from the first input.
+map_chapters: |
+  Selects which input's chapter markers to include in the output. Accepts a
+  zero-based input index. Default is the first input.
+fs: |
+  Stops encoding when the output file exceeds the given size in bytes. A simple
+  way to cap file size. Accepts unit suffixes (`k`, `M`).
+timestamp: |
+  Writes a recording timestamp to the output container metadata. Accepts a Unix
+  epoch value or the literal `now` for the current time.
+metadata: |
+  Adds or overrides a metadata key-value pair in the output. Syntax: `key=value`
+  (e.g., `-metadata title="My Video"`). With a stream specifier, targets a specific
+  stream. An empty value removes that key.
+program: |
+  Creates a program entry in the output (MPEG-TS or similar formats) containing
+  the specified streams. Syntax: `title=input_stream[:stream]`.
+stream_group: |
+  Adds a stream group to the output container, bundling specified streams together.
+  Relevant for MP4 and MPEG-TS formats that support stream grouping.
+dframes: |
+  Limits the number of data frames output. Rarely used in practice — primarily
+  a testing knob for data stream handling.
+target: |
+  Applies a bundle of encoding settings appropriate for a specific output standard.
+  Examples: `pal-dvd`, `ntsc-vcd`, `film-dvd`, `pal-svcd`. Sets frame rate, resolution,
+  codec, bitrate, and container format in one option.
+shortest: |
+  Stops encoding when the shortest input ends. Without this, ffmpeg continues
+  until all inputs are exhausted, which may produce long silent periods for inputs
+  that differ significantly in duration.
+shortest_buf_duration: |
+  Maximum time (seconds) ffmpeg buffers from longer inputs while waiting for the
+  shortest input to finish. Larger values prevent underruns but increase memory
+  usage and latency.
+dec: |
+  Overrides the automatically chosen decoder with a specific one. Must be a valid
+  decoder name matching the stream's codec type. Accepts stream specifiers.
+  Useful when the auto-selected decoder fails or produces suboptimal results.
+attach: |
+  Embeds a file as an attachment stream in the output. Commonly used for font
+  files (for ASS subtitles) or cover art. Accepts a file path.
+muxdelay: |
+  Maximum allowed delay (seconds) between demuxing a packet and decoding its first
+  frame. Larger values accommodate inputs with large inter-frame intervals.
+  Default is 0.7 seconds.
+muxpreload: |
+  Initial buffering delay (seconds) before the muxer starts writing packets.
+  Allows the pipeline to fill its buffers before output begins. Default is 0.
+fpre: |
+  Reads encoding options from a preset file. Rarely used; modern workflows
+  prefer codec-specific preset mechanisms built into encoders like libx264's `-preset`.
+codec: |
+  Selects the encoder (output scope) or decoder (input scope) for a stream. The
+  most important per-stream option. Special value `copy` bypasses encoding entirely
+  (stream copy). Accepts stream specifiers: `-c:v libx264` applies to video,
+  `-c:a aac` to audio.
+b: |
+  Sets the encoding bitrate in bits/s for a stream. The primary quality/size control
+  for CBR or ABR encoding. Accepts unit suffixes (`k`, `M`). Accepts stream specifiers.
+  Aliases `ab`/`vb` imply audio/video scope.
+filter: |
+  Applies a simple single-input, single-output filter chain to a stream. Video
+  alias: `-vf`. Audio alias: `-af`. For multi-input filter chains, use `-filter_complex`.
+frames: |
+  Caps the number of output frames for the matching stream(s). Accepts stream
+  specifiers. Equivalent to `-vframes` for video or `-aframes` for audio.
+bsf: |
+  Applies a bitstream filter to modify encoded data without re-encoding. Common
+  filters include `h264_mp4toannexb` (for MPEG-TS), `aac_adtstoasc` (for MP4),
+  and `null` (passthrough). Accepts stream specifiers.
+disposition: |
+  Sets the stream disposition flags in the output. Controls presentation behavior
+  (e.g., which stream is `default`, which is `forced`). Accepts `+flag`/`-flag`
+  syntax to set/clear individual flags. Stream specifiers supported.
+tag: |
+  Overrides the codec FourCC/tag in the output container header. Some players are
+  picky about the tag; this forces a specific one for compatibility.
+qscale: |
+  Enables constant-quality VBR encoding. Lower values produce higher quality and
+  larger files. The effective range depends on the codec (e.g., 0–51 for libx264,
+  where 0 is lossless). Short form: `-q`.
+pre: |
+  Applies a codec-specific preset by name. Presets bundle commonly used option
+  combinations into a named configuration. Accepts stream specifiers.
+itsscale: |
+  Multiplies input timestamps by the given factor, effectively changing playback
+  speed. A value of `2` doubles speed, `0.5` halves it. Applied before decoding.
+copyinkf: |
+  When stream-copying, includes non-keyframe packets before the first keyframe.
+  Normally these are discarded; enabling preserves them at the cost of potential
+  playback issues at the start.
+copypriorss: |
+  Controls whether frames before the `-ss` seek point are included in the output.
+  `1` (default) copies them; `0` discards them for a cleaner start.
+filter_script: |
+  Reads a filtergraph description from a file instead of the command line.
+  Deprecated — prefer `-filter` with the `file:` protocol. Accepts stream specifiers.
+reinit_filter: |
+  When enabled (default), the filtergraph is automatically reinitialized if input
+  parameters (resolution, sample rate, etc.) change mid-stream. Disabling causes
+  the filter to error instead.
+drop_changed: |
+  Drops frames whose parameters have changed instead of reinitializing the filtergraph.
+  Useful for live streams where upstream resolution changes are expected but
+  reinitialization is too expensive.
+discard: |
+  Selects which frames to skip during decoding. `none` decodes everything,
+  `default` skips useless packets, `noref` skips non-reference frames, `bidir`
+  skips B-frames, `nointra` skips I-frames, `nokey` keeps only keyframes,
+  `all` skips all frames.
+bits_per_raw_sample: |
+  Forces a specific bit depth for decoded raw audio samples. Overrides the codec's
+  native bit depth. Useful for forcing 24-bit or 32-bit output from codecs that
+  support multiple depths.
+stats_enc_pre: |
+  Writes a line of encoding statistics immediately before each frame is encoded.
+  Reports frame number, PTS, and requested parameters.
+stats_enc_post: |
+  Writes encoding statistics after each frame is encoded. Includes actual encoded
+  size, quality metric, and type. Useful for per-frame quality analysis.
+stats_mux_pre: |
+  Writes packet statistics just before each packet is written to the muxer. Reports
+  packet size, PTS, DTS, and stream index.
+stats_enc_pre_fmt: |
+  Printf-style format string for `-stats_enc_pre` output. Supports field
+  placeholders like `{fi}` (frame index), `{pti}` (PTS), and others.
+stats_enc_post_fmt: |
+  Printf-style format string for `-stats_enc_post` output.
+stats_mux_pre_fmt: |
+  Printf-style format string for `-stats_mux_pre` output.
+time_base: |
+  Sets the time base (tick rate) for the output stream, expressed as a ratio
+  (e.g., `1/25` for 25 fps). The muxer uses this to interpret timestamps.
+enc_time_base: |
+  Sets the time base used internally by the encoder. May differ from the muxer
+  time base. `0` auto-selects; `-1` uses the codec's internal default.
+max_muxing_queue_size: |
+  Maximum number of packets buffered per stream while waiting for other streams
+  to initialize. Prevents memory exhaustion when some streams start much later.
+  Default is 1280 packets.
+muxing_queue_data_threshold: |
+  Byte threshold after which `-max_muxing_queue_size` is enforced. Allows some
+  initial buffering before the packet limit kicks in, preventing premature
+  queue overflow for high-bitrate streams.
+profile: |
+  Constrains the codec to a specific profile (e.g., `baseline`, `main`, `high`
+  for H.264). Profiles limit the set of coding tools available, ensuring
+  compatibility with target decoders.
+level: |
+  Sets the codec level, which caps computational complexity and buffer requirements.
+  Level numbers are codec-specific (e.g., `4.0`, `4.2` for H.264). Higher levels
+  allow higher bitrates and resolutions.
+threads: |
+  Number of threads for this stream's encoder or decoder. `0` auto-detects (default),
+  `auto` also auto-detects but with different heuristics. A specific number
+  constrains parallelism. Accepts stream specifiers.
+r: |
+  Sets the frame rate for video streams. As an input option, overrides the detected
+  rate; as an output option, duplicates or drops frames to match. Accepts
+  fractions (`30000/1001`), abbreviations (`ntsc`, `pal`), or integers (`25`).
+aspect: |
+  Sets the display aspect ratio (DAR). Accepts ratio notation (`16:9`) or
+  decimals (`1.7778`). Affects how the video is displayed, not the pixel
+  dimensions.
+s: |
+  Sets the output frame size. Accepts `WxH` (e.g., `1280x720`) or named
+  abbreviations (`ntsc`, `pal`, `hd1080`, `4k`). As an output option, scales
+  the video; as an input option, overrides the reported size.
+pix_fmt: |
+  Forces a specific pixel format for the output video stream. Common values:
+  `yuv420p` (most compatible), `yuv444p`, `nv12`, `rgb24`. Accepts stream
+  specifiers.
+fpsmax: |
+  Caps the output frame rate. Even if the input or filter produces frames faster
+  than this, ffmpeg will not exceed the limit. Useful for preventing runaway
+  frame rates.
+g: |
+  Maximum distance between keyframes (GOP size). Larger values improve compression
+  but hurt seekability and error resilience. Default varies by codec (typically
+  12–250). `-g 0` produces only one keyframe at the start.
+maxrate: |
+  Peak bitrate ceiling for VBV-constrained encoding. Often paired with `-bufsize`.
+  Expressed in bits/s with optional `k`/`M` suffixes. The encoder will not
+  exceed this rate for sustained periods.
+minrate: |
+  Minimum bitrate floor. Rarely used alone; typically combined with `-maxrate`
+  and `-bufsize` for CBR-like encoding profiles.
+bufsize: |
+  VBV (Video Buffering Verifier) buffer size in bits. Determines how much the
+  encoder can deviate from the average bitrate within a window. Smaller buffers
+  enforce tighter bitrate compliance; larger allow more variation.
+pass: |
+  Selects the pass number for multi-pass encoding. Pass `1` analyzes the input
+  and writes statistics to a log file; pass `2` uses those statistics for
+  optimal quality/size. Pass `3` is rarely needed.
+passlogfile: |
+  Prefix for the multi-pass log file. The actual filenames append `-0.log`.
+  Use separate prefixes when running multiple passes concurrently.
+vframes: |
+  Limits the number of video frames output. Implicitly targets video streams
+  (no stream specifier needed). Equivalent to `-frames:v`.
+display_rotation: |
+  Sets rotation metadata in degrees (counter-clockwise) for the output video
+  stream. The rotation is stored as metadata — the player applies the transform
+  at display time.
+display_hflip: |
+  Adds a horizontal-flip (mirror) flag to the video stream's display metadata.
+  The actual flip is applied by the player, not during encoding.
+display_vflip: |
+  Adds a vertical-flip flag to the video stream's display metadata.
+rc_override: |
+  Overrides the rate control for specific time ranges. Allows forcing a
+  particular quantizer or quality value during defined intervals. Advanced
+  option for fine-grained quality control.
+timecode: |
+  Writes an initial SMPTE timecode value to the output video stream. Implicitly
+  targets video streams.
+intra_matrix: |
+  Overrides the quantization matrix used for I-frame (intra) encoding with
+  a comma-separated list of 64 coefficients. Advanced quality tuning parameter.
+inter_matrix: |
+  Overrides the quantization matrix used for P/B-frame (inter) encoding.
+  Takes the same format as `-intra_matrix`.
+chroma_intra_matrix: |
+  Overrides the chroma-plane quantization matrix for I-frames. Separate from
+  the luma intra matrix, allowing independent chroma quality control.
+vtag: |
+  Forces a specific FourCC tag for the video codec in the output container.
+  Overrides the encoder's default tag. Implicitly targets video streams.
+fps_mode: |
+  Replaces deprecated `-vsync`. Controls output frame timing: `passthrough`
+  preserves timestamps, `cfr` duplicates/drops for constant rate, `vfr` allows
+  variable rate, `auto` picks per-stream, `drop` passes but drops everything.
+force_fps: |
+  Disables automatic best-frame-rate selection, forcing the encoder to use
+  exactly the rate set by `-r`. Useful when the auto-selected rate would differ.
+streamid: |
+  Assigns a specific stream ID in the output container. Relevant for MPEG-TS
+  and similar formats where stream IDs are part of the protocol. Implicitly
+  targets video.
+force_key_frames: |
+  Forces keyframe insertion at the specified timestamps or intervals. Accepts
+  time expressions with `t` (time in seconds) and `n` (frame number).
+  Useful for ad insertion points or chapter boundaries.
+hwaccel: |
+  Selects a hardware-accelerated decoder (e.g., `cuda`, `vaapi`, `qsv`, `vulkan`,
+  `dxva2`). Decoded frames may remain in GPU memory; use `-hwaccel_output_format`
+  to control the transfer.
+hwaccel_device: |
+  Specifies which GPU device to use when multiple are available. References
+  a device initialized with `-init_hw_device`.
+hwaccel_output_format: |
+  Controls the pixel format of decoded frames when using hardware acceleration.
+  `cuda` keeps frames in GPU memory, `vulkan` uses Vulkan images. Default
+  transfers to CPU memory.
+autorotate: |
+  When enabled (default), ffmpeg reads rotation metadata from the input and
+  inserts the appropriate transpose filter. Disable to skip this and preserve
+  the original orientation.
+autoscale: |
+  When enabled (default), ffmpeg appends a scale filter if the filter output's
+  pixel format or resolution doesn't match the encoder's requirements.
+  Disable to avoid the implicit scale.
+apply_cropping: |
+  Controls whether the decoder applies crop metadata from the input. `true`
+  applies the crop, `false` preserves the full frame, and the decoder may
+  expose crop side data for manual handling.
+fix_sub_duration_heartbeat: |
+  Designates a video stream as the heartbeat source for subtitle duration
+  correction. Subtitle timing is aligned to this stream's keyframes,
+  preventing overlap gaps.
+vpre: |
+  Applies a video-specific codec preset. Implicitly targets video streams.
+  Rarely used directly — modern encoders have their own `-preset` options.
+deinterlace: |
+  Enables built-in deinterlacing. Equivalent to adding the `yadif` filter.
+  Simple but less configurable than using `-vf yadif` directly.
+top: |
+  Sets the field order for interlaced video. Deprecated — use the `setfield`
+  video filter instead.
+ar: |
+  Sets the audio sample rate in Hz. Common values: `44100` (CD), `48000`
+  (professional/video), `96000` (high-res). Accepts stream specifiers.
+ac: |
+  Sets the number of audio channels. `1` = mono, `2` = stereo, `6` = 5.1,
+  `8` = 7.1. Accepts stream specifiers.
+aq: |
+  Sets the audio encoding quality for VBR mode. Range and meaning are
+  codec-specific. Implicitly targets audio streams.
+aframes: |
+  Limits audio frames output. Implicitly targets audio streams.
+apad: |
+  Pads shorter audio with silence to match video duration. Can specify
+  duration in seconds (`5`) or samples (`51200`). Prevents audio ending
+  before video in the output.
+atag: |
+  Overrides the audio codec's FourCC tag in the output container.
+  Implicitly targets audio streams.
+sample_fmt: |
+  Forces a specific audio sample format for the output. Common values:
+  `s16` (16-bit signed), `s32` (32-bit signed), `fltp` (32-bit float planar).
+  Accepts stream specifiers.
+channel_layout: |
+  Sets the audio channel layout by name or channel count. Named layouts:
+  `mono`, `stereo`, `5.1`, `7.1`. Unnamed numbers (e.g., `3`) use a
+  generic layout. Accepts stream specifiers.
+ch_layout: |
+  Newer alternative to `-channel_layout`. Same semantics, improved naming.
+  Sets the audio channel layout for the output stream.
+guess_layout_max: |
+  Caps the number of channels ffmpeg will attempt to map to a named layout
+  when the input layout is unknown. Above this threshold, the raw channel
+  count is used instead.
+apre: |
+  Applies an audio-specific codec preset. Implicitly targets audio streams.
+stag: |
+  Overrides the subtitle codec's FourCC tag in the output container.
+  Implicitly targets subtitle streams.
+fix_sub_duration: |
+  Adjusts subtitle end times so they don't overlap with the next subtitle's
+  start. Useful for formats where subtitle durations are approximate.
+canvas_size: |
+  Sets the reference canvas dimensions (WxH) for text-based subtitles.
+  Affects how subtitle positions are interpreted.
+spre: |
+  Applies a subtitle-specific codec preset. Implicitly targets subtitle
+  streams.
+vn: |
+  Excludes all video streams from processing. Equivalent to `-c:v none`
+  but more concise and idiomatic.
+an: |
+  Excludes all audio streams from processing. Equivalent to `-c:a none`
+  but more concise and idiomatic.
+sn: |
+  Excludes all subtitle streams from processing. Equivalent to `-c:s none`
+  but more concise and idiomatic.
+dn: |
+  Excludes all data streams from processing. Equivalent to `-c:d none`
+  but more concise and idiomatic.
+x: |
+  Forces the display width in pixels for the player window. Does not affect
+  the actual video resolution — only the initial window size.
+alwaysontop: |
+  Keeps the player window on top of all other windows. Platform-dependent
+  behavior; not supported by all window managers or operating systems.
+bytes: |
+  Switches seeking mode to byte-based instead of time-based in the player.
+  Useful for files where time-based seeking is broken or inaccurate.
+seek_interval: |
+  Customizes the seek interval in seconds for arrow-key navigation in the
+  player. Default is 10 seconds per key press.
+nodisp: |
+  Disables the graphical display entirely. Audio still plays, but no video
+  window is created. Useful for audio-only playback on headless systems.
+noborder: |
+  Opens the player window without window decorations (title bar, border).
+  Useful for embedded display scenarios or kiosk mode.
+volume: |
+  Sets the initial playback volume on a 0–100 scale. Does not affect the
+  encoded output — only the playback volume in the player.
+window_title: |
+  Sets the title displayed in the player window's title bar.
+left: |
+  Sets the initial horizontal (x) position of the player window on screen.
+  Accepts a pixel coordinate.
+loop: |
+  Number of playback loops. `0` means no looping, `-1` means loop forever.
+  Each loop restarts from the beginning of the file.
+showmode: |
+  Sets the display mode in the player: `0` shows video, `1` shows audio
+  waveforms, `2` shows audio frequency data (RDFT). Useful for audio
+  visualization.
+fast: |
+  Enables non-spec-compliant optimizations that may sacrifice standards
+  conformance for speed. Use only when output quality is verified acceptable.
+genpts: |
+  Generates presentation timestamps (PTS) when they are missing from the
+  input. Some demuxers or corrupted files may lack PTS values; this flag
+  reconstructs them from DTS.
+sync: |
+  Selects the master clock for A/V synchronization: `audio`, `video`,
+  or `ext` (external). Determines which stream drives the playback timing.
+ast: |
+  Selects an audio stream by specifier for playback. Accepts stream
+  specifier syntax (e.g., `0`, `a:1`).
+vst: |
+  Selects a video stream by specifier for playback. Accepts stream
+  specifier syntax (e.g., `0`, `v:0`).
+sst: |
+  Selects a subtitle stream by specifier for playback. Accepts stream
+  specifier syntax.
+autoexit: |
+  Closes the player when playback reaches the end of the file. Without
+  this, ffplay keeps the window open showing the last frame.
+exitonkeydown: |
+  Exits the player when any key is pressed, not just `q` or `Esc`.
+  Useful for quick preview workflows.
+exitonmousedown: |
+  Exits the player on any mouse click. Useful in presentation or
+  kiosk scenarios.
+framedrop: |
+  Drops video frames when the decoder cannot keep up with real-time
+  playback. Prevents audio from running ahead of video.
+infbuf: |
+  Disables the input buffer size limit, allowing the demuxer to buffer
+  unlimited data. Useful for network streams with bursty delivery,
+  at the cost of potentially unbounded memory use.
+enable_vulkan: |
+  Uses the Vulkan renderer for video display in the player. Requires
+  a Vulkan-capable GPU and driver.
+vulkan_params: |
+  Additional Vulkan renderer configuration as key:value pairs. Controls
+  Vulkan-specific display settings.
+rdftspeed: |
+  Sets the RDFT (audio frequency) analysis update rate in milliseconds.
+  Affects how frequently frequency data is recalculated for the `showmode 2`
+  visualization.
+drp: |
+  Controls decoder reordering of presentation timestamps. `1` enables,
+  `0` disables, `-1` auto-selects. Disabling is useful when reordering
+  introduces unacceptable latency.
+lowres: |
+  Decodes at reduced resolution for faster processing. `1` = half
+  resolution, `2` = quarter, `3` = eighth. Lower resolution decoding
+  is significantly faster but obviously produces lower quality output.
+video_bg: |
+  Sets the background for the video display area: a color name, `tiles`
+  (checkerboard pattern for transparency), or `none` (black).
+unit: |
+  Shows units alongside numeric values in ffprobe output (e.g., `kB/s`,
+  `kHz`). Makes output more readable for human consumption.
+prefix: |
+  Uses SI prefixes (k, M, G) for large numeric values in ffprobe output.
+  Standardizes the display of file sizes, bitrates, and similar values.
+byte_binary_prefix: |
+  Forces binary prefixes (Ki, Mi, Gi) for byte values instead of SI
+  prefixes (k, M, G). `1 KiB` = 1024 bytes vs `1 kB` = 1000 bytes.
+sexagesimal: |
+  Formats duration values as `HH:MM:SS.MICROSECONDS` instead of raw
+  seconds. More human-readable for time values.
+pretty: |
+  Shorthand that enables `-unit`, `-prefix`, `-byte_binary_prefix`, and
+  `-sexagesimal` simultaneously. Produces the most human-readable output.
+output_format: |
+  Sets the output format for ffprobe: `default`, `csv`, `flat`, `ini`,
+  `json`, or `xml`. Controls how stream and format information is printed.
+  Alias: `print_format`.
+sections: |
+  Prints the section structure (hierarchy of info sections) and exits.
+  Useful for understanding the layout of ffprobe output before writing
+  `-show_entries` queries.
+select_streams: |
+  Filters ffprobe output to only include streams matching the specifier.
+  Accepts stream specifier syntax like `v:0` (first video), `a` (all audio).
+show_data: |
+  Includes payload data as a hex+ASCII dump in packet/frame output.
+  Very verbose — primarily for debugging stream contents.
+show_data_hash: |
+  Shows a hash (e.g., `md5`, `sha256`) of each packet's payload data
+  instead of the raw data. Useful for integrity verification.
+data_dump_format: |
+  Format for `-show_data` output: `hex` (traditional hex+ASCII) or
+  `base64`. Base64 is more compact for binary data.
+show_error: |
+  Includes probe error information in the output. Reports why probing
+  failed when the input cannot be read.
+show_format: |
+  Prints container-level information (duration, bitrate, start time,
+  tags) for the input file.
+show_entries: |
+  Selects which entries (fields) to print, with a compact syntax:
+  `stream=codec_name,bit_rate` or `format=duration`. Reduces noise by
+  printing only the fields you care about.
+show_packets: |
+  Prints per-packet information (PTS, DTS, size, flags, stream index,
+  etc.) for all packets in the input.
+show_frames: |
+  Prints per-frame information including timestamps, type, key frame
+  flag, and pict type. Also includes subtitle frame details.
+show_log: |
+  Shows per-frame decoder log messages. Accepts a log level to filter
+  verbosity. Useful for debugging codec-specific issues.
+show_streams: |
+  Prints detailed per-stream information: codec, profile, resolution,
+  sample rate, channels, bit depth, disposition, tags, and more.
+  The most commonly used information option.
+show_programs: |
+  Prints program information from the input container. Relevant for
+  MPEG-TS and similar formats that organize streams into programs.
+show_stream_groups: |
+  Prints stream group information from the input container. Used by
+  formats like ISOBMFF/MP4 that support stream grouping.
+show_chapters: |
+  Prints chapter marker information (start time, end time, title, id)
+  from the input file.
+count_frames: |
+  Counts the number of frames per stream. Requires decoding, so is
+  slower but more accurate than estimating from the container's
+  duration and frame rate.
+count_packets: |
+  Counts the number of packets per stream. Faster than `-count_frames`
+  since it doesn't require decoding, but may overcount if there are
+  duplicate or discarded packets.
+read_intervals: |
+  Limits ffprobe to reading only specified time intervals from the input.
+  Syntax: `start%+duration` or `start%-end`. Multiple intervals separated
+  by `;`.
+show_private_data: |
+  Includes private (codec-specific) stream data in the output. May
+  expose internal codec parameters not normally visible.
+show_program_version: |
+  Prints the ffprobe program version and exits.
+show_library_versions: |
+  Prints versions of all linked libav* libraries and exits.
+show_versions: |
+  Prints both the program version and all library versions then exits.
+show_pixel_formats: |
+  Prints detailed pixel format information including component count,
+  bit depth, chroma subsampling, and flags then exits.
+show_optional_fields: |
+  Controls how invalid or unset fields are printed: `always`/`1` always
+  prints them, `never`/`0` hides them, `auto`/`-1` (default) prints
+  them only when they have a value.
+analyze_frames: |
+  Decodes frames during analysis to extract additional stream properties
+  that may not be available from container metadata alone. More thorough
+  but slower.
+o: |
+  Writes ffprobe output to the specified file instead of stdout.
+  Accepts a file path.
+print_filename: |
+  Overrides the filename shown in ffprobe output. The actual file being
+  probed is unchanged; only the display name is affected. Useful for
+  anonymization or normalization in batch processing.
