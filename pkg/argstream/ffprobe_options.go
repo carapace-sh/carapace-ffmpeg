@@ -68,6 +68,8 @@ func buildFFprobeOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "bitexact", ShortName: "bitexact", Description: "force bitexact output", Scope: ScopePerFileOpt, Type: TypeBoolean},
 		{CanonicalName: "i", ShortName: "i", Description: "input file", Scope: ScopeInputOnlyOpt, Type: TypeValue, ValueType: ValueFileURL},
 		{CanonicalName: "o", ShortName: "o", Description: "write output to file", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueFileURL},
+		{CanonicalName: "print_filename", ShortName: "print_filename", Description: "override the printed input filename", Scope: ScopeGlobalOpt, Type: TypeValue, ValueType: ValueString},
+		{CanonicalName: "find_stream_info", ShortName: "find_stream_info", Description: "read and decode the streams to fill missing information with heuristics", Scope: ScopeInputOnlyOpt, Type: TypeBoolean},
 		{CanonicalName: "codec", ShortName: "c", Aliases: []string{"acodec", "vcodec", "scodec"}, Description: "force decoder by media specifier", Scope: ScopePerStreamOpt, Type: TypeValue, ValueType: ValueCodec, AcceptsSpec: true},
 	}
 
