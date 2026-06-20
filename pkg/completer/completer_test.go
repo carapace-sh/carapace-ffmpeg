@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/probe"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/streamspec"
@@ -193,4 +194,76 @@ func TestActionMetadataValueWithRealStreams(t *testing.T) {
 	// Should not return empty action since streams have language tags
 	action := actionMetadataValue(specCtx, streams, "")
 	_ = action
+}
+
+func TestFilterOptsFromContext(t *testing.T) {
+	tests := []struct {
+		name    string
+		ctx     *argstream.CompletionContext
+		want    ffmpeg.FilterOpts
+	}{
+		{
+			"nil option returns default",
+			&argstream.CompletionContext{},
+			ffmpeg.FilterOpts{Audio: true, Video: true},
+		},
+		{
+			"no specifier no implicit spec returns default",
+			&argstream.CompletionContext{
+				CurrentOption: &argstream.OptionContext{Name: "filter_complex", CanonicalName: "filter_complex"},
+			},
+			ffmpeg.FilterOpts{Audio: true, Video: true},
+		},
+		{
+			"stream specifier a",
+			&argstream.CompletionContext{
+				CurrentOption: &argstream.OptionContext{Name: "filter", CanonicalName: "filter", StreamSpecifier: "a", AcceptsSpec: true},
+			},
+			ffmpeg.FilterOpts{Audio: true, Video: false},
+		},
+		{
+			"stream specifier v",
+			&argstream.CompletionContext{
+				CurrentOption: &argstream.OptionContext{Name: "filter", CanonicalName: "filter", StreamSpecifier: "v", AcceptsSpec: true},
+			},
+			ffmpeg.FilterOpts{Audio: false, Video: true},
+		},
+		{
+			"stream specifier V",
+			&argstream.CompletionContext{
+				CurrentOption: &argstream.OptionContext{Name: "filter", CanonicalName: "filter", StreamSpecifier: "V", AcceptsSpec: true},
+			},
+			ffmpeg.FilterOpts{Audio: false, Video: true},
+		},
+		{
+			"stream specifier s",
+			&argstream.CompletionContext{
+				CurrentOption: &argstream.OptionContext{Name: "filter", CanonicalName: "filter", StreamSpecifier: "s", AcceptsSpec: true},
+			},
+			ffmpeg.FilterOpts{Audio: false, Video: false},
+		},
+		{
+			"implicit spec vf",
+			&argstream.CompletionContext{
+				CurrentOption: &argstream.OptionContext{Name: "vf", CanonicalName: "filter"},
+			},
+			ffmpeg.FilterOpts{Audio: false, Video: true},
+		},
+		{
+			"implicit spec af",
+			&argstream.CompletionContext{
+				CurrentOption: &argstream.OptionContext{Name: "af", CanonicalName: "filter"},
+			},
+			ffmpeg.FilterOpts{Audio: true, Video: false},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := FilterOptsFromContext(tt.ctx)
+			if got != tt.want {
+				t.Errorf("FilterOptsFromContext() = %+v, want %+v", got, tt.want)
+			}
+		})
+	}
 }
