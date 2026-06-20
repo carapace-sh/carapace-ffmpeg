@@ -202,11 +202,22 @@ func ActionEncoders(opts EncoderOpts) carapace.Action {
 	}).Tag("encoders").UidF(Uid("encoder"))
 }
 
+type FormatOpts struct {
+	Demuxing bool
+	Muxing   bool
+}
+
+func (o FormatOpts) Default() FormatOpts {
+	o.Demuxing = true
+	o.Muxing = true
+	return o
+}
+
 // ActionFormats completes formats
 //
 //	aax (CRI AAX)
 //	ac3 (raw AC-3)
-func ActionFormats() carapace.Action {
+func ActionFormats(opts FormatOpts) carapace.Action {
 	return carapace.ActionExecCommand("ffmpeg", "-hide_banner", "-formats")(func(output []byte) carapace.Action {
 		_, content, ok := strings.Cut(string(output), " ---")
 		if !ok {
@@ -219,6 +230,9 @@ func ActionFormats() carapace.Action {
 		vals := make([]string, 0)
 		for _, line := range lines {
 			if matches := r.FindStringSubmatch(line); matches != nil {
+				if (matches[1] == "D" && !opts.Demuxing) || (matches[2] == "E" && !opts.Muxing) {
+					continue
+				}
 				s := style.Default
 				switch {
 				case matches[1] == "D" && matches[2] == "E":

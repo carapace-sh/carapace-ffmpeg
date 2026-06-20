@@ -114,7 +114,14 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 	case argstream.ValueCodec:
 		return codecAction(ctx)
 	case argstream.ValueFormat:
-		return ffmpeg.ActionFormats()
+		opts := ffmpeg.FormatOpts{Demuxing: true, Muxing: true}
+		switch ctx.Scope {
+		case argstream.ScopeInputFile:
+			opts.Muxing = false
+		case argstream.ScopeOutputFile:
+			opts.Demuxing = false
+		}
+		return ffmpeg.ActionFormats(opts)
 	case argstream.ValuePixelFormat:
 		return ffmpeg.ActionPixelFormats()
 	case argstream.ValueSampleFmt:
