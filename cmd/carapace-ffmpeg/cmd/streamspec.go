@@ -43,8 +43,8 @@ var streamspecCompleteCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(streamspecCmd)
-	rootCmd.AddCommand(streamspecCompleteCmd)
+	debugCmd.AddCommand(streamspecCmd)
+	debugCmd.AddCommand(streamspecCompleteCmd)
 
 	carapace.Gen(streamspecCmd)
 	carapace.Gen(streamspecCompleteCmd)

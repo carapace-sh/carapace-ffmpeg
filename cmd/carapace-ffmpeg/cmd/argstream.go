@@ -46,8 +46,8 @@ var argstreamCompleteCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(argstreamCmd)
-	rootCmd.AddCommand(argstreamCompleteCmd)
+	debugCmd.AddCommand(argstreamCmd)
+	debugCmd.AddCommand(argstreamCompleteCmd)
 
 	argstreamCompleteCmd.Flags().Bool("trailing-space", false, "cursor is at a new position after the last arg")
 

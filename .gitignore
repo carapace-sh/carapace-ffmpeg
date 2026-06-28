@@ -7,8 +7,8 @@
 *.test
 *.out
 /bin/
-carapace-ffmpeg
-carapace-ffplay
-carapace-ffprobe
-dist
-profile.cov
+/carapace-ffmpeg
+/carapace-ffplay
+/carapace-ffprobe
+/dist
+/profile.cov

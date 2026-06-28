@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
 	"slices"
 	"strings"
 
@@ -10,29 +8,81 @@ import (
 	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/completer"
+	spec "github.com/carapace-sh/carapace-spec"
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
+	Use:               "carapace-ffmpeg",
+	Short:             "FFmpeg completion provider",
+	CompletionOptions: cobra.CompletionOptions{DisableDefaultCmd: true},
+}
+
+var gen *carapace.Carapace
+
+func Execute() {
+	gen.Execute()
+}
+
+func init() {
+	rootCmd.AddCommand(
+		ffmpegCmd,
+		ffplayCmd,
+		ffprobeCmd,
+		debugCmd,
+	)
+
+	gen = carapace.Gen(rootCmd,
+		carapace.WithSubcommands(ffmpegCmd, ffplayCmd, ffprobeCmd),
+		carapace.WithDefault("ffmpeg"),
+	)
+
+	gen.Standalone()
+
+	gen.PositionalAnyCompletion(
+		carapace.ActionValues("ffmpeg", "ffplay", "ffprobe", "debug"),
+	)
+}
+
+var ffmpegCmd = &cobra.Command{
 	Use:                "ffmpeg",
 	Short:              "Hyper fast Audio and Video encoder",
 	Run:                func(cmd *cobra.Command, args []string) {},
 	DisableFlagParsing: true,
 }
 
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+var ffplayCmd = &cobra.Command{
+	Use:                "ffplay",
+	Short:              "FFplay media player",
+	Run:                func(cmd *cobra.Command, args []string) {},
+	DisableFlagParsing: true,
+}
+
+var ffprobeCmd = &cobra.Command{
+	Use:                "ffprobe",
+	Short:              "FFprobe multimedia stream analyzer",
+	Run:                func(cmd *cobra.Command, args []string) {},
+	DisableFlagParsing: true,
+}
+
+var debugCmd = &cobra.Command{
+	Use:   "debug",
+	Short: "Parse ffmpeg stream specifiers, filtergraphs, and argument streams",
 }
 
 func init() {
+	initFFmpeg()
+	initFFplay()
+	initFFprobe()
+	initDebug()
+}
+
+func initFFmpeg() {
 	profile := argstream.DefaultFFmpegProfile
 
-	carapace.Gen(rootCmd).Standalone()
+	carapace.Gen(ffmpegCmd).Standalone()
 
-	carapace.Gen(rootCmd).PositionalAnyCompletion(
+	carapace.Gen(ffmpegCmd).PositionalAnyCompletion(
 		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 			if completer.IsMidTokenOptionWithSpec(c.Value, profile) {
 				args, _ := completer.ContextToArgs(c)
@@ -57,8 +107,6 @@ func init() {
 			ctx := argstream.ParseForCompletionWithProfile(args, trailingSpace, profile)
 			streams := completer.ProbeAll(ctx)
 
-			// When completing a partial option name (e.g. `-v` matching `-vcodec`,
-			// `-vframes`, `-vn`), include option names so the shell can filter them.
 			if ctx.PartialOption != "" && !trailingSpace {
 				return carapace.Batch(
 					completer.ActionPartialOption(ctx, profile),
@@ -94,9 +142,127 @@ func init() {
 	)
 }
 
-// actionOptionValueIfExpected returns option value completions only when
-// the completion context expects an option value (e.g. when a partial option
-// like `-v` resolved to a known value option like `-vloglevel`).
+func initFFplay() {
+	profile := argstream.DefaultFFplayProfile
+
+	carapace.Gen(ffplayCmd).Standalone()
+
+	carapace.Gen(ffplayCmd).PositionalAnyCompletion(
+		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			if completer.IsMidTokenOptionWithSpec(c.Value, profile) {
+				args, _ := completer.ContextToArgs(c)
+				ctx := argstream.ParseForCompletionWithProfile(args, false, profile)
+				streams := completer.ProbeAll(ctx)
+				originalValue := c.Value
+				return carapace.ActionMultiParts(":", func(c carapace.Context) carapace.Action {
+					switch len(c.Parts) {
+					case 0:
+						return completer.ActionOptionNames(ctx, profile).NoSpace(':')
+					default:
+						specifierPart := ""
+						if _, after, ok := strings.Cut(originalValue, ":"); ok {
+							specifierPart = after
+						}
+						return completer.ActionStreamSpecifierPartsWithStreams(specifierPart, c.Value, streams)
+					}
+				})
+			}
+
+			args, trailingSpace := completer.ContextToArgs(c)
+			ctx := argstream.ParseForCompletionWithProfile(args, trailingSpace, profile)
+			streams := completer.ProbeAll(ctx)
+
+			if ctx.PartialOption != "" && !trailingSpace {
+				return completer.ActionPartialOption(ctx, profile)
+			}
+
+			var actions []carapace.Action
+			for _, token := range ctx.ExpectedTokens {
+				switch token {
+				case argstream.ExpectedGlobalOption, argstream.ExpectedInputOption:
+					actions = append(actions, completer.ActionOptions(ctx, profile))
+				case argstream.ExpectedInputURL:
+					actions = append(actions, carapace.ActionFiles())
+				case argstream.ExpectedOptionValue:
+					actions = append(actions, completer.ActionOptionValue(ctx, completer.ActionDecoderOnlyCodec, c.Value))
+				case argstream.ExpectedStreamSpecifier:
+					actions = append(actions, completer.ActionStreamSpecifierWithStreams(ctx, c, streams))
+				case argstream.ExpectedFilterValue:
+					isComplex := ctx.CurrentOption != nil &&
+						(ctx.CurrentOption.CanonicalName == "filter_complex" || ctx.CurrentOption.CanonicalName == "lavfi")
+					actions = append(actions, completer.ActionFilterValue(c.Value, isComplex, completer.FilterOptsFromContext(ctx)))
+				}
+			}
+
+			if len(actions) == 0 {
+				return carapace.ActionValues()
+			}
+			return carapace.Batch(actions...).ToA()
+		}),
+	)
+}
+
+func initFFprobe() {
+	profile := argstream.DefaultFFprobeProfile
+
+	carapace.Gen(ffprobeCmd).Standalone()
+
+	carapace.Gen(ffprobeCmd).PositionalAnyCompletion(
+		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			if completer.IsMidTokenOptionWithSpec(c.Value, profile) {
+				args, _ := completer.ContextToArgs(c)
+				ctx := argstream.ParseForCompletionWithProfile(args, false, profile)
+				streams := completer.ProbeAll(ctx)
+				originalValue := c.Value
+				return carapace.ActionMultiParts(":", func(c carapace.Context) carapace.Action {
+					switch len(c.Parts) {
+					case 0:
+						return completer.ActionOptionNames(ctx, profile).NoSpace(':')
+					default:
+						specifierPart := ""
+						if _, after, ok := strings.Cut(originalValue, ":"); ok {
+							specifierPart = after
+						}
+						return completer.ActionStreamSpecifierPartsWithStreams(specifierPart, c.Value, streams)
+					}
+				})
+			}
+
+			args, trailingSpace := completer.ContextToArgs(c)
+			ctx := argstream.ParseForCompletionWithProfile(args, trailingSpace, profile)
+			streams := completer.ProbeAll(ctx)
+
+			if ctx.PartialOption != "" && !trailingSpace {
+				return completer.ActionPartialOption(ctx, profile)
+			}
+
+			var actions []carapace.Action
+			for _, token := range ctx.ExpectedTokens {
+				switch token {
+				case argstream.ExpectedGlobalOption, argstream.ExpectedInputOption:
+					actions = append(actions, completer.ActionOptions(ctx, profile))
+				case argstream.ExpectedInputURL:
+					actions = append(actions, carapace.ActionFiles())
+				case argstream.ExpectedOptionValue:
+					actions = append(actions, completer.ActionOptionValue(ctx, completer.ActionDecoderOnlyCodec, c.Value))
+				case argstream.ExpectedStreamSpecifier:
+					actions = append(actions, completer.ActionStreamSpecifierWithStreams(ctx, c, streams))
+				}
+			}
+
+			if len(actions) == 0 {
+				return carapace.ActionValues()
+			}
+			return carapace.Batch(actions...).ToA()
+		}),
+	)
+}
+
+func initDebug() {
+	carapace.Gen(debugCmd)
+	spec.Register(debugCmd)
+}
+
 func actionOptionValueIfExpected(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
 	if slices.Contains(ctx.ExpectedTokens, argstream.ExpectedOptionValue) {
 		return actionOptionValue(ctx, c)
@@ -104,8 +270,6 @@ func actionOptionValueIfExpected(ctx *argstream.CompletionContext, c carapace.Co
 	return carapace.ActionValues()
 }
 
-// actionOptionValue returns completions for option values, with ffmpeg-specific
-// codec handling (encoder vs. decoder depending on scope).
 func actionOptionValue(ctx *argstream.CompletionContext, c carapace.Context) carapace.Action {
 	return completer.ActionOptionValue(ctx, actionCodec, c.Value)
 }
@@ -116,34 +280,30 @@ func actionFilterValue(ctx *argstream.CompletionContext, c carapace.Context) car
 	return completer.ActionFilterValue(c.Value, isComplex, completer.FilterOptsFromContext(ctx))
 }
 
-// actionCodec returns codec completions scoped to the current position.
-// In global/input scope: codecs + decoders (decoding context).
-// In output scope: codecs + encoders (encoding context).
 func actionCodec(ctx *argstream.CompletionContext) carapace.Action {
 	audio := true
 	subtitle := true
 	video := true
 	if ctx.CurrentOption != nil {
 		spec := ctx.CurrentOption.StreamSpecifier
-		if spec != "" {
-			if len(spec) > 0 && spec[0] == 'a' {
-				audio = true
-				subtitle = false
-				video = false
-			} else if len(spec) > 0 && (spec[0] == 'v' || spec[0] == 'V') {
-				audio = false
-				subtitle = false
-				video = true
-			} else if len(spec) > 0 && spec[0] == 's' {
-				audio = false
-				subtitle = true
-				video = false
-			} else if len(spec) > 0 && spec[0] == 'd' {
-				audio = false
-				subtitle = false
-				video = false
-			}
-		} else if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
+		if len(spec) > 0 && spec[0] == 'a' {
+			audio = true
+			subtitle = false
+			video = false
+		} else if len(spec) > 0 && (spec[0] == 'v' || spec[0] == 'V') {
+			audio = false
+			subtitle = false
+			video = true
+		} else if len(spec) > 0 && spec[0] == 's' {
+			audio = false
+			subtitle = true
+			video = false
+		} else if len(spec) > 0 && spec[0] == 'd' {
+			audio = false
+			subtitle = false
+			video = false
+		}
+		if optDef := argstream.LookupOption(ctx.CurrentOption.Name); optDef != nil && optDef.ImplicitSpec != "" {
 			audio = optDef.ImplicitSpec == "a"
 			subtitle = optDef.ImplicitSpec == "s"
 			video = optDef.ImplicitSpec == "v"

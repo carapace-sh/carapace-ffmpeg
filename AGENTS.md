@@ -39,47 +39,49 @@ go generate ./testdata/                     # generate test media files (require
 
 Creates 7 files in `testdata/`: `multistream.mkv`, `subtitles.mkv`, `surround.mkv`, `pixfmt.mkv`, `audio_only.wav`, `attachment.mkv`, `tagged_audio.flac`. Tests that use these files will skip if they're missing.
 
-### Debug CLI (`cmd/carapace-ffmpeg-debug/`)
+### Debug CLI (subcommand)
 
 ```sh
-go run ./cmd/carapace-ffmpeg-debug streamspec "a:1"                  # parse stream specifier, output AST as JSON
-go run ./cmd/carapace-ffmpeg-debug streamspec-complete "a:"           # stream specifier completion context as JSON
-go run ./cmd/carapace-ffmpeg-debug filtergraph "scale=1280:720"       # parse filtergraph, output AST as JSON
-go run ./cmd/carapace-ffmpeg-debug filtergraph-complete "sca"         # filtergraph completion context as JSON
-go run ./cmd/carapace-ffmpeg-debug mapvalue "0:v"                     # parse -map value, output AST as JSON
-go run ./cmd/carapace-ffmpeg-debug mapvalue-complete "0:"             # -map value completion context as JSON
-go run ./cmd/carapace-ffmpeg-debug argstream -- -i input.mp4 -c:v libx264 output.mp4  # parse arg stream as JSON
-go run ./cmd/carapace-ffmpeg-debug argstream-complete -- -i input.mp4 -c:v            # argstream completion context as JSON
+go run ./cmd/carapace-ffmpeg debug streamspec "a:1"                  # parse stream specifier, output AST as JSON
+go run ./cmd/carapace-ffmpeg debug streamspec-complete "a:"           # stream specifier completion context as JSON
+go run ./cmd/carapace-ffmpeg debug filtergraph "scale=1280:720"       # parse filtergraph, output AST as JSON
+go run ./cmd/carapace-ffmpeg debug filtergraph-complete "sca"         # filtergraph completion context as JSON
+go run ./cmd/carapace-ffmpeg debug mapvalue "0:v"                     # parse -map value, output AST as JSON
+go run ./cmd/carapace-ffmpeg debug mapvalue-complete "0:"             # -map value completion context as JSON
+go run ./cmd/carapace-ffmpeg debug argstream -- -i input.mp4 -c:v libx264 output.mp4  # parse arg stream as JSON
+go run ./cmd/carapace-ffmpeg debug argstream-complete -- -i input.mp4 -c:v            # argstream completion context as JSON
 ```
 
-### Completer CLIs
+### Completer CLI (multi-completer)
 
 ```sh
 # ffmpeg
-go run ./cmd/carapace-ffmpeg _carapace spec                    # generate carapace spec YAML
-go run ./cmd/carapace-ffmpeg _carapace export '' ''              # complete at empty position (JSON)
-go run ./cmd/carapace-ffmpeg _carapace export '-c:v' '' '-c:v' 'libx'  # complete codec value (JSON)
+ go run ./cmd/carapace-ffmpeg ffmpeg _carapace spec                    # generate carapace spec YAML
+ go run ./cmd/carapace-ffmpeg ffmpeg _carapace export '' ''              # complete at empty position (JSON)
+ go run ./cmd/carapace-ffmpeg ffmpeg _carapace export '-c:v' '' '-c:v' 'libx'  # complete codec value (JSON)
 
 # ffplay
-go run ./cmd/carapace-ffplay _carapace spec
-go run ./cmd/carapace-ffplay _carapace export '' ''
+ go run ./cmd/carapace-ffmpeg ffplay _carapace spec
+ go run ./cmd/carapace-ffmpeg ffplay _carapace export '' ''
 
 # ffprobe
-go run ./cmd/carapace-ffprobe _carapace spec
-go run ./cmd/carapace-ffprobe _carapace export '' ''
+ go run ./cmd/carapace-ffmpeg ffprobe _carapace spec
+ go run ./cmd/carapace-ffmpeg ffprobe _carapace export '' ''
+
+# multi-completer snippet (all commands at once)
+ go run ./cmd/carapace-ffmpeg _carapace bash
 ```
 
 The `_carapace spec` command generates YAML that references the `man/` directory for extended descriptions. The spec + man pages together form the completion definition consumed by carapace.
 
+The binary is a multi-completer using `carapace.WithSubcommands(ffmpegCmd, ffplayCmd, ffprobeCmd)` with `carapace.WithDefault("ffmpeg")`. A single `carapace-ffmpeg` binary handles completion for all three tools plus a `debug` subcommand for parser diagnostics.
+
 ## Architecture
 
-Four CLIs, a shared completer package, a probe package, and four independent parser packages with carapace completion actions.
+One multi-completer CLI, a shared completer package, a probe package, and four independent parser packages with carapace completion actions.
 
 ```
-cmd/carapace-ffmpeg/          Completer CLI for ffmpeg
-cmd/carapace-ffplay/          Completer CLI for ffplay
-cmd/carapace-ffprobe/         Completer CLI for ffprobe
-cmd/carapace-ffmpeg-debug/    Debug/diagnostic CLI (JSON output)
+cmd/carapace-ffmpeg/          Multi-completer CLI (ffmpeg, ffplay, ffprobe, debug)
 pkg/argstream/                 Argument stream parser (options, -i, URLs, scope tracking)
 pkg/streamspec/                Stream specifier parser (v, a:1, disp:default, etc.)
 pkg/filtergraph/               Filter graph parser (chains, filters, options, link labels)
@@ -92,25 +94,19 @@ skills/ffmpeg/                 AI agent reference documentation (not compiled Go
 testdata/                      Generated media files for integration tests
 ```
 
-### Completer CLIs (`cmd/carapace-ffmpeg/`, `cmd/carapace-ffplay/`, `cmd/carapace-ffprobe/`)
+### Completer CLI (`cmd/carapace-ffmpeg/`)
 
-Standalone carapace completers for the `ffmpeg`, `ffplay`, and `ffprobe` commands. Each uses `DisableFlagParsing` + `PositionalAnyCompletion` with `argstream.ParseForCompletionWithProfile()` and a tool-specific `ToolProfile` to dispatch context-aware completions.
+Multi-completer binary using `carapace.Gen(rootCmd, carapace.WithSubcommands(ffmpegCmd, ffplayCmd, ffprobeCmd), carapace.WithDefault("ffmpeg"))`. Each subcommand uses `DisableFlagParsing` + `PositionalAnyCompletion` with `argstream.ParseForCompletionWithProfile()` and a tool-specific `ToolProfile` to dispatch context-aware completions.
 
-- **`root.go`** — Root cobra command with `carapace.Gen(rootCmd).Standalone()`. `PositionalAnyCompletion` callback parses args with `argstream.ParseForCompletionWithProfile()` and dispatches to shared actions from `pkg/completer/`.
-- **`root_test.go`** — Tests for `completer.ContextToArgs()` helper and argstream integration (ffmpeg CLI only).
+- **`root.go`** — Root cobra command with `carapace.Gen(rootCmd, WithSubcommands(...), WithDefault("ffmpeg"))`. `gen.Standalone()` + `gen.Execute()`. Defines `ffmpegCmd`, `ffplayCmd`, `ffprobeCmd`, `debugCmd` subcommands with their `PositionalAnyCompletion` callbacks. Helper functions `actionCodec`, `actionOptionValue`, `actionFilterValue`, `actionOptionValueIfExpected`.
+- **`argstream.go`** — `debug argstream` and `debug argstream-complete` subcommands.
+- **`streamspec.go`** — `debug streamspec` and `debug streamspec-complete` subcommands.
+- **`filtergraph.go`** — `debug filtergraph` and `debug filtergraph-complete` subcommands.
+- **`mapvalue.go`** — `debug mapvalue` and `debug mapvalue-complete` subcommands.
+- **`root_test.go`** — Tests for `completer.ContextToArgs()` helper and argstream integration.
 - **`main.go`** — Entry point calling `cmd.Execute()`.
 
-The ffplay completer uses `DefaultFFplayProfile` (no output section, decoder-only codec). The ffprobe completer uses `DefaultFFprobeProfile` (no output section, no filter completion, decoder-only codec).
-
-### Debug CLI (`cmd/carapace-ffmpeg-debug/`)
-
-Testing/debug CLI exposing raw parser output as JSON. Each subcommand has a `-complete` variant that outputs the completion context instead of the AST.
-
-- **`root.go`** — Root cobra command with `carapace.Gen(rootCmd)` + `spec.Register(rootCmd)`
-- **`streamspec.go`** — `streamspec` and `streamspec-complete` subcommands
-- **`filtergraph.go`** — `filtergraph` and `filtergraph-complete` subcommands
-- **`mapvalue.go`** — `mapvalue` and `mapvalue-complete` subcommands
-- **`argstream.go`** — `argstream` and `argstream-complete` subcommands
+The ffplay subcommand uses `DefaultFFplayProfile` (no output section, decoder-only codec). The ffprobe subcommand uses `DefaultFFprobeProfile` (no output section, no filter completion, decoder-only codec). The debug subcommand uses `carapace-spec` registration for spec generation.
 
 ### Stream Specifier (`pkg/streamspec/`)
 
@@ -350,10 +346,10 @@ carapace.Context
 - **Test style**: Table-driven tests with `testing.T` only. No testify or other assertion libraries. Helper functions like `assertHasExpected()` defined locally in test files.
 - **Action test style**: Tests in `pkg/actions/tools/ffmpeg/` use carapace's `sandbox.Action()` framework. Static value tests use `Expect` (exact positive assertions). Dynamic action tests use `ExpectNot` (negative assertions — verify absent values) because the live `ffmpeg` output set varies by installation.
 - **Integration test media**: `pkg/completer/` and `pkg/probe/` tests use `testdata/` files generated by `go generate ./testdata/`. Tests skip if files are missing. `pkg/probe/` tests can also generate tiny files on-the-fly in `t.TempDir()` via `ffmpeg -f lavfi`.
-- **No test files for debug CLI**: `cmd/carapace-ffmpeg-debug/` has no test files.
+- **No test files for debug subcommand**: The `debug` subcommand within `cmd/carapace-ffmpeg/` has no test files.
 - **JSON serialization**: AST and completion context types implement `MarshalText()` or have `json` struct tags for the debug CLI's JSON output.
 - **Parser package pattern**: Each parser package follows the same structure: `parser.go` (full parser), `completion_parser.go` (completion parser), `completion.go` (context types), `ast.go` (AST types), `span.go` (spans), optional `format.go` (AST→string). Exception: `mapvalue` lacks `ast.go` and `format.go` (flat AST struct in `parser.go`).
 
 ## Release
 
-GoReleaser builds 4 binaries: `carapace-ffmpeg`, `carapace-ffmpeg-debug`, `carapace-ffplay`, `carapace-ffprobe`. Distribution channels: Homebrew tap (`rsteube/homebrew-tap`), Scoop bucket, AUR (`carapace-ffmpeg-bin`), nfpm (apk/deb/rpm/termux.deb), Gemfury. Releases are triggered by tag pushes in CI.
+GoReleaser builds 1 binary: `carapace-ffmpeg` (multi-completer for ffmpeg, ffplay, ffprobe, and debug). Distribution channels: Homebrew tap (`rsteube/homebrew-tap`), Scoop bucket, AUR (`carapace-ffmpeg-bin`), nfpm (apk/deb/rpm/termux.deb), Gemfury. Releases are triggered by tag pushes in CI.

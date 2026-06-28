@@ -43,8 +43,8 @@ var filtergraphCompleteCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(filtergraphCmd)
-	rootCmd.AddCommand(filtergraphCompleteCmd)
+	debugCmd.AddCommand(filtergraphCmd)
+	debugCmd.AddCommand(filtergraphCompleteCmd)
 
 	carapace.Gen(filtergraphCmd)
 	carapace.Gen(filtergraphCompleteCmd)
