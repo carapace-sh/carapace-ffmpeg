@@ -43,8 +43,8 @@ var mapvalueCompleteCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(mapvalueCmd)
-	rootCmd.AddCommand(mapvalueCompleteCmd)
+	debugCmd.AddCommand(mapvalueCmd)
+	debugCmd.AddCommand(mapvalueCompleteCmd)
 
 	carapace.Gen(mapvalueCmd)
 	carapace.Gen(mapvalueCompleteCmd)
