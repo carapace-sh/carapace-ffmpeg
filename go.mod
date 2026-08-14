@@ -3,7 +3,7 @@ module github.com/carapace-sh/carapace-ffmpeg
 go 1.26.3
 
 require (
-	github.com/carapace-sh/carapace v1.15.0
+	github.com/carapace-sh/carapace v1.15.1
 	github.com/carapace-sh/carapace-spec v1.8.0
 	github.com/spf13/cobra v1.10.2
 )
