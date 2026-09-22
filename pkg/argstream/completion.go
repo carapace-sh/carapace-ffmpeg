@@ -50,6 +50,7 @@ type OptionContext struct {
 	ValueType       ValueType `json:"valueType"`
 	AcceptsSpec     bool      `json:"acceptsSpec"`
 	IsBoolean       bool      `json:"isBoolean"`
+	FromFile        bool      `json:"fromFile,omitempty"`
 	Style           string    `json:"style"`
 }
 

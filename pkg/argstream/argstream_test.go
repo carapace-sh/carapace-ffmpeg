@@ -274,3 +274,19 @@ func TestParseNegativeOptionValue(t *testing.T) {
 		t.Error("expected -ss with negative value '-10'")
 	}
 }
+
+func TestParseValueFromFileOption(t *testing.T) {
+	prog, err := Parse([]string{"-/filter:v", "graph.txt", "out.mp4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var found bool
+	for _, tok := range prog.Tokens {
+		if tok.OptionName == "filter" && tok.StreamSpecifier == "v" && tok.Value == "graph.txt" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("expected -/filter:v with value 'graph.txt'")
+	}
+}

@@ -81,7 +81,9 @@ func (p *parser) parseProgram() (*Program, error) {
 
 		// Option token: starts with '-' and is not just '-'
 		if !dashdash && isOption(arg) {
-			optName := arg[1:] // strip leading '-'
+			// strip leading '-' and ffmpeg's value-from-file marker '/'
+			// (e.g. "-/filter:v" loads the value from a file)
+			optName := strings.TrimPrefix(arg[1:], "/")
 			baseName, spec, _ := ParseOptionName(optName)
 			optDef := p.profile.LookupOption(baseName)
 

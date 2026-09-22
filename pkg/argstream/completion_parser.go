@@ -111,6 +111,12 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 		if !dashdash && isOption(arg) {
 			optName := arg[1:] // strip '-'
 			optName = strings.TrimPrefix(optName, "-")
+			// ffmpeg's value-from-file marker: '-/opt' loads the value from a file
+			fromFile := false
+			if strings.HasPrefix(optName, "/") {
+				fromFile = true
+				optName = optName[1:]
+			}
 
 			baseName, spec, hasColon := ParseOptionName(optName)
 			optDef := profile.LookupOption(baseName)
@@ -120,6 +126,7 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 				ctx.PartialOption = baseName
 				ctx.PartialSpec = spec
 				ctx.CurrentOption = buildOptionContext(baseName, spec, optDef)
+				ctx.CurrentOption.FromFile = fromFile
 
 				if optDef != nil && optDef.AcceptsSpec && spec == "" && optDef.ImplicitSpec == "" && hasColon {
 					ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedStreamSpecifier)
@@ -166,6 +173,7 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 			// Without a colon (e.g. "-c" "libx264"), the value comes directly.
 			if optDef != nil && optDef.AcceptsSpec && hasColon && spec == "" && optDef.ImplicitSpec == "" && optDef.Type == TypeValue {
 				pendingSpecOption = buildOptionContext(baseName, spec, optDef)
+				pendingSpecOption.FromFile = fromFile
 				updateScope(ctx, optDef, profile)
 				continue
 			}
@@ -173,6 +181,7 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 			// If the option takes a value, mark it as pending
 			if optDef != nil && optDef.Type == TypeValue && (spec != "" || !optDef.AcceptsSpec || optDef.ImplicitSpec != "" || !hasColon) {
 				pendingOption = buildOptionContext(baseName, spec, optDef)
+				pendingOption.FromFile = fromFile
 			}
 
 			// Update scope based on option
