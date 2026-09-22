@@ -440,3 +440,79 @@ func TestCompletionInputURLsSingle(t *testing.T) {
 		t.Errorf("expected InputURLs[0]=video.mp4, got %q", ctx.InputURLs[0])
 	}
 }
+
+func TestCompletionNegativeValueMidToken(t *testing.T) {
+	// "-ss -1" mid-token: the "-1" is a partial value, not an option
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "-ss", "-1"}, false)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil || ctx.CurrentOption.Name != "ss" {
+		t.Fatalf("expected current option 'ss', got %v", ctx.CurrentOption)
+	}
+	if ctx.PartialValue != "-1" {
+		t.Errorf("expected partial value '-1', got %q", ctx.PartialValue)
+	}
+}
+
+func TestCompletionNegativeValueTrailingSpace(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "-ss", "-10"}, true)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	assertHasExpected(t, ctx, ExpectedOutputURL)
+	assertNotHasExpected(t, ctx, ExpectedOptionValue)
+}
+
+func TestCompletionDashdashDisablesOptions(t *testing.T) {
+	// after "--" only URLs are expected, even for dash-prefixed args
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "--", "-y"}, true)
+	assertHasExpected(t, ctx, ExpectedOutputURL)
+	assertNotHasExpected(t, ctx, ExpectedOutputOption)
+}
+
+func TestCompletionDashdashAtEndTrailingSpace(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "--"}, true)
+	assertHasExpected(t, ctx, ExpectedOutputURL)
+	assertNotHasExpected(t, ctx, ExpectedOutputOption)
+}
+
+func TestCompletionValueFromFileOption(t *testing.T) {
+	// ffmpeg's '-/opt' syntax loads the option value from a file
+	ctx := ParseForCompletion([]string{"-/filter:v", "graph.txt"}, false)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.Name != "filter" {
+		t.Errorf("expected option name 'filter', got %q", ctx.CurrentOption.Name)
+	}
+	if ctx.CurrentOption.StreamSpecifier != "v" {
+		t.Errorf("expected stream specifier 'v', got %q", ctx.CurrentOption.StreamSpecifier)
+	}
+	if !ctx.CurrentOption.FromFile {
+		t.Error("expected FromFile=true")
+	}
+	if ctx.PartialValue != "graph.txt" {
+		t.Errorf("expected partial value 'graph.txt', got %q", ctx.PartialValue)
+	}
+}
+
+func TestCompletionValueFromFileOptionTrailingSpace(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-/loglevel"}, true)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil || !ctx.CurrentOption.FromFile {
+		t.Error("expected CurrentOption with FromFile=true")
+	}
+}
+
+func TestCompletionValueFromFileShellSplitSpec(t *testing.T) {
+	// shell split "-/c:v" into ["-/c", ":v"]
+	ctx := ParseForCompletion([]string{"-/c", ":v"}, true)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil {
+		t.Fatal("expected CurrentOption")
+	}
+	if ctx.CurrentOption.Name != "c" || ctx.CurrentOption.StreamSpecifier != "v" {
+		t.Errorf("expected option 'c' with spec 'v', got %+v", ctx.CurrentOption)
+	}
+	if !ctx.CurrentOption.FromFile {
+		t.Error("expected FromFile=true")
+	}
+}

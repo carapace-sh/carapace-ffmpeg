@@ -17,8 +17,9 @@ func (e *ParseError) Error() string {
 }
 
 type parser struct {
-	input string
-	pos   int
+	input    string
+	pos      int
+	seenType bool
 }
 
 // Parse parses a stream specifier string into an AST.
@@ -104,29 +105,33 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			Kind:    KindDisposition,
 			Span:    Span{Start: start, End: p.pos},
 			payload: disp,
-		}, start)
+		}, addlChain)
 	}
 
 	ch := p.peek()
 
-	// 'u' - usable streams
+	// 'u' - usable streams (terminates the specifier)
 	if ch == 'u' {
 		p.advance()
 		return p.withAdditional(&Specifier{
 			Kind:    KindUsable,
 			Span:    Span{Start: start, End: p.pos},
 			payload: struct{}{},
-		}, start)
+		}, addlTerminating)
 	}
 
 	// Stream type letter: v, V, a, s, d, t
 	if isStreamTypeLetter(ch) {
+		if p.seenType {
+			return nil, p.syntaxError("stream type specified multiple times")
+		}
+		p.seenType = true
 		st := p.parseStreamTypeLetter()
 		return p.withAdditional(&Specifier{
 			Kind:    KindStreamType,
 			Span:    Span{Start: start, End: p.pos},
 			payload: st,
-		}, start)
+		}, addlChain)
 	}
 
 	// 'g:' - group specifier
@@ -140,7 +145,7 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			Kind:    KindGroup,
 			Span:    Span{Start: start, End: p.pos},
 			payload: group,
-		}, start)
+		}, addlChain)
 	}
 
 	// 'p:' - program specifier
@@ -154,10 +159,10 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			Kind:    KindProgram,
 			Span:    Span{Start: start, End: p.pos},
 			payload: prog,
-		}, start)
+		}, addlChain)
 	}
 
-	// '#' - stream ID
+	// '#' - stream ID (terminates the specifier)
 	if ch == '#' {
 		p.advance()
 		id, err := p.scanStreamIDValue()
@@ -168,10 +173,10 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			Kind:    KindStreamID,
 			Span:    Span{Start: start, End: p.pos},
 			payload: &StreamIDExpr{ID: id, Alt: false},
-		}, start)
+		}, addlTerminating)
 	}
 
-	// 'i:' - stream ID (alternate)
+	// 'i:' - stream ID, alternate syntax (terminates the specifier)
 	if p.hasPrefix("i:") {
 		p.pos += 2
 		id, err := p.scanStreamIDValue()
@@ -182,10 +187,10 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			Kind:    KindStreamID,
 			Span:    Span{Start: start, End: p.pos},
 			payload: &StreamIDExpr{ID: id, Alt: true},
-		}, start)
+		}, addlTerminating)
 	}
 
-	// 'm:' - metadata specifier
+	// 'm:' - metadata specifier (terminates the specifier)
 	if p.hasPrefix("m:") {
 		p.pos += 2
 		meta, err := p.parseMetadataSpecifier()
@@ -196,10 +201,10 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			Kind:    KindMetadata,
 			Span:    Span{Start: start, End: p.pos},
 			payload: meta,
-		}, start)
+		}, addlMetadata)
 	}
 
-	// Numeric stream index
+	// Numeric stream index (terminates the specifier)
 	if ch >= '0' && ch <= '9' {
 		idx, err := p.scanInteger()
 		if err != nil {
@@ -209,16 +214,42 @@ func (p *parser) parseSpecifier() (*Specifier, error) {
 			Kind:    KindStreamIndex,
 			Span:    Span{Start: start, End: p.pos},
 			payload: idx,
-		}, start)
+		}, addlTerminating)
 	}
 
 	return nil, p.syntaxError(fmt.Sprintf("unexpected character %q in stream specifier", ch))
 }
 
-// withAdditional checks if the specifier is followed by ':' and parses an additional specifier.
-func (p *parser) withAdditional(spec *Specifier, _ int) (*Specifier, error) {
+// additionalMode controls what may follow a specifier component.
+//
+// ffmpeg's stream_specifier_parse consumes a ':' separator after components
+// that continue the specifier chain, so a trailing colon with nothing after
+// it is accepted (empty additional specifier matches all streams).
+// Components that terminate the specifier (index, stream ID, usable) reject
+// everything after them as trailing garbage.
+type additionalMode int
+
+const (
+	addlChain       additionalMode = iota // type, group, program, disposition: trailing ':' is a separator
+	addlTerminating                       // index, stream ID, usable: nothing may follow
+	addlMetadata                          // metadata: composition supported, but a dangling ':' is garbage
+)
+
+// withAdditional checks if the specifier is followed by ':' and parses an
+// additional specifier according to the component's mode.
+func (p *parser) withAdditional(spec *Specifier, mode additionalMode) (*Specifier, error) {
 	if !p.atEnd() && p.peek() == ':' {
+		if mode == addlTerminating {
+			return nil, p.syntaxError("trailing garbage after stream specifier")
+		}
 		p.advance()
+		if p.atEnd() {
+			if mode == addlMetadata {
+				return nil, p.syntaxError("trailing garbage after stream specifier")
+			}
+			// Empty additional specifier matches all remaining streams
+			return spec, nil
+		}
 		additional, err := p.parseSpecifier()
 		if err != nil {
 			return nil, err
@@ -259,11 +290,17 @@ func (p *parser) parseGroupSpecifier() (*GroupExpr, error) {
 	if ch == '#' {
 		p.advance()
 		id := p.scanHexOrDecimalID()
+		if id == "" {
+			return nil, p.syntaxError("expected group ID after 'g:#'")
+		}
 		return &GroupExpr{Kind: GroupByID, ID: id}, nil
 	}
 	if p.hasPrefix("i:") {
 		p.pos += 2
 		id := p.scanHexOrDecimalID()
+		if id == "" {
+			return nil, p.syntaxError("expected group ID after 'g:i:'")
+		}
 		return &GroupExpr{Kind: GroupByID, ID: id}, nil
 	}
 	idx, err := p.scanInteger()
@@ -278,6 +315,9 @@ func (p *parser) parseProgramSpecifier() (*ProgramExpr, error) {
 		return nil, p.syntaxError("expected program ID after 'p:'")
 	}
 	id := p.scanHexOrDecimalID()
+	if id == "" {
+		return nil, p.syntaxError("expected program ID after 'p:'")
+	}
 	return &ProgramExpr{ID: id}, nil
 }
 
@@ -285,7 +325,11 @@ func (p *parser) scanStreamIDValue() (string, error) {
 	if p.atEnd() {
 		return "", p.syntaxError("expected stream ID")
 	}
-	return p.scanHexOrDecimalID(), nil
+	id := p.scanHexOrDecimalID()
+	if id == "" {
+		return "", p.syntaxError("expected stream ID")
+	}
+	return id, nil
 }
 
 func (p *parser) scanHexOrDecimalID() string {
@@ -324,8 +368,12 @@ func (p *parser) scanMetadataKey() string {
 	start := p.pos
 	for p.pos < len(p.input) {
 		ch := p.input[p.pos]
-		if ch == ':' || ch == '\\' {
+		if ch == ':' {
 			break
+		}
+		if ch == '\\' && p.pos+1 < len(p.input) {
+			p.pos += 2
+			continue
 		}
 		p.pos++
 	}
@@ -372,7 +420,7 @@ func (p *parser) scanDispositions() []string {
 			start = p.pos
 			continue
 		}
-		if ch == ':' || ch == '\\' {
+		if !isDispositionChar(ch) {
 			break
 		}
 		p.pos++
@@ -383,19 +431,43 @@ func (p *parser) scanDispositions() []string {
 	return result
 }
 
+func isDispositionChar(ch byte) bool {
+	return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch == '_'
+}
+
+// scanInteger scans an integer using strtol base-0 semantics, as ffmpeg
+// does: decimal, 0x-prefixed hexadecimal, or leading-zero octal.
 func (p *parser) scanInteger() (int, error) {
 	start := p.pos
-	for p.pos < len(p.input) && p.input[p.pos] >= '0' && p.input[p.pos] <= '9' {
+	if p.pos < len(p.input) && (p.input[p.pos] == '+' || p.input[p.pos] == '-') {
 		p.pos++
 	}
-	if p.pos == start {
+	if p.hasPrefix("0x") || p.hasPrefix("0X") {
+		p.pos += 2
+		for p.pos < len(p.input) && isHexDigit(p.input[p.pos]) {
+			p.pos++
+		}
+	} else if p.pos < len(p.input) && p.input[p.pos] == '0' {
+		p.pos++
+		for p.pos < len(p.input) && p.input[p.pos] >= '0' && p.input[p.pos] <= '7' {
+			p.pos++
+		}
+	} else {
+		for p.pos < len(p.input) && p.input[p.pos] >= '0' && p.input[p.pos] <= '9' {
+			p.pos++
+		}
+	}
+	text := p.input[start:p.pos]
+	if text == "" || text == "+" || text == "-" {
+		p.pos = start
 		return 0, p.syntaxError("expected integer")
 	}
-	n, err := strconv.Atoi(p.input[start:p.pos])
+	n, err := strconv.ParseInt(text, 0, 64)
 	if err != nil {
+		p.pos = start
 		return 0, p.syntaxError("invalid integer")
 	}
-	return n, nil
+	return int(n), nil
 }
 
 func isHexDigit(ch byte) bool {

@@ -45,7 +45,28 @@ func formatFilter(f *Filter) string {
 
 func formatOption(o *FilterOption) string {
 	if o.IsKeyed() {
-		return fmt.Sprintf("%s=%s", o.Key, o.Value)
+		return fmt.Sprintf("%s=%s", escapeFilterToken(o.Key), escapeFilterToken(o.Value))
 	}
-	return o.Value
+	return escapeFilterToken(o.Value)
+}
+
+// filterSpecials are characters that are structurally significant in a
+// filtergraph option list. When they appear literally in a key or value
+// they must be backslash-escaped so the formatted graph re-parses to the
+// same AST.
+const filterSpecials = "\\:,;'[]="
+
+func escapeFilterToken(s string) string {
+	if !strings.ContainsAny(s, filterSpecials) {
+		return s
+	}
+	var sb strings.Builder
+	for i := 0; i < len(s); i++ {
+		ch := s[i]
+		if strings.IndexByte(filterSpecials, ch) >= 0 {
+			sb.WriteByte('\\')
+		}
+		sb.WriteByte(ch)
+	}
+	return sb.String()
 }

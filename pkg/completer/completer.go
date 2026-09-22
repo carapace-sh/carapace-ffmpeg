@@ -36,6 +36,7 @@ func IsMidTokenOptionWithSpec(value string, profile *argstream.ToolProfile) bool
 		return false
 	}
 	optText := strings.TrimPrefix(value[1:], "-")
+	optText = strings.TrimPrefix(optText, "/")
 	baseName, _, _ := argstream.ParseOptionName(optText)
 	optDef := profile.LookupOption(baseName)
 	return optDef != nil && optDef.AcceptsSpec && optDef.ImplicitSpec == ""
@@ -61,6 +62,7 @@ func ActionPartialOption(ctx *argstream.CompletionContext, profile *argstream.To
 func optionUid(profile *argstream.ToolProfile) func(s string, uc uid.Context) (*url.URL, error) {
 	return func(s string, uc uid.Context) (*url.URL, error) {
 		name := strings.TrimPrefix(s, "-")
+		name = strings.TrimPrefix(name, "/")
 		if def := profile.LookupOption(name); def != nil {
 			name = def.CanonicalName
 		}
@@ -123,6 +125,10 @@ func ActionOptions(ctx *argstream.CompletionContext, profile *argstream.ToolProf
 func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argstream.CompletionContext) carapace.Action, filterValue string) carapace.Action {
 	if ctx.CurrentOption == nil {
 		return carapace.ActionValues()
+	}
+	if ctx.CurrentOption.FromFile {
+		// ffmpeg's '-/opt' syntax loads the option value from a file
+		return carapace.ActionFiles()
 	}
 	switch ctx.CurrentOption.ValueType {
 	case argstream.ValueCodec:
@@ -212,7 +218,15 @@ func ActionOptionValue(ctx *argstream.CompletionContext, codecAction func(*argst
 				}
 			}
 		}
-		return ffmpeg.ActionBitstreamFilters(opts)
+		// Bitstream filters form a comma-separated chain, and each filter
+		// can take options as a key=value:key=value suffix
+		return carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			if strings.Contains(c.Value, "=") {
+				// completing the key=value options of a BSF in the chain
+				return carapace.ActionValues()
+			}
+			return ffmpeg.ActionBitstreamFilters(opts)
+		})
 	case argstream.ValuePrintGraphFmt:
 		return ffmpeg.ActionPrintGraphsFormats()
 	case argstream.ValueTarget:

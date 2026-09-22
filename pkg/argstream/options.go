@@ -217,6 +217,7 @@ func buildOptionIndex() map[string]*OptionDef {
 		{CanonicalName: "metadata", ShortName: "metadata", Description: "add metadata", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueMetadata, AcceptsSpec: true},
 		{CanonicalName: "program", ShortName: "program", Description: "add program with specified streams", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
 		{CanonicalName: "stream_group", ShortName: "stream_group", Description: "add stream group with specified streams", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueString, AcceptsSpec: true},
+		{CanonicalName: "dec", ShortName: "dec", Description: "create a loopback decoder for the given output stream", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueString},
 		{CanonicalName: "dframes", ShortName: "dframes", Description: "set the number of data frames to output", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueInt64},
 		{CanonicalName: "target", ShortName: "target", Description: "specify target file type", Scope: ScopeOutputOnlyOpt, Type: TypeValue, ValueType: ValueTarget},
 		{CanonicalName: "shortest", ShortName: "shortest", Description: "finish encoding within shortest input", Scope: ScopeOutputOnlyOpt, Type: TypeBoolean},
