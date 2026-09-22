@@ -3,6 +3,7 @@ package mapvalue
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 // MapValue represents a parsed -map value.
@@ -116,67 +117,283 @@ func (p *parser) parseMapValue() (*MapValue, error) {
 	if !p.atEnd() && p.peek() == ':' {
 		p.advance()
 		mv.HasSpecifier = true
-		specStart := p.pos
-		// Stream specifier extends until a ':' followed by a view keyword, '?' (optional), or end
-		for !p.atEnd() {
-			ch := p.peek()
-			if ch == '?' {
-				break
-			}
-			if ch == ':' {
-				// Check if the next segment is a view specifier keyword
-				remaining := p.input[p.pos+1:]
-				if hasPrefixView(remaining) {
-					break
-				}
-				p.advance() // consume the colon, continue building specifier
-				continue
-			}
-			p.advance()
+		spec, remainder, err := p.scanStreamSpec()
+		if err != nil {
+			return nil, err
 		}
-		mv.Specifier = p.input[specStart:p.pos]
-	}
-
-	// Check for view specifier (after ':')
-	if !p.atEnd() && p.peek() == ':' {
-		p.advance()
-		mv.HasView = true
-		viewStart := p.pos
-		// View specifier extends until next ':' or '?' or end
-		// But view specifiers can also contain ':' (e.g. view:all)
-		for !p.atEnd() {
-			ch := p.peek()
-			if ch == '?' {
-				break
-			}
-			p.advance()
+		mv.Specifier = spec
+		if err := p.applyRemainder(mv, remainder); err != nil {
+			return nil, err
 		}
-		mv.ViewSpec = p.input[viewStart:p.pos]
-	}
-
-	// Check for optional '?' suffix
-	if !p.atEnd() && p.peek() == '?' {
-		p.advance()
-		mv.Optional = true
 	}
 
 	mv.Span.End = p.pos
 	return mv, nil
 }
 
-func (p *parser) parseInteger() (int, error) {
+// applyRemainder handles what follows the stream specifier: a view specifier
+// keyword, an optional '?' marker, or an error for anything else. This mirrors
+// ffmpeg's -map parsing, which splits the view specifier off the remainder
+// returned by stream_specifier_parse.
+func (p *parser) applyRemainder(mv *MapValue, remainder string) error {
+	if remainder == "" {
+		return nil
+	}
+	// p.pos still points at the raw rest (including the skipped separator);
+	// the remainder text starts at the end of the input minus its length.
+	restStart := len(p.input) - len(remainder)
+	if remainder == "?" {
+		mv.Optional = true
+		p.pos = len(p.input)
+		return nil
+	}
+	if !hasPrefixView(remainder) {
+		p.pos = restStart
+		return p.syntaxError("trailing garbage after stream specifier")
+	}
+	view := remainder
+	optional := false
+	if i := strings.IndexByte(view, '?'); i >= 0 {
+		view = view[:i]
+		optional = true
+	}
+	if err := validateViewSpec(view); err != nil {
+		p.pos = restStart
+		return p.syntaxError(err.Error())
+	}
+	mv.HasView = true
+	mv.ViewSpec = view
+	mv.Optional = optional
+	p.pos = restStart + len(view)
+	if optional {
+		p.pos++
+	}
+	if p.pos < len(p.input) {
+		return p.syntaxError("trailing garbage after view specifier")
+	}
+	return nil
+}
+
+// scanStreamSpec consumes a stream specifier following ffmpeg's
+// stream_specifier_parse semantics and returns the raw specifier text along
+// with the remainder that follows it (empty when the specifier consumed the
+// whole input). Components that terminate the specifier (numeric index,
+// stream ID, metadata, usable) put everything after them into the remainder.
+func (p *parser) scanStreamSpec() (string, string, error) {
+	specStart := p.pos
+	seenType := false
+
+	for p.pos < len(p.input) {
+		ch := p.input[p.pos]
+		switch {
+		case ch >= '0' && ch <= '9':
+			// Stream index terminates the specifier
+			if _, err := p.scanBase0(); err != nil {
+				return "", "", err
+			}
+			return p.finishSpec(specStart)
+
+		case isStreamTypeLetter(ch) && (p.pos+1 >= len(p.input) || !isAlnum(p.input[p.pos+1])):
+			if seenType {
+				return "", "", p.syntaxError("stream type specified multiple times")
+			}
+			seenType = true
+			p.pos++
+
+		case ch == 'g' && p.hasPrefixAt(p.pos, "g:"):
+			p.pos += 2
+			if p.atEnd() {
+				return "", "", p.syntaxError("expected group specifier after 'g:'")
+			}
+			if p.peek() == '#' {
+				p.pos++
+				if err := p.scanRequiredID("expected group ID after 'g:#'"); err != nil {
+					return "", "", err
+				}
+			} else if p.hasPrefixAt(p.pos, "i:") {
+				p.pos += 2
+				if err := p.scanRequiredID("expected group ID after 'g:i:'"); err != nil {
+					return "", "", err
+				}
+			} else if _, err := p.scanBase0(); err != nil {
+				return "", "", err
+			}
+
+		case ch == 'p' && p.hasPrefixAt(p.pos, "p:"):
+			p.pos += 2
+			if err := p.scanRequiredID("expected program ID after 'p:'"); err != nil {
+				return "", "", err
+			}
+
+		case p.hasPrefixAt(p.pos, "disp:"):
+			p.pos += 5
+			p.scanDispChars()
+
+		case ch == '#' || (ch == 'i' && p.hasPrefixAt(p.pos, "i:")):
+			// Stream ID terminates the specifier
+			p.pos += 1 + boolToInt(ch == 'i')
+			if err := p.scanRequiredID("expected stream ID"); err != nil {
+				return "", "", err
+			}
+			return p.finishSpec(specStart)
+
+		case ch == 'm' && p.hasPrefixAt(p.pos, "m:"):
+			// Metadata specifier terminates the specifier
+			p.pos += 2
+			key := p.scanMetadataToken()
+			if key == "" {
+				return "", "", p.syntaxError("expected metadata key after 'm:'")
+			}
+			if !p.atEnd() && p.peek() == ':' {
+				p.pos++
+				p.scanMetadataToken()
+			}
+			return p.finishSpec(specStart)
+
+		case ch == 'u' && (p.pos+1 >= len(p.input) || p.input[p.pos+1] == ':'):
+			// Usable-only terminates the specifier
+			p.pos++
+			return p.finishSpec(specStart)
+
+		default:
+			// Unknown character ends the specifier
+			return p.finishSpec(specStart)
+		}
+
+		if !p.atEnd() && p.peek() == ':' {
+			p.pos++
+		}
+	}
+
+	return p.input[specStart:p.pos], "", nil
+}
+
+// finishSpec returns the raw specifier consumed so far and the remainder
+// that follows it. Separator colons are excluded from both: ffmpeg consumes
+// a ':' separator after each component and skips one more when splitting
+// off the remainder, so at most two colons separate the specifier from the
+// remainder text.
+func (p *parser) finishSpec(specStart int) (string, string, error) {
+	spec := p.input[specStart:p.pos]
+	rest := p.input[p.pos:]
+	if rest != "" {
+		spec = strings.TrimSuffix(spec, ":")
+		if rest[0] == ':' {
+			rest = rest[1:]
+		}
+	}
+	return spec, rest, nil
+}
+
+func (p *parser) scanRequiredID(msg string) error {
+	id := p.scanHexOrDecimalID()
+	if id == "" {
+		return p.syntaxError(msg)
+	}
+	return nil
+}
+
+func (p *parser) scanHexOrDecimalID() string {
 	start := p.pos
-	for !p.atEnd() && p.peek() >= '0' && p.peek() <= '9' {
-		p.advance()
+	for p.pos < len(p.input) {
+		ch := p.input[p.pos]
+		if isHexDigit(ch) || ch == 'x' || ch == 'X' {
+			p.pos++
+		} else {
+			break
+		}
 	}
 	if p.pos == start {
+		return ""
+	}
+	return p.input[start:p.pos]
+}
+
+// scanMetadataToken scans a metadata key or value up to an unescaped ':'.
+// Colons in the key or value must be backslash-escaped.
+func (p *parser) scanMetadataToken() string {
+	start := p.pos
+	for p.pos < len(p.input) {
+		ch := p.input[p.pos]
+		if ch == '\\' && p.pos+1 < len(p.input) {
+			p.pos += 2
+			continue
+		}
+		if ch == ':' {
+			break
+		}
+		p.pos++
+	}
+	return p.input[start:p.pos]
+}
+
+func (p *parser) scanDispChars() {
+	for p.pos < len(p.input) && isDispositionChar(p.input[p.pos]) {
+		p.pos++
+	}
+}
+
+// scanBase0 scans an integer with strtol base-0 semantics, as ffmpeg does:
+// decimal, 0x-prefixed hexadecimal, or leading-zero octal.
+func (p *parser) scanBase0() (int, error) {
+	start := p.pos
+	if !p.atEnd() && (p.peek() == '+' || p.peek() == '-') {
+		p.pos++
+	}
+	if p.hasPrefixAt(p.pos, "0x") || p.hasPrefixAt(p.pos, "0X") {
+		p.pos += 2
+		for !p.atEnd() && isHexDigit(p.peek()) {
+			p.pos++
+		}
+	} else if !p.atEnd() && p.peek() == '0' {
+		p.pos++
+		for !p.atEnd() && p.peek() >= '0' && p.peek() <= '7' {
+			p.pos++
+		}
+	} else {
+		for !p.atEnd() && p.peek() >= '0' && p.peek() <= '9' {
+			p.pos++
+		}
+	}
+	text := p.input[start:p.pos]
+	if text == "" || text == "+" || text == "-" {
+		p.pos = start
 		return 0, p.syntaxError("expected integer")
 	}
-	n, err := strconv.Atoi(p.input[start:p.pos])
+	n, err := strconv.ParseInt(text, 0, 64)
 	if err != nil {
+		p.pos = start
 		return 0, p.syntaxError("invalid integer")
 	}
-	return n, nil
+	return int(n), nil
+}
+
+func (p *parser) parseInteger() (int, error) {
+	return p.scanBase0()
+}
+
+// validateViewSpec checks a view specifier keyword and its value, mirroring
+// ffmpeg's view_specifier_parse: view:<id|all>, vidx:<index>, vpos:<left|right>.
+func validateViewSpec(vs string) error {
+	keyword, value, _ := strings.Cut(vs, ":")
+	switch keyword {
+	case "view":
+		if value == "all" {
+			return nil
+		}
+		if _, err := strconv.ParseInt(value, 0, 64); err != nil || value == "" {
+			return fmt.Errorf("invalid view ID: %s", value)
+		}
+	case "vidx":
+		if _, err := strconv.ParseInt(value, 0, 64); err != nil || value == "" {
+			return fmt.Errorf("invalid view index: %s", value)
+		}
+	case "vpos":
+		if value != "left" && value != "right" {
+			return fmt.Errorf("invalid view position: %s", value)
+		}
+	}
+	return nil
 }
 
 // Format returns the string representation of a MapValue.
@@ -210,4 +427,35 @@ func hasPrefixView(s string) bool {
 
 func hasPrefixWord(s, prefix string) bool {
 	return len(s) >= len(prefix) && s[:len(prefix)] == prefix
+}
+
+func (p *parser) hasPrefixAt(pos int, s string) bool {
+	return pos+len(s) <= len(p.input) && p.input[pos:pos+len(s)] == s
+}
+
+func isStreamTypeLetter(ch byte) bool {
+	switch ch {
+	case 'v', 'V', 'a', 's', 'd', 't':
+		return true
+	}
+	return false
+}
+
+func isAlnum(ch byte) bool {
+	return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')
+}
+
+func isHexDigit(ch byte) bool {
+	return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')
+}
+
+func isDispositionChar(ch byte) bool {
+	return isAlnum(ch) || ch == '_'
+}
+
+func boolToInt(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
 }

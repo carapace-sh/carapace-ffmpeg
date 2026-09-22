@@ -66,12 +66,21 @@ func (p *parser) parseProgram() (*Program, error) {
 	scope := ScopeGlobal
 	inputCount := 0
 	outputCount := 0
+	dashdash := false
 
 	for !p.atEnd() {
 		arg := p.peek()
 
+		// '--' disables option parsing: everything after it is a URL,
+		// even when it starts with '-'
+		if !dashdash && arg == "--" {
+			p.advance()
+			dashdash = true
+			continue
+		}
+
 		// Option token: starts with '-' and is not just '-'
-		if isOption(arg) {
+		if !dashdash && isOption(arg) {
 			optName := arg[1:] // strip leading '-'
 			baseName, spec, _ := ParseOptionName(optName)
 			optDef := p.profile.LookupOption(baseName)
@@ -264,6 +273,13 @@ func isOption(arg string) bool {
 		return true
 	}
 	return true
+}
+
+// isNegativeNumber checks if an argument looks like a negative numeric
+// value (e.g. "-10", "-0.5"). ffmpeg consumes such arguments as option
+// values rather than option names.
+func isNegativeNumber(arg string) bool {
+	return len(arg) >= 2 && arg[0] == '-' && arg[1] >= '0' && arg[1] <= '9'
 }
 
 // isKnownBoolean checks if a name is a known boolean option.

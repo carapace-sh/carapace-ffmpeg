@@ -440,3 +440,35 @@ func TestCompletionInputURLsSingle(t *testing.T) {
 		t.Errorf("expected InputURLs[0]=video.mp4, got %q", ctx.InputURLs[0])
 	}
 }
+
+func TestCompletionNegativeValueMidToken(t *testing.T) {
+	// "-ss -1" mid-token: the "-1" is a partial value, not an option
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "-ss", "-1"}, false)
+	assertHasExpected(t, ctx, ExpectedOptionValue)
+	if ctx.CurrentOption == nil || ctx.CurrentOption.Name != "ss" {
+		t.Fatalf("expected current option 'ss', got %v", ctx.CurrentOption)
+	}
+	if ctx.PartialValue != "-1" {
+		t.Errorf("expected partial value '-1', got %q", ctx.PartialValue)
+	}
+}
+
+func TestCompletionNegativeValueTrailingSpace(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "-ss", "-10"}, true)
+	assertHasExpected(t, ctx, ExpectedOutputOption)
+	assertHasExpected(t, ctx, ExpectedOutputURL)
+	assertNotHasExpected(t, ctx, ExpectedOptionValue)
+}
+
+func TestCompletionDashdashDisablesOptions(t *testing.T) {
+	// after "--" only URLs are expected, even for dash-prefixed args
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "--", "-y"}, true)
+	assertHasExpected(t, ctx, ExpectedOutputURL)
+	assertNotHasExpected(t, ctx, ExpectedOutputOption)
+}
+
+func TestCompletionDashdashAtEndTrailingSpace(t *testing.T) {
+	ctx := ParseForCompletion([]string{"-i", "in.mp4", "--"}, true)
+	assertHasExpected(t, ctx, ExpectedOutputURL)
+	assertNotHasExpected(t, ctx, ExpectedOutputOption)
+}

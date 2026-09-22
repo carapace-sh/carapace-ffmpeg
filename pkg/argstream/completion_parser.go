@@ -22,6 +22,7 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 	i := 0
 	var pendingOption *OptionContext
 	var pendingSpecOption *OptionContext // option waiting for a stream specifier value
+	dashdash := false                    // set after '--': everything after is a URL
 
 	for i < len(args) {
 		arg := args[i]
@@ -49,9 +50,11 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 		}
 
 		// If we have a pending option value and the current arg is not an option,
-		// consume it as the value
+		// consume it as the value. Negative numbers (e.g. "-ss -10") are values,
+		// not options — ffmpeg consumes the next argument unconditionally after
+		// a value-taking option.
 		if pendingOption != nil {
-			if !isOption(arg) {
+			if !isOption(arg) || isNegativeNumber(arg) {
 				// Shells split "-c:v" at the colon (COMP_WORDBREAKS), producing
 				// args [-c, :v] or [-c, v]. Detect this: when the pending option
 				// accepts a stream specifier and the partial starts with colon,
@@ -95,8 +98,17 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 			pendingOption = nil
 		}
 
+		// '--' disables option parsing: everything after it is a URL,
+		// even when it starts with '-'. A '--' being typed mid-token is
+		// still handled as a partial option below.
+		if arg == "--" && !dashdash && !(i == len(args)-1 && !trailingSpace) {
+			dashdash = true
+			i++
+			continue
+		}
+
 		// Check if this is an option
-		if isOption(arg) {
+		if !dashdash && isOption(arg) {
 			optName := arg[1:] // strip '-'
 			optName = strings.TrimPrefix(optName, "-")
 
@@ -168,7 +180,7 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 		} else {
 			// Non-option: could be an output URL (ffmpeg) or input URL (ffplay/ffprobe),
 			// or a partial option being typed (e.g. bare "-" at cursor position).
-			if i == len(args)-1 && !trailingSpace && strings.HasPrefix(arg, "-") {
+			if !dashdash && i == len(args)-1 && !trailingSpace && strings.HasPrefix(arg, "-") {
 				// Partial option being typed — don't change scope,
 				// return option completions based on current scope.
 				ctx.PartialOption = strings.TrimLeft(arg, "-")
@@ -184,6 +196,16 @@ func ParseForCompletionWithProfile(args []string, trailingSpace bool, profile *T
 			}
 			i++
 		}
+	}
+
+	// If '--' was seen, no further options are accepted — only URLs
+	if dashdash {
+		if profile.HasOutputSection {
+			ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedOutputURL)
+		} else {
+			ctx.ExpectedTokens = append(ctx.ExpectedTokens, ExpectedInputURL)
+		}
+		return ctx
 	}
 
 	// If we have a pending stream specifier, that's what's expected next
