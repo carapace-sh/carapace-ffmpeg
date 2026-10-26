@@ -332,3 +332,100 @@ func TestParseEmpty(t *testing.T) {
 		t.Error("expected error for empty specifier")
 	}
 }
+
+func TestParseStreamIndexHex(t *testing.T) {
+	spec, err := Parse("0x10")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if spec.StreamIndex() != 16 {
+		t.Errorf("expected hex index 16, got %d", spec.StreamIndex())
+	}
+}
+
+func TestParseStreamIndexOctal(t *testing.T) {
+	// ffmpeg parses indices with strtol base 0, so a leading 0 means octal
+	spec, err := Parse("077")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if spec.StreamIndex() != 63 {
+		t.Errorf("expected octal index 63, got %d", spec.StreamIndex())
+	}
+}
+
+func TestParseHexIndexAfterType(t *testing.T) {
+	spec, err := Parse("a:0x10")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if spec.Additional == nil || spec.Additional.StreamIndex() != 16 {
+		t.Errorf("expected additional hex index 16, got %v", spec.Additional)
+	}
+}
+
+func TestParseEmptyAdditionalSpecifier(t *testing.T) {
+	// ffmpeg accepts a trailing colon as a separator: "a:" matches all
+	// audio streams (empty additional specifier)
+	spec, err := Parse("a:")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if spec.Kind != KindStreamType || spec.Additional != nil {
+		t.Errorf("expected bare audio type, got kind %v additional %v", spec.Kind, spec.Additional)
+	}
+}
+
+func TestParseTrailingColonChainComponents(t *testing.T) {
+	for _, s := range []string{"g:0:", "p:0x1:", "disp:default:"} {
+		if _, err := Parse(s); err != nil {
+			t.Errorf("Parse(%q): unexpected error %v", s, err)
+		}
+	}
+}
+
+func TestParseTrailingGarbageAfterTerminating(t *testing.T) {
+	for _, s := range []string{"1:", "a:1:", "u:1", "#0x1F3:", "i:5:x"} {
+		if _, err := Parse(s); err == nil {
+			t.Errorf("Parse(%q): expected error", s)
+		}
+	}
+}
+
+func TestParseMetadataKeyEscapedColon(t *testing.T) {
+	spec, err := Parse(`m:lang\:x:eng`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m := spec.Metadata()
+	if m.Key != `lang\:x` {
+		t.Errorf("expected key 'lang\\:x', got %q", m.Key)
+	}
+	if m.Value != "eng" {
+		t.Errorf("expected value 'eng', got %q", m.Value)
+	}
+}
+
+func TestParseMultipleStreamTypesError(t *testing.T) {
+	if _, err := Parse("a:v"); err == nil {
+		t.Error("expected error for two stream type letters")
+	}
+}
+
+func TestParseEmptyIDsError(t *testing.T) {
+	for _, s := range []string{"p::1", "i::1", "g:#"} {
+		if _, err := Parse(s); err == nil {
+			t.Errorf("Parse(%q): expected error for empty ID", s)
+		}
+	}
+}
+
+func TestParseDispositionCharset(t *testing.T) {
+	// dispositions are alnum/underscore joined by '+': '-' is invalid
+	if _, err := Parse("disp:default-x"); err == nil {
+		t.Error("expected error for invalid disposition character")
+	}
+	if _, err := Parse("disp:default_x+forced"); err != nil {
+		t.Errorf("Parse(disp:default_x+forced): %v", err)
+	}
+}

@@ -153,3 +153,36 @@ func TestParseMixedOptions(t *testing.T) {
 		t.Errorf("expected keyed option, got key=%q", f.Options[2].Key)
 	}
 }
+
+func TestFormatEscapesSpecialCharacters(t *testing.T) {
+	tests := []string{
+		`drawtext=text=a\:b`,
+		`drawtext=text='a:b'`,
+		`drawtext=text=x\,y\;z`,
+		`scale=w=1280:h=720:x='a=b'`,
+	}
+	for _, tt := range tests {
+		fg, err := Parse(tt)
+		if err != nil {
+			t.Fatalf("Parse(%q): %v", tt, err)
+		}
+		formatted := Format(fg)
+		refg, err := Parse(formatted)
+		if err != nil {
+			t.Fatalf("Parse(Format(Parse(%q)) = %q): %v", tt, formatted, err)
+		}
+		if Format(refg) != formatted {
+			t.Errorf("Format not stable for %q: %q -> %q", tt, formatted, Format(refg))
+		}
+		orig, _ := Parse(tt)
+		if len(refg.Chains[0].Filters[0].Options) != len(orig.Chains[0].Filters[0].Options) {
+			t.Errorf("round-trip option count mismatch for %q", tt)
+		}
+		for i := range orig.Chains[0].Filters[0].Options {
+			o, r := orig.Chains[0].Filters[0].Options[i], refg.Chains[0].Filters[0].Options[i]
+			if o.Key != r.Key || o.Value != r.Value {
+				t.Errorf("round-trip mismatch for %q: option %d key %q/%q value %q/%q", tt, i, o.Key, r.Key, o.Value, r.Value)
+			}
+		}
+	}
+}

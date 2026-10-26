@@ -241,3 +241,52 @@ func TestCodecBaseNoImplicitSpec(t *testing.T) {
 		t.Errorf("expected no ImplicitSpec for base 'c', got %q", opt.ImplicitSpec)
 	}
 }
+
+func TestParseDashdashEndOfOptions(t *testing.T) {
+	prog, err := Parse([]string{"-i", "in.mp4", "--", "-y", "out.mp4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// everything after "--" is a URL, even dash-prefixed arguments
+	var urls []string
+	for _, tok := range prog.Tokens {
+		if tok.Kind == KindOutputURL {
+			urls = append(urls, tok.URL)
+		}
+	}
+	if len(urls) != 2 || urls[0] != "-y" || urls[1] != "out.mp4" {
+		t.Errorf("expected URLs [-y out.mp4], got %v", urls)
+	}
+}
+
+func TestParseNegativeOptionValue(t *testing.T) {
+	prog, err := Parse([]string{"-i", "in.mp4", "-ss", "-10", "out.mp4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var found bool
+	for _, tok := range prog.Tokens {
+		if tok.Kind == KindInputOption && tok.OptionName == "ss" && tok.Value == "-10" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("expected -ss with negative value '-10'")
+	}
+}
+
+func TestParseValueFromFileOption(t *testing.T) {
+	prog, err := Parse([]string{"-/filter:v", "graph.txt", "out.mp4"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var found bool
+	for _, tok := range prog.Tokens {
+		if tok.OptionName == "filter" && tok.StreamSpecifier == "v" && tok.Value == "graph.txt" {
+			found = true
+		}
+	}
+	if !found {
+		t.Error("expected -/filter:v with value 'graph.txt'")
+	}
+}

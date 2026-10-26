@@ -6,10 +6,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	ffmpeg "github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
+	"github.com/carapace-sh/carapace"
+	"github.com/carapace-sh/carapace-ffmpeg/pkg/actions/tools/ffmpeg"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/argstream"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/probe"
 	"github.com/carapace-sh/carapace-ffmpeg/pkg/streamspec"
+	"github.com/carapace-sh/carapace/pkg/sandbox"
 )
 
 func TestProbeAllEmpty(t *testing.T) {
@@ -494,4 +496,24 @@ func TestActionStreamIDWithMPEGTS(t *testing.T) {
 
 	action := actionStreamID(specCtx, streams, "")
 	_ = action
+}
+
+func TestActionOptionValueBsfChain(t *testing.T) {
+	sandbox.Action(t, func() carapace.Action {
+		ctx := argstream.ParseForCompletion([]string{"-i", "in.mp4", "-bsf:v", "h264_mp4toannexb"}, false)
+		return ActionOptionValue(ctx, ActionDecoderOnlyCodec, "")
+	})(func(s *sandbox.Sandbox) {
+		s.Run("").ExpectNot(carapace.ActionValues("scale", "libx264"))
+		s.Run("h264_mp4toannexb,").ExpectNot(carapace.ActionValues("aac_adtstoasc", "h264_mp4toannexb"))
+		s.Run("h264_mp4toannexb=remove").Expect(carapace.ActionValues().NoSpace(','))
+	})
+}
+
+func TestActionOptionValueFromFile(t *testing.T) {
+	sandbox.Action(t, func() carapace.Action {
+		ctx := argstream.ParseForCompletion([]string{"-/filter:v", "graph"}, false)
+		return ActionOptionValue(ctx, ActionDecoderOnlyCodec, "")
+	})(func(s *sandbox.Sandbox) {
+		s.Run("graph").ExpectNot(carapace.ActionValues("libx264", "yuv420p", "scale"))
+	})
 }
